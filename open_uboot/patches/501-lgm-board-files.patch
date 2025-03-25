@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  0fc6ab869ec8d5a8cf69f81fbdc3735864c53704
+# Parent  91926e022fe5d7a4b86e52c10448b00d5bb4371c
 
 diff --git a/board/maxlinear/Kconfig b/board/maxlinear/Kconfig
 new file mode 100644
@@ -372,7 +372,7 @@ new file mode 100644
 +
 +config UBOOT_PART_SIZE
 +	hex "Size of U-boot MTD partition"
-+	depends on NAND_FLASH_MXL
++	depends on NAND_FLASH_MXL || MXL_SPI_NAND
 +	default 0x80000
 +
 +endmenu # Environment settings
@@ -1122,7 +1122,7 @@ diff --git a/board/maxlinear/lightning/Makefile.manuboot b/board/maxlinear/light
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/Makefile.manuboot
-@@ -0,0 +1,157 @@
+@@ -0,0 +1,155 @@
 +#
 +# Copyright (C) 2023 Maxlinear Inc
 +#
@@ -1195,8 +1195,8 @@ new file mode 100644
 +	cp $(obj)/rot/customer-test-img-tail.bin $@
 +endif
 +
-+else if CONFIG_BOOT_FROM_NAND
-+$(info ^^^ Create RoT Full Image EBU NAND ^^^)
++else
++$(info ^^^ Create RoT Full Image NAND ^^^)
 +INPUTS-y += $(obj)/rot/rot-full-img-nand.bin
 +
 +manuboot-img.bin:
@@ -1228,7 +1228,7 @@ new file mode 100644
 +NAND_PAGE_SIZE_DEC := $(shell printf "%d" $(CONFIG_SYS_NAND_PAGE_SIZE))
 +
 +$(obj)/rot/rot-full-img-nand.bin: $(obj)/manuboot-img-header-crc32-bch.bin $(obj)/cust-img-header-crc32-bch.bin $(obj)/field-img.mxl $(obj)/cust-img-tail.mxl manuboot-img.bin
-+	@echo "<<< Create RoT Full Image EBU NAND>>>"
++	@echo "<<< Create RoT Full Image NAND>>>"
 +	cp $(obj)/field-img.mxl $@
 +	dd conv=notrunc if=$(obj)/cust-img-header-crc32-bch.bin of=$@
 +	$(SCRIPTS)/pad2align.sh -n $(CONFIG_CUSTOMER_TEST_IMG_OFFSET) $@
@@ -1274,8 +1274,6 @@ new file mode 100644
 +	rm $(obj)/rot/split_cust_img_*
 +	cp $(obj)/rot/customer-test-img-tail.bin $@
 +endif
-+
-+else
 +
 +$(info ^^^ Create RoT Full Image ^^^)
 +
@@ -58414,7 +58412,7 @@ diff --git a/board/maxlinear/lightning/ddr_init_sequence.c b/board/maxlinear/lig
 new file mode 100755
 --- /dev/null
 +++ b/board/maxlinear/lightning/ddr_init_sequence.c
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,125 @@
 +/*
 + * Copyright (C) 2019 Intel Technology Asia Pte Ltd
 + *
@@ -58426,11 +58424,42 @@ new file mode 100755
 +#include <asm/io.h>
 +#include <asm/arch/project.h>
 +#include <asm/cache.h>
++#include <cpu_func.h>
++
++#define DDR_MAGIC			0x4D584C /* [MXL] */
 +
 +void __mdelay(u32 ms)
 +{
 +	u64 tsc = rdtsc();
 +	while ((rdtsc() - tsc) < (u64)ms * 2496000);
++}
++
++static void ddr_tuning_retry(void)
++{
++	u32 value = readl(NRST_REG_NRST_1);
++	u32 count;
++
++	/* Check if DDR_MAGIC is available to start counter.
++	 * Retry by rebooting up to 3 times.
++	 * Stop rebooting after the last retry.
++	*/
++	if (((value >> 8) & DDR_MAGIC) == DDR_MAGIC) {
++		count = (value & 0xF);
++		if (count > 3) {
++			writel(0, NRST_REG_NRST_1);
++			while(1);
++		}
++		count++;
++	} else {
++		count = 1;
++	}
++
++	value = (DDR_MAGIC << 8) | count;
++	writel(value, NRST_REG_NRST_1);
++
++	/* sw reset cpu */
++	__mdelay(100);
++	writel((1 << RST_REQ_TNOC_GLB_SW_POS), RCU_RST_REQ_TNOC);
 +}
 +
 +static u32 get_mail(u8 mode)
@@ -58485,6 +58514,7 @@ new file mode 100755
 +			break;
 +
 +		if (major_msg == 0xff) {
++			ddr_tuning_retry();
 +			printf("DDR Tuning failed\n");
 +			break;
 +		}
@@ -62980,7 +63010,7 @@ diff --git a/board/maxlinear/lightning/lightning.c b/board/maxlinear/lightning/l
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/lightning.c
-@@ -0,0 +1,841 @@
+@@ -0,0 +1,890 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright � 2022 MaxLinear, Inc.
@@ -63312,6 +63342,14 @@ new file mode 100644
 +	/* to solve wave700 descriptor and data sync issue */
 +	writel(0x5, NOC_DDR_AGING2);
 +
++	/* UBOOT_SW-1991 Rasie PP NOC Port aging priority
++	 * to resolve ARGUS packet drop issue */
++#if defined(CONFIG_LGM_DDR4) && defined(CONFIG_LGM_FREQ_3200M)
++	writel(0x5, NOC_DDR_AGING6);
++#elif defined(CONFIG_LGM_LPDDR4) && defined(CONFIG_LGM_FREQ_3733M)
++	writel(0x4, NOC_DDR_AGING6);
++#endif /* CONFIG_LGM_XXX && CONFIG_LGM_FREQ_YYYYM */
++
 +#ifdef CONFIG_DDR_SCRAMBLE
 +	init_ddr_scrambler();
 +#endif
@@ -63501,9 +63539,35 @@ new file mode 100644
 +}
 +
 +#ifdef LGM_ENABLE_RST_CAUSE
++static int str_exist(char *buffer, char *str)
++{
++	int i = 0;
++	int j = 0;
++	int str_existed = 0;
++
++	while(buffer[i]){
++		if (buffer[i] == str[j]){
++			str_existed = 1;
++			j++;
++			if (str[j] == 0)
++				break;
++		} else {
++			str_existed = 0;
++			j = 0;
++		}
++
++		i++;
++	}
++
++	return str_existed;
++}
++
 +static int add_reset_cause_env(u32 val_rst_state)
 +{
 +	char *Sname2 = NULL;
++	char *addmisc_str = NULL;
++	char buffer[CONFIG_SYS_CBSIZE];
++	int rst_reason_exist = 0;
 +
 +	/* work around for "if PMIC_POWERGOOD_TOGGLE_FROM_REQUEST_SIGNAL
 +	 *in epu_aon is set both GLB_SW and WDT bit are set"
@@ -63537,6 +63601,21 @@ new file mode 100644
 +
 +	if (Sname2 != NULL)
 +		env_set("rst_cause", Sname2);
++
++	memset(buffer, 0, sizeof(buffer));
++
++	addmisc_str = env_get("addmisc");
++	if (addmisc_str){
++		snprintf(buffer, CONFIG_SYS_CBSIZE, "%s", addmisc_str);
++		rst_reason_exist = str_exist(buffer, " rst_reason=${rst_cause}");
++		}
++	else
++		buffer[0] = '\0';
++
++	if (rst_reason_exist == 0){
++		strcat(buffer, " rst_reason=${rst_cause}");
++		env_set("addmisc", buffer);
++		}
 +
 +	return 0;
 +}
@@ -66276,7 +66355,7 @@ new file mode 100644
 +/* console I/O buffer size */
 +#define CONFIG_SYS_CBSIZE			4096
 +/* max number of command args*/
-+#define CONFIG_SYS_MAXARGS			32
++#define CONFIG_SYS_MAXARGS			40
 +/* Provide extended help */
 +/* #define CONFIG_SYS_LONGHELP */
 +/* enable legacy image format */
@@ -66784,7 +66863,7 @@ diff --git a/include/configs/maxlinear/flash.h b/include/configs/maxlinear/flash
 new file mode 100644
 --- /dev/null
 +++ b/include/configs/maxlinear/flash.h
-@@ -0,0 +1,97 @@
+@@ -0,0 +1,137 @@
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
 + *
@@ -66805,14 +66884,14 @@ new file mode 100644
 +#define CONFIG_CQSPI_REF_CLK	200000000
 +
 +#if defined(CONFIG_CUSTOMER_TEST_IMG_BUILD)
-+/* CUSTOMER_TEST_IMG_OFFSET (0x80000) + CONFIG_SPL_PAD_SIZE (0x2C000) - iBRH (0x800) */
-+#define SYS_FLASH_U_BOOT_OFFS			CONFIG_CUSTOMER_TEST_IMG_OFFSET + CONFIG_SPL_PAD_SIZE \
-+										  - 0x800
++/* CUSTOMER_TEST_IMG_OFFSET + CONFIG_SPL_PAD_SIZE - BRH (CONFIG_SYS_NAND_PAGE_SIZE) */
 +#define CONFIG_SYS_NAND_U_BOOT_OFFS		CONFIG_CUSTOMER_TEST_IMG_OFFSET + CONFIG_SPL_PAD_SIZE \
-+										  - CONFIG_SYS_NAND_PAGE_SIZE
++											- CONFIG_SYS_NAND_PAGE_SIZE
++#define SYS_FLASH_U_BOOT_OFFS			CONFIG_CUSTOMER_TEST_IMG_OFFSET + CONFIG_SPL_PAD_SIZE \
++											- 0x800
 +#else
++#define CONFIG_SYS_NAND_U_BOOT_OFFS		(CONFIG_SPL_PAD_SIZE)
 +#define SYS_FLASH_U_BOOT_OFFS			(CONFIG_COPIES_OF_RBE * CONFIG_SPL_PAD_SIZE)
-+#define CONFIG_SYS_NAND_U_BOOT_OFFS		(CONFIG_COPIES_OF_RBE * CONFIG_SPL_PAD_SIZE)
 +#endif
 +
 +/*------------------------------------------*/
@@ -66825,17 +66904,36 @@ new file mode 100644
 +
 +#if defined(CONFIG_BOOT_FROM_QSPI_NAND)
 + #if defined(CONFIG_ENV_USE_UBI)
-+  #define CONFIG_ENV_UBI_PART			"misc"
++  #define CONFIG_ENV_UBI_PART			"data"
 +  #define CONFIG_ENV_UBI_VOLUME			"ubootconfig_a"
 +  #define CONFIG_ENV_UBI_VOLUME_REDUND	"ubootconfig_b"
 +  #define CONFIG_CMD_UBIFS
 + #endif/* CONFIG_ENV_USE_UBI */
++#define NAND_BLOCK_SIZE		"nand_blk_size="__stringify(CONFIG_SYS_NAND_BLOCK_SIZE)"\0"
++#define NAND_PAGE_SIZE		"nand_page_size="__stringify(CONFIG_SYS_NAND_PAGE_SIZE)"\0"
 +#endif /* CONFIG_BOOT_FROM_QSPI_NAND */
 +
 +/* #define CONFIG_ENV_ADDR			CONFIG_ENV_OFFSET */
 +/* #define CONFIG_ENV_SECT_SIZE	CONFIG_ENV_SIZE */
 +
 +#if defined(CONFIG_MANUBOOT)
++#if defined(CONFIG_BOOT_FROM_QSPI_NAND)
++#define MANUBOOT_IMG_OFFSET	"manuboot_img_offset="__stringify(CONFIG_MANUBOOT_IMG_OFFSET)"\0" \
++							"eval_rot_hdr=setexpr manuboot_hdr_size ${nand_page_size} * 2;\0"
++#define JUMP_ADDR_OFFSET	"eval_rot_vars=run eval_rot_hdr;" \
++					"setexpr rot_img_hdr_offset ${manuboot_img_offset} - ${manuboot_hdr_size};" \
++					"setexpr secboot_img_hdr_offset ${manuboot_img_offset} - ${nand_page_size};\0"
++#define UPDATE_ROT_IMG_HDR	"update_rot_hdr=run eval_rot_vars;" \
++					"mtd read spi-nand0 ${loadaddr} 0 ${nand_blk_size};" \
++					"mtd read spi-nand0 ${loadaddr} ${rot_img_hdr_offset} ${nand_page_size};" \
++					"mtd erase spi-nand0 0 ${nand_blk_size};" \
++					"mtd write spi-nand0 ${loadaddr} 0x0 ${nand_blk_size};\0"
++#define UPDATE_FIELD_IMG_HDR	"update_fieldimg_hdr=run eval_rot_vars;" \
++					"mtd read spi-nand0 ${loadaddr} 0 ${nand_blk_size};" \
++					"mtd read spi-nand0 ${loadaddr} ${secboot_img_hdr_offset} ${nand_page_size};" \
++					"mtd erase spi-nand0 0 ${nand_blk_size};" \
++					"mtd write spi-nand0 ${loadaddr} 0 ${nand_blk_size};\0"
++#else /* CONFIG_BOOT_FROM_QSPI_NAND */
 +#define MANUBOOT_IMG_OFFSET	"manuboot_img_offset="__stringify(CONFIG_MANUBOOT_IMG_OFFSET)"\0"
 +#define JUMP_ADDR_OFFSET	"eval_rot_vars=setexpr rot_img_hdr_offset ${manuboot_img_offset} - 0x1000;" \
 +					"setexpr secboot_img_hdr_offset ${manuboot_img_offset} - 0x800\0"
@@ -66845,7 +66943,25 @@ new file mode 100644
 +#define UPDATE_FIELD_IMG_HDR	"update_fieldimg_hdr=run eval_rot_vars;" \
 +					"sf read ${loadaddr} ${secboot_img_hdr_offset} 0x800;" \
 +					"sf update ${loadaddr} 0 0x800;\0"
++#endif /* CONFIG_QSPI_BOOT */
 +#elif defined(CONFIG_CUSTOMER_TEST_IMG_BUILD)
++#if defined(CONFIG_BOOT_FROM_QSPI_NAND)
++#define MANUBOOT_IMG_OFFSET	"manuboot_img_offset="__stringify(CONFIG_MANUBOOT_IMG_OFFSET)"\0" \
++							"eval_rot_hdr=setexpr manuboot_hdr_size ${nand_page_size} * 2;\0"
++#define JUMP_ADDR_OFFSET	"eval_rot_vars=run eval_rot_hdr;" \
++					"setexpr rot_img_hdr_offset ${manuboot_img_offset} - ${manuboot_hdr_size};" \
++					"setexpr secboot_img_hdr_offset ${manuboot_img_offset} - ${nand_page_size};\0"
++#define UPDATE_ROT_IMG_HDR	"update_rot_hdr=run eval_rot_vars;" \
++					"mtd read spi-nand0 ${loadaddr} 0 ${nand_blk_size};" \
++					"mtd read spi-nand0 ${loadaddr} ${rot_img_hdr_offset} ${nand_page_size};" \
++					"mtd erase spi-nand0 0 ${nand_blk_size};" \
++					"mtd write spi-nand0 ${loadaddr} 0x0 ${nand_blk_size};\0"
++#define UPDATE_FIELD_IMG_HDR	"update_fieldimg_hdr=run eval_rot_vars;" \
++					"mtd read spi-nand0 ${loadaddr} 0 ${nand_blk_size};" \
++					"mtd read spi-nand0 ${loadaddr} ${secboot_img_hdr_offset} ${nand_page_size};" \
++					"mtd erase spi-nand0 0 ${nand_blk_size};" \
++					"mtd write spi-nand0 ${loadaddr} 0 ${nand_blk_size};\0"
++#else /* CONFIG_BOOT_FROM_QSPI_NAND */
 +#define MANUBOOT_IMG_OFFSET	"manuboot_img_offset="__stringify(CONFIG_MANUBOOT_IMG_OFFSET)"\0"
 +#define JUMP_ADDR_OFFSET	"eval_rot_vars=setexpr rot_img_hdr_offset ${manuboot_img_offset} - 0x1000;" \
 +					"setexpr secboot_img_hdr_offset ${manuboot_img_offset} - 0x800\0"
@@ -66855,6 +66971,7 @@ new file mode 100644
 +#define UPDATE_FIELD_IMG_HDR	"update_fieldimg_hdr=run eval_rot_vars;" \
 +					"sf read ${loadaddr} ${secboot_img_hdr_offset} 0x800;" \
 +					"sf update ${loadaddr} 0 0x800;\0"
++#endif /* CONFIG_QSPI_BOOT */
 +#else
 +#define MANUBOOT_IMG_OFFSET		""
 +#define JUMP_ADDR_OFFSET	""
@@ -66864,7 +66981,7 @@ new file mode 100644
 +
 +#ifdef CONFIG_EXTRA_ENV_SETTINGS
 +#undef CONFIG_EXTRA_ENV_SETTINGS
-+#define CONFIG_EXTRA_ENV_SETTINGS \
++#define CONFIG_EXTRA_ENV_SETTINGS	\
 +	"mtdparts="CONFIG_MTDPARTS"""\0"	\
 +	"mtdids="CONFIG_MTDIDS"""\0"		\
 +	"uboot_env_start="__stringify(CONFIG_ENV_OFFSET)"\0"	\
@@ -66874,6 +66991,8 @@ new file mode 100644
 +	"dtb_vol=dtb_a\0"		\
 +	"ubi_init="CONFIG_UBI_INIT"\0"	\
 +	"rbe_pad_size="__stringify(CONFIG_SPL_PAD_SIZE)"\0"	\
++	NAND_BLOCK_SIZE		\
++	NAND_PAGE_SIZE		\
 +	MANUBOOT_IMG_OFFSET		\
 +	JUMP_ADDR_OFFSET		\
 +	UPDATE_ROT_IMG_HDR		\
@@ -67062,7 +67181,7 @@ new file mode 100644
 +#define CONFIG_SYS_NAND_U_BOOT_START	CONFIG_SYS_TEXT_BASE
 +
 +#if defined(CONFIG_CUSTOMER_TEST_IMG_BUILD)
-+/* CUSTOMER_TEST_IMG_OFFSET (0x80000) + CONFIG_SPL_PAD_SIZE (0x2B000) - iBRH (CONFIG_SYS_NAND_PAGE_SIZE) */
++/* CUSTOMER_TEST_IMG_OFFSET + CONFIG_SPL_PAD_SIZE - CONFIG_SYS_NAND_PAGE_SIZE */
 +#define CONFIG_SYS_NAND_U_BOOT_OFFS		CONFIG_CUSTOMER_TEST_IMG_OFFSET + CONFIG_SPL_PAD_SIZE \
 +											- CONFIG_SYS_NAND_PAGE_SIZE
 +#else

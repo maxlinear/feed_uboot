@@ -270,6 +270,9 @@ endef
 define Package/uboot-lgp-urx851-emmc-manuboot-img/install
         $(call Package/$(PKG_NAME)/install $(1))
 endef
+define Package/uboot-octopus-urx640-rtl8261-4K-ebu-nand-prpl/install
+        $(call Package/$(PKG_NAME)/install $(1))
+endef
 define Package/uboot-octopus-urx641-aqn-phy-emmc/install
         $(call Package/$(PKG_NAME)/install $(1))
 endef

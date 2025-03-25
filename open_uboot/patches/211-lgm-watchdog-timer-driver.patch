@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  07250b7c3b9d4da05a349b6e232764dbab1e41aa
+# Parent  730859db69f7ad98c34159da31687eb540db772b
 
 diff --git a/cmd/mxl/wdt.c b/cmd/mxl/wdt.c
 new file mode 100644
@@ -201,7 +201,7 @@ new file mode 100644
 +};
 +
 +u32 WDT_RUNNING = 1;
-+static u32 watchdog_timeout;
++static u32 watchdog_timeout = CONFIG_WATCHDOG_TIMEOUT_MSECS;
 +
 +static void watchdog_init(u32 wdt_num,u32 wdt_timer)
 +{

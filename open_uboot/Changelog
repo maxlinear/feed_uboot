@@ -1,5 +1,103 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.340
+	* UBOOT_SW-2082 - This fixes additional bootargs entries causing an overflow causing secureboot boot OOPS
+
+Changes for U-boot version: 4.0.339
+	* bugfix/UBOOT_SW-2017,fix p34x gphy fw 0xffff issue
+	* UBOOT_SW-2020 - QSPI NAND support(secure boot) in LGMC uboot and RBE
+
+Changes for U-boot version: 4.0.338
+	* UBOOT_SW-2016 - Configuration updates to fix other compilation issues in RDKB due to size error
+
+Changes for U-boot version: 4.0.337
+	* UBOOT_SW-2016 - Fix size issues during RDKB compilation
+
+Changes for U-boot version: 4.0.336
+	* UBOOT_SW-2018 - QSPI NAND support(non-secure) in LGMC uboot and RBE
+
+Changes for U-boot version: 4.0.335
+	* LMTSYS-7429,add rst_reason to addmisc
+	* UBOOT_SW-2016,update rx equalization parameter for USXGMII
+
+Changes for U-boot version: 4.0.333
+	* UGW_SW-89178: unify emmc flash layout for cable cbsp
+
+Changes for U-boot version: 23333a06438c5bde05900fd8e167dceaf394470
+	* LMTSYS-7417 - DDR tuning failure retry sequence added
+
+Changes for U-boot version: 4.0.331
+	* UBOOT_SW-2009 - Reverting ROC voltage changes to 0.82V for all devices
+
+Changes for U-boot version: 4.0.330
+	* LMTSYS-7400,reduce 500ms delay to 10us
+
+Changes for U-boot version: 4.0.329
+	* LMTSYS-7400,put core2/3 in C6 power off state if it is unfused chip.
+	* add support for fused chip
+
+Changes for U-boot version: 4.0.328
+	* LMTSYS-7398: fix the compilation error for u-boot
+
+Changes for U-boot version: 4.0.327
+	* LMTSYS-7398: Add USB support for NAND u-boot
+
+Changes for U-boot version: 4.0.326
+	* UBOOT_SW-2009 - Differentiate ROC voltages for SS and other process corners
+
+Changes for U-boot version: 4.0.325
+	* UGW_SW-88753: Remove erase nvram in update_fullimage
+
+Changes for U-boot version: 4.0.324
+	* UGW_SW-88752: fix for saveenv failing after reset_uboot_config
+
+Changes for U-boot version: 4.0.323
+	* UGW_SW-88476,change length back to 1 medium
+	* UGW_SW-88574: disable kernel memory resevation for swiotlb
+
+Changes for U-boot version: 4.0.321
+	* LMTSYS-7406 - EPU table for SS device update to version 2.1.2.1
+
+Changes for U-boot version: 4.0.320
+	* bugfix/UGW_SW-88476,fix usxgmii auto negotiate fail issue, solve tftp slow issue.*
+	* UGW_SW-83700: Bug-fix for kernel_uboot_ver var undefined
+	* LMTSYS-7391,auto detect 1g and 2.5g for gpy215
+	* update version
+
+Changes for U-boot version: 4.0.317
+	* LMTSYS-7398: Port nand boot partition table to P34 uboot config
+
+Changes for U-boot version: 4.0.316
+	* LMTSYS-7391,bring up 1g sgmii AN on gpy215
+	* LMTSYS-7391,fix compile errors of octopus-docsis-urx641-p34x-phy-emmc_defconfig
+
+Changes for U-boot version: 4.0.315
+	* UBOOT_SW-1994 - Increase U-boot pad size to fix compile error
+
+Changes for U-boot version: 4.0.314
+	* UBOOT_SW-1994 - Overwrite memory region to workaround reboot issue
+	* UBOOT_SW-1994 - Initialize WDT expiry value before being used in reset
+	* UBOOT_SW-1994 - Remove workaround as root cause is found and fixed
+
+Changes for U-boot version: 4.0.312
+	* UGW_SW-83700: Updated LOCALVERSION with defconfig name and enabled ver environment variable
+	* Localversion update
+
+Changes for U-boot version: 4.0.311
+	* UBOOT_SW-1995 - 2GB padding configurations fix
+
+Changes for U-boot version: 4.0.310
+	* UBOOT_SW-1974 - RBE patch to increase Vroc unconditionally
+
+Changes for U-boot version: 4.0.309
+	* UBOOT_SW-1995 - Update 2G configurations with CMA size scripts
+
+Changes for U-boot version: 4.0.308
+	* UBOOT_SW-1991 - Aging settings for LPDDR4,3733M configuration
+
+Changes for U-boot version: 4.0.307
+	* UBOOT_SW-1991 - Add PP port aging priority configurations
+
 Changes for U-boot version: 4.0.306
 	* UGW_SW-83408 - Add additional code to allow P34X serdes tuning changes
 	* Code changes for commits between 504a67d and ca010d6b7eb451dcb310b8f00f85a7e72c327e42

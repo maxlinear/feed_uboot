@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  560b2da809c6544f9049ed0c309aaade6e6a6eee
+# Parent  844299fe107da0977786440b659d8dfb001fdcb9
 
 diff --git a/Makefile b/Makefile
 --- a/Makefile
@@ -1848,7 +1848,7 @@ diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
 diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
 --- a/drivers/net/Kconfig
 +++ b/drivers/net/Kconfig
-@@ -849,4 +849,192 @@ config MDIO_MUX_MESON_G12A
+@@ -849,4 +849,189 @@ config MDIO_MUX_MESON_G12A
  	  This driver is used for the MDIO mux found on the Amlogic G12A & compatible
  	  SoCs.
  
@@ -1979,11 +1979,8 @@ diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
 +config LAN_HSIO_L_XFI_10G_KR_NO_ANEG
 +    bool "LAN_HSIO_L_XFI_10G_KR_NO_ANEG"
 +
-+config LAN_HSIO_L_SGMII_1G
-+    bool "LAN_HSIO_L_SGMII_1G"
-+
-+config LAN_HSIO_L_SGMII_2500BASEX
-+    bool "LAN_HSIO_L_SGMII_2500BASEX"
++config LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET
++    bool "LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET"
 +
 +endchoice
 +
@@ -2036,8 +2033,8 @@ diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
 +	depends on LGMC_SGMII
 +config LGMC_SGMII_2G5
 +	bool "LGMC_SGMII_2G5"
-+config LGMC_SGMII_1G
-+	bool "LGMC_SGMII_1G"
++config LGMC_SGMII_1G_2G5_AUTO_DET
++	bool "LGMC_SGMII_1G_2G5_AUTO_DET"
 +endchoice
 +
  endif # NETDEVICES
@@ -2169,16 +2166,17 @@ diff --git a/drivers/usb/host/Makefile b/drivers/usb/host/Makefile
 diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
 --- a/drivers/watchdog/Kconfig
 +++ b/drivers/watchdog/Kconfig
-@@ -158,6 +158,13 @@ config WDT_GPIO
+@@ -158,6 +158,14 @@ config WDT_GPIO
  	  doc/device-tree-bindings/watchdog/gpio-wdt.txt for
  	  information on how to describe the watchdog in device tree.
  
 +config WDT_LGM
-+        bool "Lightning watchdog timer support"
-+        depends on WDT && DRIVER_LIGHTNING
-+        help
-+          Select this to enable lightning watchdog timer
-+        default n
++	bool "Lightning watchdog timer support"
++	depends on WDT && DRIVER_LIGHTNING
++	select HW_WATCHDOG
++	default n
++	help
++	  Select this to enable lightning watchdog timer
 +
  config WDT_MPC8xx
  	bool "MPC8xx watchdog timer support"

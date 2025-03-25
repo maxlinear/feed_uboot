@@ -159,11 +159,12 @@ config UBOOT_CONFIG_WDT_GPIO
 	  information on how to describe the watchdog in device tree.
 
 config UBOOT_CONFIG_WDT_LGM
-        bool "Lightning watchdog timer support"
-        depends on UBOOT_CONFIG_WDT && UBOOT_CONFIG_DRIVER_LIGHTNING
-        help
-          Select this to enable lightning watchdog timer
-        default n
+	bool "Lightning watchdog timer support"
+	depends on UBOOT_CONFIG_WDT && UBOOT_CONFIG_DRIVER_LIGHTNING
+	select UBOOT_CONFIG_HW_WATCHDOG
+	default n
+	help
+	  Select this to enable lightning watchdog timer
 
 config UBOOT_CONFIG_WDT_MPC8xx
 	bool "MPC8xx watchdog timer support"
