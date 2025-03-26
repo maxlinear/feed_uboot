@@ -282,6 +282,9 @@ endef
 define Package/uboot-octopus-urx641-p34x-phy-emmc/install
         $(call Package/$(PKG_NAME)/install $(1))
 endef
+define Package/uboot-octopus-urx641-p34x-phy-emmc-prpl_overlay/install
+        $(call Package/$(PKG_NAME)/install $(1))
+endef
 define Package/uboot-octopus-urx641-p34x-phy-emmc-prpl/install
         $(call Package/$(PKG_NAME)/install $(1))
 endef
