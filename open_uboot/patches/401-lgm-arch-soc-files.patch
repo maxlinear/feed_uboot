@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  d0ee2c75b865b30031c7dc0d0cd5f1a0ec405c0d
+# Parent  b6d5bfd910402472a46eb976093bddbd40ec423d
 
 diff --git a/arch/x86/cpu/intel_common/microcode.c b/arch/x86/cpu/intel_common/microcode.c
 --- a/arch/x86/cpu/intel_common/microcode.c
@@ -279273,7 +279273,7 @@ diff --git a/arch/x86/include/asm/secureboot.h b/arch/x86/include/asm/secureboot
 new file mode 100644
 --- /dev/null
 +++ b/arch/x86/include/asm/secureboot.h
-@@ -0,0 +1,116 @@
+@@ -0,0 +1,119 @@
 +/*
 + * Copyright (C) 2019 Intel Technology Asia Pte Ltd
 + *
@@ -279374,6 +279374,9 @@ new file mode 100644
 +u32 upd_rollback_id(int rbid_type, u32 wr_rbid);
 +u32 chk_flexi_rbid(int rbid_type);
 +u32 upd_flexi_rbid(int rbid_type, u32 wr_rbid);
++u32 read_rbid_from_otp(int rbid_type, u32 ALB_0, u32 ALB_1);
++void update_otp_bitfield(u32 rb_id, u8 bitfield_start, u8 bitfield_end,
++			 u32 ALB_0, u32 ALB_1, u32 *otp_0, u32 *otp_1);
 +
 +/* sb attribute of image id */
 +#define SB_IMAGE_CHK		0x4C42

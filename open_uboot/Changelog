@@ -1,5 +1,29 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.348
+	* configuration added for OSPv2-B board
+
+Changes for U-boot version: 4.0.347
+	* UBOOT_SW-2087 - Update the configurations to enable ARB/FARB. Added code clean-up for RBID base
+
+Changes for U-boot version: 4.0.346
+	* UBOOT_SW-2086 - Update on DDR initialization code to fix low temperature boot
+
+Changes for U-boot version: 4.0.345
+	* UGW_SW-90416: Disable uboot debug tool which can cause security risk
+
+Changes for U-boot version: 4.0.344
+	* Revert "Merge pull request #1107 in SW_TCBOOTROM/u-boot-dev from bugfix/UGW_SW-90230-nand-rot-uboot-boots-4-5-seconds-more-than-emmc-rot-uboot to u-boot-2022.01"
+
+Changes for U-boot version: 4.0.343
+	* UGW_SW-90230 - Add file size arguments to ubi read to optimize the boot time for NAND flash boots
+
+Changes for U-boot version: 4.0.342
+	* UBOOT_SW-2021 - update MANUBOOT Makefile
+
+Changes for U-boot version: 4.0.341
+	* UBOOT_SW-2080 - update URX640 EBU NAND config
+
 Changes for U-boot version: 4.0.340
 	* UBOOT_SW-2082 - This fixes additional bootargs entries causing an overflow causing secureboot boot OOPS
 

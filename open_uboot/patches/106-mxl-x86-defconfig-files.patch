@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  d5b472aafd237a7f9d1a494806c368c13e258fa1
+# Parent  2d4521719bc8fa5dba584d225c23968d3a4ca829
 
 diff --git a/arch/x86/dts/octopus-640.dts b/arch/x86/dts/octopus-640.dts
 new file mode 100644
@@ -10652,10 +10652,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -10666,14 +10666,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -10864,7 +10864,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -10892,7 +10892,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -11128,10 +11128,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -11142,14 +11142,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -11340,7 +11340,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -11368,7 +11368,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -11599,10 +11599,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -11613,14 +11613,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -11811,7 +11811,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -11839,7 +11839,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -12069,10 +12069,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -12083,14 +12083,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -12281,7 +12281,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -12309,7 +12309,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -12328,7 +12328,7 @@ diff --git a/configs/octopus-docsis-urx640-2G-DDR-sec-mxl86249-emmc_defconfig b/
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-2G-DDR-sec-mxl86249-emmc_defconfig
-@@ -0,0 +1,485 @@
+@@ -0,0 +1,486 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -12476,7 +12476,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
@@ -12551,10 +12552,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -12565,10 +12566,10 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_CACHE=y
 +CONFIG_CMD_AUTH=y
 +CONFIG_CMD_ICC=y
@@ -12576,7 +12577,7 @@ new file mode 100644
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -12767,7 +12768,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -12797,7 +12798,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -12818,7 +12819,7 @@ diff --git a/configs/octopus-docsis-urx640-2G-DDR-sec-rtl8261-emmc_defconfig b/c
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-2G-DDR-sec-rtl8261-emmc_defconfig
-@@ -0,0 +1,485 @@
+@@ -0,0 +1,486 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -12968,7 +12969,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
@@ -13043,10 +13045,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -13057,10 +13059,10 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_CACHE=y
 +CONFIG_CMD_AUTH=y
 +CONFIG_CMD_ICC=y
@@ -13068,7 +13070,7 @@ new file mode 100644
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -13259,7 +13261,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -13289,7 +13291,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -13308,7 +13310,7 @@ diff --git a/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand-cust-img_defconf
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand-cust-img_defconfig
-@@ -0,0 +1,423 @@
+@@ -0,0 +1,443 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -13347,7 +13349,7 @@ new file mode 100644
 +CONFIG_VENDOR_MAXLINEAR=y
 +CONFIG_SYS_CAR_ADDR=0xECD00000
 +CONFIG_TARGET_LIGHTNING_MOUNTAIN=y
-+CONFIG_LGM_U_BOOT_SIZE=0x74000
++CONFIG_LGM_U_BOOT_SIZE=0x80000
 +CONFIG_DRIVER_LIGHTNING=y
 +CONFIG_PMIC_CONFIGURATIONS=y
 +CONFIG_ROHM_PMIC=y
@@ -13364,44 +13366,50 @@ new file mode 100644
 +CONFIG_LGM_MEM_SIZE=1024
 +CONFIG_MAX_RBE_PER_PART=1
 +# CONFIG_EARLYBOOT_STRICT_UPGRADE is not set
++CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x1
++CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
 +CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
-+CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
++CONFIG_PREBOOT="if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
 +CONFIG_LOADADDR=0x8200000
 +CONFIG_DTB_LOADADDR=0x8000000
 +CONFIG_ROOTFS_LOADADDR=0x40000000
-+#### NOTE: ROT : CUSTOMER_TEST_IMAGE ####
-+CONFIG_SPL_PAD_SIZE=0x2B000
-+## NOTE: CUSTOMER_TEST_IMG_OFFSET (0x80000) + CONFIG_SPL_PAD_SIZE (0x2B000) - iBRH (0x1000) ##
++#### NOTE: ROT : CUSTOMER_TEST_IMAGE (ebu_nand-cust-img) ####
++## NOTE: CUSTOMER_TEST_IMG_OFFSET (0x180000) + CONFIG_SPL_PAD_SIZE (0x2B000)- CONFIG_SYS_NAND_PAGE_SIZE (0x1000) ##
 +CONFIG_CUSTOMER_TEST_IMG_BUILD=y
-+#### NOTE: ROT : automate change iBRH and reset CUSTOMER_TEST_IMAGE (update_rot_hdr) ####
++CONFIG_CUSTOMER_TEST_IMG_OFFSET=0x180000
++CONFIG_SPL_PAD_SIZE=0x2B000
++CONFIG_MANUBOOT_IMG_OFFSET=0x200000
++#### NOTE: ROT : automate change BRH and reset CUSTOMER_TEST_IMAGE (update_rot_hdr) ####
 +CONFIG_BOOTCOMMAND="run update_rot_hdr; reset"
-+CONFIG_FLASH_FLASH="run ubi_init; run flashargs addmisc; ubi read ${kernel_loadaddr} ${kernel_vol}; ubi read ${dtb_loadaddr} ${dtb_vol}; fit_load ${dtb_loadaddr} ${dtb_loadaddr} && run set_cma_size && wdt dev wdt@e2500000 && wdt start 60000 && bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
++CONFIG_FLASH_FLASH="run check_active_bank; run kernel_uboot_ver; run ubi_init; run flashargs addmisc; ubi read ${kernel_loadaddr} ${kernel_vol}; ubi read ${dtb_loadaddr} ${dtb_vol}; fit_load ${dtb_loadaddr} ${dtb_loadaddr} && run set_cma_size && wdt dev wdt@e2500000 && wdt start 60000 && if test ${kernel_vol} = \"kernel_a\"; then echo \"Late Boot from Bank A\"; else echo \"Late Boot from Bank B\"; fi; && bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
 +CONFIG_NFS_ARGS="setenv bootargs ubi.mtd=extended_boot,4096 root=/dev/nfs rw nfsroot=${serverip}:${rootpath}"
 +CONFIG_RAMARGS="setenv bootargs root=/dev/ram rw init=/init"
-+CONFIG_FLASHARGS="setenv bootargs ubi.mtd=extended_boot,4096 ubi.mtd=misc,4096 gluebi.rootfsname=${rootfs_vol} rootfstype=squashfs"
-+CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} ${mtdparts} maxcpus=2 mem=1024M memmap=31M$1M initcall_debug=0 loglevel=${kernel_loglvl} intel_pstate=active intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} init_cstate_margin=1 init_pstate_threshold=20 epu_table_ver=${epu_table_ver} pci=pcie_bus_perf"
++CONFIG_FLASHARGS="setenv bootargs ubi.mtd=extended_boot,4096 ubi.mtd=data,4096 ubi.mtd=log,4096 gluebi.rootfsname=${rootfs_vol} rootfstype=squashfs"
++CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} ${mtdparts} maxcpus=2 mem=1024M memmap=31M$1M initcall_debug=0 loglevel=${kernel_loglvl} intel_pstate=active intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} init_cstate_margin=1 init_pstate_threshold=20 epu_table_ver=${epu_table_ver} pci=pcie_bus_perf uboot_ver=${uboot_ver} swiotlb=noforce"
 +CONFIG_MTDIDS="nand0=e0f00000.nand-controller"
-+CONFIG_MTDPARTS="mtdparts=e0f00000.nand-controller:256k(rbe_a),512k(uboot_a),256k(rbe_b),512k(uboot_b),1m(tep_firmware_a),1m(tep_firmware_b),190m(extended_boot),32m(misc),10m(log),-(res)"
-+CONFIG_RESET_UBOOT_CONFIG="ubi part ${env_part} && ubi remove \"${env_vol_a}\"; ubi remove \"${env_vol_b}\";"
++CONFIG_MTDPARTS="mtdparts=e0f00000.nand-controller:512k(rbe_a),1m(uboot_a),512k(rbe_b),1m(uboot_b),2m(tep_firmware_a),2m(tep_firmware_b),168m(extended_boot),50m(data),30m(log),-(res)"
++CONFIG_RESET_UBOOT_CONFIG="ubi part ${env_part} && ubi remove \"${env_vol_a}\" && ubi remove \"${env_vol_b}\"; ubi create \"${env_vol_a}\" ${env_size} && ubi create \"${env_vol_b}\" ${env_size};"
 +CONFIG_RECOVER_BOOT_IMG="nand read ${loadaddr} rbe_b && nand erase.part rbe_a && nand write ${loadaddr} rbe_a && nand read ${loadaddr} tep_firmware_b && nand erase.part tep_firmware_a && nand write ${loadaddr} tep_firmware_a && nand read ${loadaddr} uboot_b && nand erase.part uboot_a && nand write ${loadaddr} uboot_a && setenv early_boot valid && saveenv; if test $? -eq 0; then echo \"Early boot Recovery success!\"; else echo \"Failed to recover early boot\"; fi; "
 +CONFIG_RECOVER_BOOT_ALL_IMG="if test ${udt_status} -eq 10;then reset;else if test ${early_boot} != \"valid\";then run recover_early_boot;fi;if test ${late_boot} != \"valid\";then run switch_partition;setenv late_boot 'valid';fi;setenv udt_status 10;saveenv;reset;fi;"
 +CONFIG_SWITCH_PRIMARY="setenv kernel_vol kernel_a; setenv rootfs_vol rootfs_a; setenv dtb_vol dtb_a; setenv active_bank A; echo \"Switched to bank ${active_bank}\"; saveenv"
 +CONFIG_SWITCH_SECONDARY="setenv kernel_vol kernel_b; setenv rootfs_vol rootfs_b; setenv dtb_vol dtb_b; setenv active_bank B; echo \"Switched to bank ${active_bank}\"; saveenv"
 +CONFIG_SWITCH_PARTITION="if test ${active_bank} = \"A\"; then run switch_to_secondary; else run switch_to_primary; fi;"
-+CONFIG_UPGRADE_FS_INIT="ubi part misc && ubifsmount ubi1:${upgrade_volume}"
-+CONFIG_UBI_INIT="ubi part ${env_part} && ubi check \"${env_vol_a}\"; if test $? -eq 1; then ubi create \"${env_vol_a}\" ${env_size} && ubi create \"${env_vol_b}\" ${env_size}; saveenv; else echo \"ENV already exist\"; fi; ubi part extended_boot;"
++CONFIG_UPGRADE_FS_INIT="ubi part ${env_part} && ubifsmount ubi1:${upgrade_volume}"
++CONFIG_UBI_INIT="ubi part ${env_part} && ubi check \"${env_vol_a}\"; if test $? -eq 1; then ubi create \"${env_vol_a}\" ${env_size} && saveenv && \"ENV_A vol created\"; fi; ubi check \"${env_vol_b}\"; if test $? -eq 1; then ubi create \"${env_vol_b}\" ${env_size} && saveenv &&  echo \"ENV_B created\"; fi; ubi check \"${nvram}\"; if test $? -eq 1; then ubi create \"${nvram}\" ${nvram_size} && echo \"nvram created\"; fi; ubi check \"${secure_store}\"; if test $? -eq 1; then ubi create \"${secure_store}\" ${secure_store_size} && echo \"SECURE_STORE created\"; fi; ubi part ${log_part} && ubi check \"${log_part}\"; if test $? -eq 1; then ubi create \"${log_part}\" ${log_part_size} && echo \"LOG vol created\"; fi; ubi part extended_boot;"
 +CONFIG_UPDATE_UBOOT="tftp ${loadaddr} ${tftppath}${u-boot} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
 +CONFIG_UPDATE_RBE="tftp ${loadaddr} ${tftppath}${rbe} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
 +CONFIG_UPDATE_BOOTLOADER="tftp ${loadaddr} ${tftppath}${bootloader} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
-+CONFIG_UPDATE_FULLIMAGE="tftpboot ${loadaddr} ${tftppath}${fullimage} && run ubi_init && upgrade ${loadaddr} ${filesize} && run switch_partition && ubi part extended_boot && upgrade ${loadaddr} ${filesize} && run switch_partition && if true; then ubi remove rootfs_data; ubi create rootfs_data 1000000; fi"
-+CONFIG_UPDATE_KERNEL="tftpboot ${loadaddr} ${tftppath}${bootfile} && run ubi_init && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${filesize}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${filesize}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition"
-+CONFIG_UPDATE_DTB="tftpboot ${loadaddr} ${tftppath}${dtb} && run ubi_init && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${filesize}; ubi write ${loadaddr} ${dtb_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${filesize}; ubi write ${loadaddr} ${dtb_vol} ${filesize}; run switch_partition"
-+CONFIG_UPDATE_ROOTFS="tftpboot ${loadaddr} ${tftppath}${rootfs} && run ubi_init && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${filesize}; ubi write ${loadaddr} ${rootfs_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${filesize}; ubi write ${loadaddr} ${rootfs_vol} ${filesize}"
++CONFIG_UPDATE_FULLIMAGE="tftpboot ${loadaddr} ${tftppath}${fullimage} && run ubi_init && upgrade ${loadaddr} ${filesize} && run switch_partition && ubi part extended_boot && upgrade ${loadaddr} ${filesize} && run switch_partition"
++CONFIG_UPDATE_FULLIMAGE_USB="load usb ${usb_port_part} ${loadaddr} ${fullimage}; setenv select_partition primary; upgrade ${loadaddr} ${filesize}"
++CONFIG_USB_PORT_PART="0:1"
++CONFIG_UPDATE_KERNEL="tftpboot ${loadaddr} ${tftppath}${bootfile} && run ubi_init && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${kernel_vol_size}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${kernel_vol_size}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition"
++CONFIG_UPDATE_DTB="tftpboot ${loadaddr} ${tftppath}${dtb} && run ubi_init && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${dtb_vol_size}; ubi write ${loadaddr} ${dtb_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${dtb_vol_size}; ubi write ${loadaddr} ${dtb_vol} ${filesize}; run switch_partition"
++CONFIG_UPDATE_ROOTFS="tftpboot ${loadaddr} ${tftppath}${rootfs} && run ubi_init && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${rootfs_vol_size}; ubi write ${loadaddr} ${rootfs_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${rootfs_vol_size}; ubi write ${loadaddr} ${rootfs_vol} ${filesize}"
 +CONFIG_NET_RAM="tftpboot ${loadaddr} ${tftppath}${bootfile}; run nfsargs addmisc; bootm ${loadaddr}"
 +CONFIG_U_BOOT="u-boot-plus-spl-nand.bin"
 +CONFIG_RBE_BINARY="u-boot-spl-nand.bin"
@@ -13409,7 +13417,7 @@ new file mode 100644
 +CONFIG_DTB="octopus_641_10g_lan_eth_nand.dtb"
 +CONFIG_ROOTFS="/image-mb_urx641.rootfs.squashfs"
 +CONFIG_FULLIMAGE="image-mb_urx640_fullimage.img"
-+CONFIG_EXTRA_ENV_DATA="cpu_freq=1716000\0env_size=0x80000\0env_part=\'misc\'\0env_vol_a=\'env_a\'\0env_vol_b=\'env_b\'\0udt_status=0\0kernel_loglvl=8\0kernel_vol=kernel_a\0rootfs_vol=rootfs_a\0dtb_vol=dtb_a\0active_bank=A\0check_boot_retries=if test ${udt_status} -eq 2; then if test ${recovery_image} -eq 1; then setenv recovery_image 0; if test ${early_boot} = \"upgrade\"; then run recover_early_boot; else run switch_partition; fi; else echo \"bootcount OK\"; fi; fi\0check_upgrade=if test ${early_boot} = \"invalid\";then run recover_boot;else if test ${late_boot} = \"invalid\";then run recover_boot;else run check_boot_retries;fi;fi;\0check_boot_retries=if test ${udt_status} -eq 11;then if test ${recovery_image} -eq 1;then setenv recovery_image 0; run recover_boot;else echo \"bootcount OK\"; fi;fi;\0set_cma_size=fdt addr ${dtb_loadaddr} ${dtb_a_block_size} && fdt get value cma_size /reserved-memory/linux,cma size; fdt get value cma_alignment /reserved-memory/linux,cma alignment; setexpr cma_start ${rootfs_loadaddr} - ${cma_size}; setenv bootargs ${bootargs} cma=${cma_size}@0x${cma_start}; run cma_check\0assert_cma_alignment=setexpr result ${rootfs_alignment} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size is not a multiple or larger than RootFS size\"; setexpr ret 1; fi;\0cma_check=run assert_cma_size_align; if test $ret > 0; then false; else run assert_cma_alignment; if test $ret > 0; then false; else true; fi; fi;\0assert_cma_size_align=setexpr result ${cma_size} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size not aligned, pls check DTS\"; setexpr ret 1; fi;\0"
++CONFIG_EXTRA_ENV_DATA="cpu_freq=1716000\0env_size=0x80000\0kernel_vol_size=0xA00000\0rootfs_vol_size=0x3700000\0dtb_vol_size=0x180000\0nvram=\'nvram\'\0nvram_size=0x1000000\0secure_store=\'securestore\'\0secure_store_size=0x1000000\0log_part=\'log\'\0log_part_size=0x1000000\0env_part=\'data\'\0env_vol_a=\'env_a\'\0env_vol_b=\'env_b\'\0udt_status=0\0kernel_loglvl=8\0kernel_vol=kernel_a\0rootfs_vol=rootfs_a\0dtb_vol=dtb_a\0active_bank=A\0check_boot_retries=if test ${udt_status} -eq 2; then if test ${recovery_image} -eq 1; then setenv recovery_image 0; if test ${early_boot} = \"upgrade\"; then run recover_early_boot; else run switch_partition; fi; else echo \"bootcount OK\"; fi; fi\0check_upgrade=if test ${early_boot} = \"invalid\";then run recover_boot;else if test ${late_boot} = \"invalid\";then run recover_boot;else run check_boot_retries;fi;fi;\0check_boot_retries=if test ${udt_status} -eq 11;then if test ${recovery_image} -eq 1;then setenv recovery_image 0; run recover_boot;else echo \"bootcount OK\"; fi;fi;\0set_cma_size=fdt addr ${dtb_loadaddr} ${dtb_a_block_size} && fdt get value cma_size /reserved-memory/linux,cma size; fdt get value cma_alignment /reserved-memory/linux,cma alignment; setexpr cma_start ${rootfs_loadaddr} - ${cma_size}; setenv bootargs ${bootargs} cma=${cma_size}@0x${cma_start}; run cma_check\0assert_cma_alignment=setexpr result ${rootfs_alignment} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size is not a multiple or larger than RootFS size\"; setexpr ret 1; fi;\0cma_check=run assert_cma_size_align; if test $ret > 0; then false; else run assert_cma_alignment; if test $ret > 0; then false; else true; fi; fi;\0assert_cma_size_align=setexpr result ${cma_size} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size not aligned, pls check DTS\"; setexpr ret 1; fi;\0check_active_bank=if test ${active_bank} = \"A\"; then if test ${rootfs_vol} = \"rootfs_b\"; then run switch_to_primary; fi; fi; if test ${active_bank} = \"B\"; then if test ${rootfs_vol} = \"rootfs_a\"; then run switch_to_secondary; fi; fi;\0kernel_uboot_ver=test -n ${ver} && setexpr uboot_ver gsub \" \" \"_\" \"${ver}\";\0"
 +CONFIG_CHECK_IMAGE="echo check image"
 +CONFIG_BOOTFILE="/x86_64_uImage_lzma"
 +CONFIG_ROOTFS_A_SIZE=0x4000000
@@ -13437,13 +13445,16 @@ new file mode 100644
 +CONFIG_NAND_SPL_TEXT_BASE=0xBFF20000
 +CONFIG_BOOT_FROM_NAND=y
 +CONFIG_X86_TSC_TIMER_FREQ=2496000000
++# CONFIG_FS_EXT4 is not set
++# CONFIG_CMD_FS_GENERIC is not set
 +CONFIG_X86_LOAD_FROM_32_BIT=y
 +CONFIG_RAMBASE=0x100000
 +CONFIG_X86_RESET_VECTOR=y
 +CONFIG_USE_EARLY_BOARD_INIT=y
 +CONFIG_BOARD_EARLY_INIT_R=y
 +CONFIG_USE_CAR=y
-+CONFIG_LOCALVERSION=" OCTOPUS-URX640-4K_PAGE-EBU_NAND-CUSTOMER_TEST_IMAGE-FOR-REFERENCE-ONLY"
++CONFIG_VERSION_VARIABLE=y
++CONFIG_LOCALVERSION=" *** FOR-REFERENCE-ONLY *** octopus-docsis-urx640-mxl86249-4K-ebu_nand-cust-img"
 +CONFIG_LOCALVERSION_AUTO=y
 +CONFIG_CC_OPTIMIZE_FOR_SIZE=y
 +CONFIG_CC_HAS_ASM_INLINE=y
@@ -13509,7 +13520,7 @@ new file mode 100644
 +# CONFIG_CMD_ELF is not set
 +# CONFIG_CMD_FDT is not set
 +# CONFIG_CMD_FIT_LOAD is not set
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -13522,11 +13533,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -13538,7 +13549,7 @@ new file mode 100644
 +CONFIG_CMD_NAND_LOCK_UNLOCK=y
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_NET=y
@@ -13548,7 +13559,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -13571,7 +13582,7 @@ new file mode 100644
 +CONFIG_ENV_IS_NOWHERE=y
 +# CONFIG_ENV_IS_IN_UBI is not set
 +CONFIG_SYS_REDUNDAND_ENVIRONMENT=y
-+CONFIG_ENV_UBI_PART="misc"
++CONFIG_ENV_UBI_PART="data"
 +CONFIG_ENV_UBI_VOLUME="env_a"
 +CONFIG_ENV_UBI_VOLUME_REDUND="env_b"
 +CONFIG_ENV_UBI_VID_OFFSET=0
@@ -13732,11 +13743,22 @@ new file mode 100644
 +# CONFIG_WDT is not set
 +# CONFIG_WDT_LGM is not set
 +# CONFIG_SPL_WDT is not set
++# CONFIG_CMD_USB is not set
++# CONFIG_DOS_PARTITION is not set
++# CONFIG_CMD_DM is not set
++# CONFIG_USB is not set
++# CONFIG_SPL_DM_USB is not set
++# CONFIG_DM_USB is not set
++# CONFIG_USB_HOST is not set
++# CONFIG_USB_XHCI_HCD is not set
++# CONFIG_USB_XHCI_PCI is not set
++# CONFIG_USB_XHCI_MXL is not set
++# CONFIG_USB_STORAGE is not set
 diff --git a/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand-field-img_defconfig b/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand-field-img_defconfig
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand-field-img_defconfig
-@@ -0,0 +1,437 @@
+@@ -0,0 +1,454 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -13775,7 +13797,7 @@ new file mode 100644
 +CONFIG_VENDOR_MAXLINEAR=y
 +CONFIG_SYS_CAR_ADDR=0xECD00000
 +CONFIG_TARGET_LIGHTNING_MOUNTAIN=y
-+CONFIG_LGM_U_BOOT_SIZE=0x7A000
++CONFIG_LGM_U_BOOT_SIZE=0x80000
 +CONFIG_DRIVER_LIGHTNING=y
 +CONFIG_PMIC_CONFIGURATIONS=y
 +CONFIG_ROHM_PMIC=y
@@ -13792,9 +13814,10 @@ new file mode 100644
 +CONFIG_LGM_MEM_SIZE=1024
 +CONFIG_MAX_RBE_PER_PART=1
 +# CONFIG_EARLYBOOT_STRICT_UPGRADE is not set
-+#### NOTE: ROT : FIELD_IMAGE ####
-+CONFIG_SPL_PAD_SIZE=0x2B000
++CONFIG_SPL_PAD_SIZE=0x80000
++CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x1
++CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
 +CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
@@ -13803,35 +13826,37 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_DM_THERMAL=y
 +CONFIG_LGM_THERMAL=y
-+CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
++CONFIG_PREBOOT="if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
 +CONFIG_LOADADDR=0x8200000
 +CONFIG_DTB_LOADADDR=0x8000000
 +CONFIG_ROOTFS_LOADADDR=0x40000000
 +CONFIG_BOOTCOMMAND="if test ${image_failure} -ne 0; then setenv image_failure 0; run recover_boot; else run check_upgrade; run flash_flash; reset; fi;"
-+CONFIG_FLASH_FLASH="run ubi_init; run flashargs addmisc; ubi read ${rootfs_loadaddr} ${rootfs_vol} && auth 5 ${rootfs_loadaddr} ${rootfs_a_filesize} && cp.b 0x40000000 ${rootfs_loadaddr} ${rootfs_a_filesize} && ubi read ${dtb_loadaddr} ${dtb_vol} && auth 4 ${dtb_loadaddr} dtb_a_filesize && run set_cma_size && ubi read ${kernel_loadaddr} ${kernel_vol} && auth 4 0x8200040 kernel_a_filesize && parsemd ${kernel_loadaddr} ${kernel_loadaddr} && run update_bootargs && icc 1 0x${md_ro_start} 0x${md_ro_end} 0x${rootfs_loadaddr} 0x400 && bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
++CONFIG_FLASH_FLASH="run check_active_bank; run kernel_uboot_ver; run ubi_init; run flashargs addmisc; ubi read ${rootfs_loadaddr} ${rootfs_vol} && auth 5 ${rootfs_loadaddr} ${rootfs_a_filesize} && cp.b 0x40000000 ${rootfs_loadaddr} ${rootfs_a_filesize} && ubi read ${dtb_loadaddr} ${dtb_vol} && auth 4 ${dtb_loadaddr} dtb_a_filesize && run set_cma_size && ubi read ${kernel_loadaddr} ${kernel_vol} && auth 4 0x8200040 kernel_a_filesize && parsemd ${kernel_loadaddr} ${kernel_loadaddr} && run update_bootargs && icc 1 0x${md_ro_start} 0x${md_ro_end} 0x${rootfs_loadaddr} 0x400 && if test ${kernel_vol} = \"kernel_a\"; then echo \"Late Boot from Bank A\"; else echo \"Late Boot from Bank B\"; fi; && bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
 +CONFIG_NFS_ARGS="setenv bootargs ubi.mtd=extended_boot,4096 root=/dev/nfs rw nfsroot=${serverip}:${rootpath}"
 +CONFIG_RAMARGS="setenv bootargs root=/dev/ram rw init=/init"
-+CONFIG_FLASHARGS="setenv bootargs ubi.mtd=extended_boot,4096 ubi.mtd=misc,4096 root=/dev/mtdblock0 rootfstype=squashfs rootwait"
-+CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} phram.phram=RAM0,0x${rootfs_loadaddr},0x${filesystem_size} ${mtdparts} maxcpus=2 mem=1024M memmap=31M$1M,0x${filesystem_size}$0x${rootfs_loadaddr} initcall_debug=0 loglevel=${kernel_loglvl} rootfs_startaddr=0x${rootfs_loadaddr} rootfs_endaddr=0x${rootfs_loadaddr_end} intel_pstate=active intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} init_cstate_margin=1 init_pstate_threshold=20 epu_table_ver=${epu_table_ver} pci=pcie_bus_perf"
++CONFIG_FLASHARGS="setenv bootargs ubi.mtd=extended_boot,4096 ubi.mtd=data,4096 ubi.mtd=log,4096 root=/dev/mtdblock0 rootfstype=squashfs rootwait"
++CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} phram.phram=RAM0,0x${rootfs_loadaddr},0x${filesystem_size} ${mtdparts} maxcpus=2 mem=1024M memmap=31M$1M,0x${filesystem_size}$0x${rootfs_loadaddr} initcall_debug=0 loglevel=${kernel_loglvl} rootfs_startaddr=0x${rootfs_loadaddr} rootfs_endaddr=0x${rootfs_loadaddr_end} intel_pstate=active intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} init_cstate_margin=1 init_pstate_threshold=20 epu_table_ver=${epu_table_ver} pci=pcie_bus_perf uboot_ver=${uboot_ver} swiotlb=noforce"
 +CONFIG_MTDIDS="nand0=e0f00000.nand-controller"
-+CONFIG_MTDPARTS="mtdparts=e0f00000.nand-controller:256k(rbe_a),512k(uboot_a),256k(rbe_b),512k(uboot_b),1m(tep_firmware_a),1m(tep_firmware_b),128m(extended_boot),64m(misc),16m(securestore),16m(log),-(res)"
-+CONFIG_RESET_UBOOT_CONFIG="ubi part ${env_part} && ubi remove \"${env_vol_a}\"; ubi remove \"${env_vol_b}\";"
++CONFIG_MTDPARTS="mtdparts=e0f00000.nand-controller:512k(rbe_a),1m(uboot_a),512k(rbe_b),1m(uboot_b),2m(tep_firmware_a),2m(tep_firmware_b),168m(extended_boot),50m(data),30m(log),-(res)"
++CONFIG_RESET_UBOOT_CONFIG="ubi part ${env_part} && ubi remove \"${env_vol_a}\" && ubi remove \"${env_vol_b}\"; ubi create \"${env_vol_a}\" ${env_size} && ubi create \"${env_vol_b}\" ${env_size};"
 +CONFIG_RECOVER_BOOT_IMG="nand read ${loadaddr} rbe_b && nand erase.part rbe_a && nand write ${loadaddr} rbe_a && nand read ${loadaddr} tep_firmware_b && nand erase.part tep_firmware_a && nand write ${loadaddr} tep_firmware_a && nand read ${loadaddr} uboot_b && nand erase.part uboot_a && nand write ${loadaddr} uboot_a && setenv early_boot valid && saveenv; if test $? -eq 0; then echo \"Early boot Recovery success!\"; else echo \"Failed to recover early boot\"; fi; "
 +CONFIG_RECOVER_BOOT_ALL_IMG="if test ${udt_status} -eq 10;then reset;else if test ${early_boot} != \"valid\";then run recover_early_boot;fi;if test ${late_boot} != \"valid\";then run switch_partition;setenv late_boot 'valid';fi;setenv udt_status 10;saveenv;reset;fi;"
 +CONFIG_SWITCH_PRIMARY="setenv kernel_vol kernel_a; setenv rootfs_vol rootfs_a; setenv dtb_vol dtb_a; setenv active_bank A; echo \"Switched to bank ${active_bank}\"; saveenv"
 +CONFIG_SWITCH_SECONDARY="setenv kernel_vol kernel_b; setenv rootfs_vol rootfs_b; setenv dtb_vol dtb_b; setenv active_bank B; echo \"Switched to bank ${active_bank}\"; saveenv"
 +CONFIG_SWITCH_PARTITION="if test ${active_bank} = \"A\"; then run switch_to_secondary; else run switch_to_primary; fi;"
-+CONFIG_UPGRADE_FS_INIT="ubi part misc && ubifsmount ubi1:${upgrade_volume}"
-+CONFIG_UBI_INIT="ubi part ${env_part} && ubi check \"${env_vol_a}\"; if test $? -eq 1; then ubi create \"${env_vol_a}\" ${env_size} && ubi create \"${env_vol_b}\" ${env_size}; saveenv; else echo \"ENV already exist\"; fi; ubi part extended_boot;"
++CONFIG_UPGRADE_FS_INIT="ubi part ${env_part} && ubifsmount ubi1:${upgrade_volume}"
++CONFIG_UBI_INIT="ubi part ${env_part} && ubi check \"${env_vol_a}\"; if test $? -eq 1; then ubi create \"${env_vol_a}\" ${env_size} && saveenv && \"ENV_A vol created\"; fi; ubi check \"${env_vol_b}\"; if test $? -eq 1; then ubi create \"${env_vol_b}\" ${env_size} && saveenv &&  echo \"ENV_B created\"; fi; ubi check \"${nvram}\"; if test $? -eq 1; then ubi create \"${nvram}\" ${nvram_size} && echo \"nvram created\"; fi; ubi check \"${secure_store}\"; if test $? -eq 1; then ubi create \"${secure_store}\" ${secure_store_size} && echo \"SECURE_STORE created\"; fi; ubi part ${log_part} && ubi check \"${log_part}\"; if test $? -eq 1; then ubi create \"${log_part}\" ${log_part_size} && echo \"LOG vol created\"; fi; ubi part extended_boot;"
 +CONFIG_UPDATE_UBOOT="tftp ${loadaddr} ${tftppath}${u-boot} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
 +CONFIG_UPDATE_RBE="tftp ${loadaddr} ${tftppath}${rbe} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
 +CONFIG_UPDATE_BOOTLOADER="tftp ${loadaddr} ${tftppath}${bootloader} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
-+CONFIG_UPDATE_FULLIMAGE="tftpboot ${loadaddr} ${tftppath}${fullimage} && run ubi_init && upgrade ${loadaddr} ${filesize} && run switch_partition && ubi part extended_boot && upgrade ${loadaddr} ${filesize} && run switch_partition && if true; then ubi remove rootfs_data; ubi create rootfs_data 1000000; fi"
-+CONFIG_UPDATE_KERNEL="tftpboot ${loadaddr} ${tftppath}${bootfile} && run ubi_init && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${filesize}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${filesize}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition"
-+CONFIG_UPDATE_DTB="tftpboot ${loadaddr} ${tftppath}${dtb} && run ubi_init && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${filesize}; ubi write ${loadaddr} ${dtb_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${filesize}; ubi write ${loadaddr} ${dtb_vol} ${filesize}; run switch_partition"
-+CONFIG_UPDATE_ROOTFS="tftpboot ${loadaddr} ${tftppath}${rootfs} && run ubi_init && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${filesize}; ubi write ${loadaddr} ${rootfs_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${filesize}; ubi write ${loadaddr} ${rootfs_vol} ${filesize}"
++CONFIG_UPDATE_FULLIMAGE="tftpboot ${loadaddr} ${tftppath}${fullimage} && run ubi_init && upgrade ${loadaddr} ${filesize} && run switch_partition && ubi part extended_boot && upgrade ${loadaddr} ${filesize} && run switch_partition"
++CONFIG_UPDATE_FULLIMAGE_USB="load usb ${usb_port_part} ${loadaddr} ${fullimage}; setenv select_partition primary; upgrade ${loadaddr} ${filesize}"
++CONFIG_USB_PORT_PART="0:1"
++CONFIG_UPDATE_KERNEL="tftpboot ${loadaddr} ${tftppath}${bootfile} && run ubi_init && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${kernel_vol_size}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${kernel_vol_size}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition"
++CONFIG_UPDATE_DTB="tftpboot ${loadaddr} ${tftppath}${dtb} && run ubi_init && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${dtb_vol_size}; ubi write ${loadaddr} ${dtb_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${dtb_vol_size}; ubi write ${loadaddr} ${dtb_vol} ${filesize}; run switch_partition"
++CONFIG_UPDATE_ROOTFS="tftpboot ${loadaddr} ${tftppath}${rootfs} && run ubi_init && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${rootfs_vol_size}; ubi write ${loadaddr} ${rootfs_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${rootfs_vol_size}; ubi write ${loadaddr} ${rootfs_vol} ${filesize}"
 +CONFIG_NET_RAM="tftpboot ${loadaddr} ${tftppath}${bootfile}; run nfsargs addmisc; bootm ${loadaddr}"
 +CONFIG_U_BOOT="u-boot-plus-spl-nand.bin"
 +CONFIG_RBE_BINARY="u-boot-spl-nand.bin"
@@ -13841,7 +13866,7 @@ new file mode 100644
 +CONFIG_FULLIMAGE="image-mb_urx640_fullimage.img"
 +CONFIG_TEP_FIRMWARE="tep_fw.bin"
 +CONFIG_UPDATE_TEP_FIRMWARE="tftpboot ${loadaddr} ${tftppath}${tep_firmware} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
-+CONFIG_EXTRA_ENV_DATA="cpu_freq=1716000\0env_size=0x80000\0env_part=\'misc\'\0env_vol_a=\'env_a\'\0env_vol_b=\'env_b\'\0udt_status=0\0kernel_loglvl=8\0kernel_vol=kernel_a\0rootfs_vol=rootfs_a\0dtb_vol=dtb_a\0active_bank=A\0check_boot_retries=if test ${udt_status} -eq 2; then if test ${recovery_image} -eq 1; then setenv recovery_image 0; if test ${early_boot} = \"upgrade\"; then run recover_early_boot; else run switch_partition; fi; else echo \"bootcount OK\"; fi; fi\0check_upgrade=if test ${early_boot} = \"invalid\";then run recover_boot;else if test ${late_boot} = \"invalid\";then run recover_boot;else run check_boot_retries;fi;fi;\0check_boot_retries=if test ${udt_status} -eq 11;then if test ${recovery_image} -eq 1;then setenv recovery_image 0; run recover_boot;else echo \"bootcount OK\"; fi;fi;\0set_cma_size=fdt addr ${dtb_loadaddr} ${dtb_a_block_size} && fdt get value cma_size /reserved-memory/linux,cma size; fdt get value cma_alignment /reserved-memory/linux,cma alignment; setexpr cma_start ${rootfs_loadaddr} - ${cma_size}; setenv bootargs ${bootargs} cma=${cma_size}@0x${cma_start}; run cma_check\0update_bootargs=setexpr md_ro_end ${md_ro_end} - 1; setenv bootargs ${bootargs} kernel_startaddr=0x${md_ro_start} kernel_endaddr=0x${md_ro_end}\0assert_cma_alignment=setexpr result ${rootfs_alignment} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size is not a multiple or larger than RootFS size\"; setexpr ret 1; fi;\0assert_cma_size_align=setexpr result ${cma_size} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size not aligned, pls check DTS\"; setexpr ret 1; fi;\0cma_check=run assert_cma_size_align; if test $ret > 0; then false; else run assert_cma_alignment; if test $ret > 0; then false; else true; fi; fi;\0"
++CONFIG_EXTRA_ENV_DATA="cpu_freq=1716000\0env_size=0x80000\0kernel_vol_size=0xA00000\0rootfs_vol_size=0x3C00000\0dtb_vol_size=0x80000\0nvram=\'nvram\'\0nvram_size=0x1000000\0secure_store=\'securestore\'\0secure_store_size=0x1000000\0log_part=\'log\'\0log_part_size=0x1000000\0env_part=\'data\'\0env_vol_a=\'env_a\'\0env_vol_b=\'env_b\'\0udt_status=0\0kernel_loglvl=8\0kernel_vol=kernel_a\0rootfs_vol=rootfs_a\0dtb_vol=dtb_a\0active_bank=A\0check_boot_retries=if test ${udt_status} -eq 2; then if test ${recovery_image} -eq 1; then setenv recovery_image 0; if test ${early_boot} = \"upgrade\"; then run recover_early_boot; else run switch_partition; fi; else echo \"bootcount OK\"; fi; fi\0check_upgrade=if test ${early_boot} = \"invalid\";then run recover_boot;else if test ${late_boot} = \"invalid\";then run recover_boot;else run check_boot_retries;fi;fi;\0check_boot_retries=if test ${udt_status} -eq 11;then if test ${recovery_image} -eq 1;then setenv recovery_image 0; run recover_boot;else echo \"bootcount OK\"; fi;fi;\0set_cma_size=fdt addr ${dtb_loadaddr} ${dtb_a_block_size} && fdt get value cma_size /reserved-memory/linux,cma size; fdt get value cma_alignment /reserved-memory/linux,cma alignment; setexpr cma_start ${rootfs_loadaddr} - ${cma_size}; setenv bootargs ${bootargs} cma=${cma_size}@0x${cma_start}; run cma_check\0update_bootargs=setexpr md_ro_end ${md_ro_end} - 1; setenv bootargs ${bootargs} kernel_startaddr=0x${md_ro_start} kernel_endaddr=0x${md_ro_end}\0assert_cma_alignment=setexpr result ${rootfs_alignment} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size is not a multiple or larger than RootFS size\"; setexpr ret 1; fi;\0assert_cma_size_align=setexpr result ${cma_size} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size not aligned, pls check DTS\"; setexpr ret 1; fi;\0cma_check=run assert_cma_size_align; if test $ret > 0; then false; else run assert_cma_alignment; if test $ret > 0; then false; else true; fi; fi;\0check_active_bank=if test ${active_bank} = \"A\"; then if test ${rootfs_vol} = \"rootfs_b\"; then run switch_to_primary; fi; fi; if test ${active_bank} = \"B\"; then if test ${rootfs_vol} = \"rootfs_a\"; then run switch_to_secondary; fi; fi;\0kernel_uboot_ver=test -n ${ver} && setexpr uboot_ver gsub \" \" \"_\" \"${ver}\";\0"
 +CONFIG_CHECK_IMAGE="echo check image"
 +CONFIG_BOOTFILE="/x86_64_uImage_lzma"
 +CONFIG_ROOTFS_A_SIZE=0x5000000
@@ -13883,13 +13908,16 @@ new file mode 100644
 +# CONFIG_CERTIFICATION is not set
 +# CONFIG_LGM_SECURE_UART is not set
 +CONFIG_X86_TSC_TIMER_FREQ=2496000000
++# CONFIG_FS_EXT4 is not set
++# CONFIG_CMD_FS_GENERIC is not set
 +CONFIG_X86_LOAD_FROM_32_BIT=y
 +CONFIG_RAMBASE=0x100000
 +CONFIG_X86_RESET_VECTOR=y
 +CONFIG_USE_EARLY_BOARD_INIT=y
 +CONFIG_BOARD_EARLY_INIT_R=y
 +CONFIG_USE_CAR=y
-+CONFIG_LOCALVERSION=" OCTOPUS-URX640-4K_PAGE-EBU_NAND-SECURE_PRODUCT_FIELD_IMAGE-FOR-REFERENCE-ONLY"
++CONFIG_VERSION_VARIABLE=y
++CONFIG_LOCALVERSION=" *** FOR-REFERENCE-ONLY *** octopus-docsis-urx640-mxl86249-4K-ebu_nand-field-img"
 +CONFIG_LOCALVERSION_AUTO=y
 +CONFIG_CC_OPTIMIZE_FOR_SIZE=y
 +CONFIG_CC_HAS_ASM_INLINE=y
@@ -13953,7 +13981,7 @@ new file mode 100644
 +# CONFIG_CMD_ADTIMG is not set
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -13966,11 +13994,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -13982,7 +14010,7 @@ new file mode 100644
 +CONFIG_CMD_NAND_LOCK_UNLOCK=y
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_CACHE=y
@@ -13996,7 +14024,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -14018,7 +14046,7 @@ new file mode 100644
 +CONFIG_SAVEENV=y
 +CONFIG_ENV_IS_IN_UBI=y
 +CONFIG_SYS_REDUNDAND_ENVIRONMENT=y
-+CONFIG_ENV_UBI_PART="misc"
++CONFIG_ENV_UBI_PART="data"
 +CONFIG_ENV_UBI_VOLUME="env_a"
 +CONFIG_ENV_UBI_VOLUME_REDUND="env_b"
 +CONFIG_ENV_UBI_VID_OFFSET=0
@@ -14174,11 +14202,22 @@ new file mode 100644
 +CONFIG_WDT=y
 +CONFIG_WDT_LGM=y
 +CONFIG_SPL_WDT=y
++# CONFIG_CMD_USB is not set
++# CONFIG_DOS_PARTITION is not set
++# CONFIG_CMD_DM is not set
++# CONFIG_USB is not set
++# CONFIG_SPL_DM_USB is not set
++# CONFIG_DM_USB is not set
++# CONFIG_USB_HOST is not set
++# CONFIG_USB_XHCI_HCD is not set
++# CONFIG_USB_XHCI_PCI is not set
++# CONFIG_USB_XHCI_MXL is not set
++# CONFIG_USB_STORAGE is not set
 diff --git a/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand-manuboot-img_defconfig b/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand-manuboot-img_defconfig
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand-manuboot-img_defconfig
-@@ -0,0 +1,456 @@
+@@ -0,0 +1,478 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -14217,7 +14256,7 @@ new file mode 100644
 +CONFIG_VENDOR_MAXLINEAR=y
 +CONFIG_SYS_CAR_ADDR=0xECD00000
 +CONFIG_TARGET_LIGHTNING_MOUNTAIN=y
-+CONFIG_LGM_U_BOOT_SIZE=0x60000
++CONFIG_LGM_U_BOOT_SIZE=0x80000
 +CONFIG_DRIVER_LIGHTNING=y
 +CONFIG_PMIC_CONFIGURATIONS=y
 +CONFIG_ROHM_PMIC=y
@@ -14234,8 +14273,10 @@ new file mode 100644
 +CONFIG_LGM_MEM_SIZE=1024
 +CONFIG_MAX_RBE_PER_PART=1
 +# CONFIG_EARLYBOOT_STRICT_UPGRADE is not set
++CONFIG_SPL_PAD_SIZE=0x80000
++CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
@@ -14250,31 +14291,36 @@ new file mode 100644
 +CONFIG_DTB_LOADADDR=0x8000000
 +CONFIG_ROOTFS_LOADADDR=0x40000000
 +## NOTE: ROT Process: automate change iBRH and reset ##
-+CONFIG_SPL_PAD_SIZE=0x2A000
-+#### NOTE: ROT : CONFIG_MANUBOOT (update_fieldimg_hdr) ####
++#### NOTE: ROT : CONFIG_MANUBOOT (ebu_nand-manuboot-img) ####
++CONFIG_CUSTOMER_TEST_IMG_OFFSET=0x180000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_MANUBOOT_IMG_OFFSET=0x200000
++#### NOTE: ROT : automate change BRH and reset CONFIG_FIELD_IMAGE (update_fieldimg_hdr) ####
 +CONFIG_BOOTCOMMAND="mw.l 0 0; if cmp.l 0 e0180094 1; then run update_fieldimg_hdr; reset; else echo \"RoT FAILED!\"; fi"
-+CONFIG_FLASH_FLASH="run ubi_init; run flashargs addmisc; ubi read ${rootfs_loadaddr} ${rootfs_vol} && auth 5 ${rootfs_loadaddr} ${rootfs_a_filesize} && cp.b 0x40000000 ${rootfs_loadaddr} ${rootfs_a_filesize} && ubi read ${dtb_loadaddr} ${dtb_vol} && auth 4 ${dtb_loadaddr} dtb_a_filesize && run set_cma_size && ubi read ${kernel_loadaddr} ${kernel_vol} && auth 4 0x8200040 kernel_a_filesize && parsemd ${kernel_loadaddr} ${kernel_loadaddr} && run update_bootargs && icc 1 0x${md_ro_start} 0x${md_ro_end} 0x${rootfs_loadaddr} 0x400 && bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
++CONFIG_FLASH_FLASH="run check_active_bank; run kernel_uboot_ver; run ubi_init; run flashargs addmisc; ubi read ${rootfs_loadaddr} ${rootfs_vol} && auth 5 ${rootfs_loadaddr} ${rootfs_a_filesize} && cp.b 0x40000000 ${rootfs_loadaddr} ${rootfs_a_filesize} && ubi read ${dtb_loadaddr} ${dtb_vol} && auth 4 ${dtb_loadaddr} dtb_a_filesize && run set_cma_size && ubi read ${kernel_loadaddr} ${kernel_vol} && auth 4 0x8200040 kernel_a_filesize && parsemd ${kernel_loadaddr} ${kernel_loadaddr} && run update_bootargs && icc 1 0x${md_ro_start} 0x${md_ro_end} 0x${rootfs_loadaddr} 0x400 && if test ${kernel_vol} = \"kernel_a\"; then echo \"Late Boot from Bank A\"; else echo \"Late Boot from Bank B\"; fi; && bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
 +CONFIG_NFS_ARGS="setenv bootargs ubi.mtd=extended_boot,4096 root=/dev/nfs rw nfsroot=${serverip}:${rootpath}"
 +CONFIG_RAMARGS="setenv bootargs root=/dev/ram rw init=/init"
-+CONFIG_FLASHARGS="setenv bootargs ubi.mtd=extended_boot,4096 ubi.mtd=misc,4096 root=/dev/mtdblock0 rootfstype=squashfs rootwait"
-+CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} phram.phram=RAM0,0x${rootfs_loadaddr},0x${filesystem_size} ${mtdparts} maxcpus=2 mem=1024M memmap=31M$1M,0x${filesystem_size}$0x${rootfs_loadaddr} initcall_debug=0 loglevel=${kernel_loglvl} rootfs_startaddr=0x${rootfs_loadaddr} rootfs_endaddr=0x${rootfs_loadaddr_end} intel_pstate=active intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} init_cstate_margin=1 init_pstate_threshold=20 epu_table_ver=${epu_table_ver} pci=pcie_bus_perf"
++CONFIG_FLASHARGS="setenv bootargs ubi.mtd=extended_boot,4096 ubi.mtd=data,4096 ubi.mtd=log,4096 root=/dev/mtdblock0 rootfstype=squashfs rootwait"
++CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} phram.phram=RAM0,0x${rootfs_loadaddr},0x${filesystem_size} ${mtdparts} maxcpus=2 mem=1024M memmap=31M$1M,0x${filesystem_size}$0x${rootfs_loadaddr} initcall_debug=0 loglevel=${kernel_loglvl} rootfs_startaddr=0x${rootfs_loadaddr} rootfs_endaddr=0x${rootfs_loadaddr_end} intel_pstate=active intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} init_cstate_margin=1 init_pstate_threshold=20 epu_table_ver=${epu_table_ver} pci=pcie_bus_perf uboot_ver=${uboot_ver} swiotlb=noforce"
 +CONFIG_MTDIDS="nand0=e0f00000.nand-controller"
-+CONFIG_MTDPARTS="mtdparts=e0f00000.nand-controller:256k(rbe_a),512k(uboot_a),256k(rbe_b),512k(uboot_b),1m(tep_firmware_a),1m(tep_firmware_b),128m(extended_boot),64m(misc),16m(securestore),16m(log),-(res)"
-+CONFIG_RESET_UBOOT_CONFIG="ubi part ${env_part} && ubi remove \"${env_vol_a}\"; ubi remove \"${env_vol_b}\";"
++CONFIG_MTDPARTS="mtdparts=e0f00000.nand-controller:512k(rbe_a),1m(uboot_a),512k(rbe_b),1m(uboot_b),2m(tep_firmware_a),2m(tep_firmware_b),168m(extended_boot),50m(data),30m(log),-(res)"
++CONFIG_RESET_UBOOT_CONFIG="ubi part ${env_part} && ubi remove \"${env_vol_a}\" && ubi remove \"${env_vol_b}\"; ubi create \"${env_vol_a}\" ${env_size} && ubi create \"${env_vol_b}\" ${env_size};"
 +CONFIG_RECOVER_BOOT_IMG="nand read ${loadaddr} rbe_b && nand erase.part rbe_a && nand write ${loadaddr} rbe_a && nand read ${loadaddr} tep_firmware_b && nand erase.part tep_firmware_a && nand write ${loadaddr} tep_firmware_a && nand read ${loadaddr} uboot_b && nand erase.part uboot_a && nand write ${loadaddr} uboot_a && setenv early_boot valid && saveenv; if test $? -eq 0; then echo \"Early boot Recovery success!\"; else echo \"Failed to recover early boot\"; fi; "
 +CONFIG_RECOVER_BOOT_ALL_IMG="if test ${udt_status} -eq 10;then reset;else if test ${early_boot} != \"valid\";then run recover_early_boot;fi;if test ${late_boot} != \"valid\";then run switch_partition;setenv late_boot 'valid';fi;setenv udt_status 10;saveenv;reset;fi;"
 +CONFIG_SWITCH_PRIMARY="setenv kernel_vol kernel_a; setenv rootfs_vol rootfs_a; setenv dtb_vol dtb_a; setenv active_bank A; echo \"Switched to bank ${active_bank}\"; saveenv"
 +CONFIG_SWITCH_SECONDARY="setenv kernel_vol kernel_b; setenv rootfs_vol rootfs_b; setenv dtb_vol dtb_b; setenv active_bank B; echo \"Switched to bank ${active_bank}\"; saveenv"
 +CONFIG_SWITCH_PARTITION="if test ${active_bank} = \"A\"; then run switch_to_secondary; else run switch_to_primary; fi;"
-+CONFIG_UPGRADE_FS_INIT="ubi part misc && ubifsmount ubi1:${upgrade_volume}"
-+CONFIG_UBI_INIT="ubi part ${env_part} && ubi check \"${env_vol_a}\"; if test $? -eq 1; then ubi create \"${env_vol_a}\" ${env_size} && ubi create \"${env_vol_b}\" ${env_size}; saveenv; else echo \"ENV already exist\"; fi; ubi part extended_boot;"
++CONFIG_UPGRADE_FS_INIT="ubi part ${env_part} && ubifsmount ubi1:${upgrade_volume}"
++CONFIG_UBI_INIT="ubi part ${env_part} && ubi check \"${env_vol_a}\"; if test $? -eq 1; then ubi create \"${env_vol_a}\" ${env_size} && saveenv && \"ENV_A vol created\"; fi; ubi check \"${env_vol_b}\"; if test $? -eq 1; then ubi create \"${env_vol_b}\" ${env_size} && saveenv &&  echo \"ENV_B created\"; fi; ubi check \"${nvram}\"; if test $? -eq 1; then ubi create \"${nvram}\" ${nvram_size} && echo \"nvram created\"; fi; ubi check \"${secure_store}\"; if test $? -eq 1; then ubi create \"${secure_store}\" ${secure_store_size} && echo \"SECURE_STORE created\"; fi; ubi part ${log_part} && ubi check \"${log_part}\"; if test $? -eq 1; then ubi create \"${log_part}\" ${log_part_size} && echo \"LOG vol created\"; fi; ubi part extended_boot;"
 +CONFIG_UPDATE_UBOOT="tftp ${loadaddr} ${tftppath}${u-boot} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
 +CONFIG_UPDATE_RBE="tftp ${loadaddr} ${tftppath}${rbe} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
 +CONFIG_UPDATE_BOOTLOADER="tftp ${loadaddr} ${tftppath}${bootloader} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
-+CONFIG_UPDATE_FULLIMAGE="tftpboot ${loadaddr} ${tftppath}${fullimage} && run ubi_init && upgrade ${loadaddr} ${filesize} && run switch_partition && ubi part extended_boot && upgrade ${loadaddr} ${filesize} && run switch_partition && if true; then ubi remove rootfs_data; ubi create rootfs_data 1000000; fi"
-+CONFIG_UPDATE_KERNEL="tftpboot ${loadaddr} ${tftppath}${bootfile} && run ubi_init && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${filesize}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${filesize}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition"
-+CONFIG_UPDATE_DTB="tftpboot ${loadaddr} ${tftppath}${dtb} && run ubi_init && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${filesize}; ubi write ${loadaddr} ${dtb_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${filesize}; ubi write ${loadaddr} ${dtb_vol} ${filesize}; run switch_partition"
-+CONFIG_UPDATE_ROOTFS="tftpboot ${loadaddr} ${tftppath}${rootfs} && run ubi_init && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${filesize}; ubi write ${loadaddr} ${rootfs_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${filesize}; ubi write ${loadaddr} ${rootfs_vol} ${filesize}"
++CONFIG_UPDATE_FULLIMAGE="tftpboot ${loadaddr} ${tftppath}${fullimage} && run ubi_init && upgrade ${loadaddr} ${filesize} && run switch_partition && ubi part extended_boot && upgrade ${loadaddr} ${filesize} && run switch_partition"
++CONFIG_UPDATE_FULLIMAGE_USB="load usb ${usb_port_part} ${loadaddr} ${fullimage}; setenv select_partition primary; upgrade ${loadaddr} ${filesize}"
++CONFIG_USB_PORT_PART="0:1"
++CONFIG_UPDATE_KERNEL="tftpboot ${loadaddr} ${tftppath}${bootfile} && run ubi_init && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${kernel_vol_size}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${kernel_vol} ; ubi create ${kernel_vol} ${kernel_vol_size}; ubi write ${loadaddr} ${kernel_vol} ${filesize} && run switch_partition"
++CONFIG_UPDATE_DTB="tftpboot ${loadaddr} ${tftppath}${dtb} && run ubi_init && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${dtb_vol_size}; ubi write ${loadaddr} ${dtb_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${dtb_vol} ; ubi create ${dtb_vol} ${dtb_vol_size}; ubi write ${loadaddr} ${dtb_vol} ${filesize}; run switch_partition"
++CONFIG_UPDATE_ROOTFS="tftpboot ${loadaddr} ${tftppath}${rootfs} && run ubi_init && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${rootfs_vol_size}; ubi write ${loadaddr} ${rootfs_vol} ${filesize} && run switch_partition && ubi part extended_boot && ubi remove ${rootfs_vol} ; ubi create ${rootfs_vol} ${rootfs_vol_size}; ubi write ${loadaddr} ${rootfs_vol} ${filesize}"
 +CONFIG_NET_RAM="tftpboot ${loadaddr} ${tftppath}${bootfile}; run nfsargs addmisc; bootm ${loadaddr}"
 +CONFIG_U_BOOT="u-boot-plus-spl-nand.bin"
 +CONFIG_RBE_BINARY="u-boot-spl-nand.bin"
@@ -14284,7 +14330,7 @@ new file mode 100644
 +CONFIG_FULLIMAGE="image-mb_urx640_fullimage.img"
 +CONFIG_TEP_FIRMWARE="tep_fw.bin"
 +CONFIG_UPDATE_TEP_FIRMWARE="tftpboot ${loadaddr} ${tftppath}${tep_firmware} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
-+CONFIG_EXTRA_ENV_DATA="cpu_freq=1716000\0env_size=0x80000\0env_part=\'misc\'\0env_vol_a=\'env_a\'\0env_vol_b=\'env_b\'\0udt_status=0\0kernel_loglvl=8\0kernel_vol=kernel_a\0rootfs_vol=rootfs_a\0dtb_vol=dtb_a\0active_bank=A\0check_boot_retries=if test ${udt_status} -eq 2; then if test ${recovery_image} -eq 1; then setenv recovery_image 0; if test ${early_boot} = \"upgrade\"; then run recover_early_boot; else run switch_partition; fi; else echo \"bootcount OK\"; fi; fi\0check_upgrade=if test ${early_boot} = \"invalid\";then run recover_boot;else if test ${late_boot} = \"invalid\";then run recover_boot;else run check_boot_retries;fi;fi;\0check_boot_retries=if test ${udt_status} -eq 11;then if test ${recovery_image} -eq 1;then setenv recovery_image 0; run recover_boot;else echo \"bootcount OK\"; fi;fi;\0set_cma_size=fdt addr ${dtb_loadaddr} ${dtb_a_block_size} && fdt get value cma_size /reserved-memory/linux,cma size; fdt get value cma_alignment /reserved-memory/linux,cma alignment; setexpr cma_start ${rootfs_loadaddr} - ${cma_size}; setenv bootargs ${bootargs} cma=${cma_size}@0x${cma_start}; run cma_check\0update_bootargs=setexpr md_ro_end ${md_ro_end} - 1; setenv bootargs ${bootargs} kernel_startaddr=0x${md_ro_start} kernel_endaddr=0x${md_ro_end}\0assert_cma_alignment=setexpr result ${rootfs_alignment} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size is not a multiple or larger than RootFS size\"; setexpr ret 1; fi;\0assert_cma_size_align=setexpr result ${cma_size} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size not aligned, pls check DTS\"; setexpr ret 1; fi;\0cma_check=run assert_cma_size_align; if test $ret > 0; then false; else run assert_cma_alignment; if test $ret > 0; then false; else true; fi; fi;\0"
++CONFIG_EXTRA_ENV_DATA="cpu_freq=1716000\0env_size=0x80000\0kernel_vol_size=0xA00000\0rootfs_vol_size=0x3C00000\0dtb_vol_size=0x80000\0nvram=\'nvram\'\0nvram_size=0x1000000\0secure_store=\'securestore\'\0secure_store_size=0x1000000\0log_part=\'log\'\0log_part_size=0x1000000\0env_part=\'data\'\0env_vol_a=\'env_a\'\0env_vol_b=\'env_b\'\0udt_status=0\0kernel_loglvl=8\0kernel_vol=kernel_a\0rootfs_vol=rootfs_a\0dtb_vol=dtb_a\0active_bank=A\0check_boot_retries=if test ${udt_status} -eq 2; then if test ${recovery_image} -eq 1; then setenv recovery_image 0; if test ${early_boot} = \"upgrade\"; then run recover_early_boot; else run switch_partition; fi; else echo \"bootcount OK\"; fi; fi\0check_upgrade=if test ${early_boot} = \"invalid\";then run recover_boot;else if test ${late_boot} = \"invalid\";then run recover_boot;else run check_boot_retries;fi;fi;\0check_boot_retries=if test ${udt_status} -eq 11;then if test ${recovery_image} -eq 1;then setenv recovery_image 0; run recover_boot;else echo \"bootcount OK\"; fi;fi;\0set_cma_size=fdt addr ${dtb_loadaddr} ${dtb_a_block_size} && fdt get value cma_size /reserved-memory/linux,cma size; fdt get value cma_alignment /reserved-memory/linux,cma alignment; setexpr cma_start ${rootfs_loadaddr} - ${cma_size}; setenv bootargs ${bootargs} cma=${cma_size}@0x${cma_start}; run cma_check\0update_bootargs=setexpr md_ro_end ${md_ro_end} - 1; setenv bootargs ${bootargs} kernel_startaddr=0x${md_ro_start} kernel_endaddr=0x${md_ro_end}\0assert_cma_alignment=setexpr result ${rootfs_alignment} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size is not a multiple or larger than RootFS size\"; setexpr ret 1; fi;\0assert_cma_size_align=setexpr result ${cma_size} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size not aligned, pls check DTS\"; setexpr ret 1; fi;\0cma_check=run assert_cma_size_align; if test $ret > 0; then false; else run assert_cma_alignment; if test $ret > 0; then false; else true; fi; fi;\0check_active_bank=if test ${active_bank} = \"A\"; then if test ${rootfs_vol} = \"rootfs_b\"; then run switch_to_primary; fi; fi; if test ${active_bank} = \"B\"; then if test ${rootfs_vol} = \"rootfs_a\"; then run switch_to_secondary; fi; fi;\0kernel_uboot_ver=test -n ${ver} && setexpr uboot_ver gsub \" \" \"_\" \"${ver}\";\0"
 +CONFIG_CHECK_IMAGE="echo check image"
 +CONFIG_BOOTFILE="/x86_64_uImage_lzma"
 +CONFIG_ROOTFS_A_SIZE=0x5000000
@@ -14320,16 +14366,16 @@ new file mode 100644
 +CONFIG_MANUBOOT=y
 +CONFIG_MANUBOOT_OTP_CREDENTIAL_SUPPORT=y
 +CONFIG_MANUBOOT_OTP_KEYBLOB_SUPPORT=y
-+CONFIG_SIGNTOOL="../u-boot-dev-640-RoT/urx640_rot_mats_engineering/signtool"
-+CONFIG_PRIVATE_KEY="../u-boot-dev-640-RoT/urx640_rot_mats_engineering/384-bit_keypair_customer.der"
-+CONFIG_MANUBOOT_OTP_SBCROTP_KEY="../u-boot-dev-640-RoT/urx640_rot_mats_engineering/256-bit_SBCR_OTP.bin"
-+CONFIG_MANUBOOT_OTP_CREDENTIAL="../u-boot-dev-640-RoT/urx640_rot_mats_engineering/feat_cred.bin.delivery"
-+CONFIG_MANUBOOT_OTP_KEYBLOB="../u-boot-dev-640-RoT/urx640_rot_mats_engineering/otp_keyblob.bin.delivery"
-+CONFIG_MANUBOOT_OTP_CERT="../u-boot-dev-640-RoT/urx640_rot_mats_engineering/384-bit_Certificate_OTP.bin"
++CONFIG_SIGNTOOL="../u-boot-dev-2022/urx640_rot_mats_engineering/signtool_DUMMY_4204"
++CONFIG_PRIVATE_KEY="../u-boot-dev-2022/urx640_rot_mats_engineering/384-bit_keypair_customer.der"
++CONFIG_MANUBOOT_OTP_SBCROTP_KEY="../u-boot-dev-2022/urx640_rot_mats_engineering/256-bit_SBCR_OTP.bin"
++CONFIG_MANUBOOT_OTP_CREDENTIAL="../u-boot-dev-2022/urx640_rot_mats_engineering/feat_cred.bin.delivery"
++CONFIG_MANUBOOT_OTP_KEYBLOB="../u-boot-dev-2022/urx640_rot_mats_engineering/otp_keyblob.bin.delivery"
++CONFIG_MANUBOOT_OTP_CERT="../u-boot-dev-2022/urx640_rot_mats_engineering/384-bit_Certificate_OTP.bin"
 +## external customer test image #
-+CONFIG_CUSTOMER_TEST_IMAGE="../u-boot-dev-640-RoT/urx640_rot_mats_engineering/cust-img-u-boot-plus-spl-nand.bin"
++CONFIG_CUSTOMER_TEST_IMAGE="../u-boot-dev-2022/urx640_rot_mats_engineering/cust-img-u-boot-plus-spl-nand.bin"
 +## external product field image #
-+CONFIG_FIELD_IMAGE="../u-boot-dev-640-RoT/urx640_rot_mats_engineering/field-img-u-boot-plus-spl-nand.bin"
++CONFIG_FIELD_IMAGE="../u-boot-dev-2022/urx640_rot_mats_engineering/field-img-u-boot-plus-spl-nand.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +# CONFIG_ROLLBACKID_SUPPORT is not set
 +# CONFIG_ROLLBACKID_VALUE is not set
@@ -14337,13 +14383,16 @@ new file mode 100644
 +# CONFIG_CERTIFICATION is not set
 +# CONFIG_LGM_SECURE_UART is not set
 +CONFIG_X86_TSC_TIMER_FREQ=2496000000
++# CONFIG_FS_EXT4 is not set
++# CONFIG_CMD_FS_GENERIC is not set
 +CONFIG_X86_LOAD_FROM_32_BIT=y
 +CONFIG_RAMBASE=0x100000
 +CONFIG_X86_RESET_VECTOR=y
 +CONFIG_USE_EARLY_BOARD_INIT=y
 +CONFIG_BOARD_EARLY_INIT_R=y
 +CONFIG_USE_CAR=y
-+CONFIG_LOCALVERSION=" OCTOPUS-URX640-4K_PAGE-EBU_NAND-SECURE_PRODUCT_FIELD_IMAGE-FOR-REFERENCE-ONLY"
++CONFIG_VERSION_VARIABLE=y
++CONFIG_LOCALVERSION=" *** FOR-REFERENCE-ONLY *** octopus-docsis-urx640-mxl86249-4K-ebu_nand-manuboot-img"
 +CONFIG_LOCALVERSION_AUTO=y
 +CONFIG_CC_OPTIMIZE_FOR_SIZE=y
 +CONFIG_CC_HAS_ASM_INLINE=y
@@ -14414,7 +14463,7 @@ new file mode 100644
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
 +# CONFIG_CMD_XIMG is not set
-+# CONFIG_CMD_ZBOOT is not set
++CONFIG_CMD_ZBOOT=y
 +# CONFIG_CMD_ASKENV is not set
 +# CONFIG_CMD_EXPORTENV is not set
 +# CONFIG_CMD_IMPORTENV is not set
@@ -14422,11 +14471,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
 +# CONFIG_CMD_DM is not set
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +# CONFIG_CMD_I2C is not set
 +# CONFIG_CMD_LOADB is not set
@@ -14438,7 +14487,7 @@ new file mode 100644
 +# CONFIG_CMD_NAND_LOCK_UNLOCK is not set
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +# CONFIG_CMD_CACHE is not set
@@ -14448,11 +14497,11 @@ new file mode 100644
 +# CONFIG_CMD_NET is not set
 +# CONFIG_CMD_BOOTP is not set
 +# CONFIG_CMD_TFTPBOOT is not set
-+CONFIG_NET_TFTP_VARS=y
++# CONFIG_NET_TFTP_VARS is not set
 +# CONFIG_CMD_NFS is not set
 +# CONFIG_CMD_PING is not set
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -14472,9 +14521,10 @@ new file mode 100644
 +CONFIG_SPL_OF_REAL=y
 +CONFIG_ENV_SUPPORT=y
 +CONFIG_SAVEENV=y
-+CONFIG_ENV_IS_IN_UBI=y
++CONFIG_ENV_IS_NOWHERE=y
++# CONFIG_ENV_IS_IN_UBI is not set
 +CONFIG_SYS_REDUNDAND_ENVIRONMENT=y
-+CONFIG_ENV_UBI_PART="misc"
++CONFIG_ENV_UBI_PART="data"
 +CONFIG_ENV_UBI_VOLUME="env_a"
 +CONFIG_ENV_UBI_VOLUME_REDUND="env_b"
 +CONFIG_ENV_UBI_VID_OFFSET=0
@@ -14635,6 +14685,17 @@ new file mode 100644
 +# CONFIG_WDT is not set
 +# CONFIG_WDT_LGM is not set
 +# CONFIG_SPL_WDT is not set
++# CONFIG_CMD_USB is not set
++# CONFIG_DOS_PARTITION is not set
++# CONFIG_CMD_DM is not set
++# CONFIG_USB is not set
++# CONFIG_SPL_DM_USB is not set
++# CONFIG_DM_USB is not set
++# CONFIG_USB_HOST is not set
++# CONFIG_USB_XHCI_HCD is not set
++# CONFIG_USB_XHCI_PCI is not set
++# CONFIG_USB_XHCI_MXL is not set
++# CONFIG_USB_STORAGE is not set
 diff --git a/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand_defconfig b/configs/octopus-docsis-urx640-mxl86249-4K-ebu_nand_defconfig
 new file mode 100644
 --- /dev/null
@@ -14843,7 +14904,7 @@ new file mode 100644
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -14856,11 +14917,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -14872,7 +14933,7 @@ new file mode 100644
 +CONFIG_CMD_NAND_LOCK_UNLOCK=y
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_NET=y
@@ -14882,7 +14943,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -15291,10 +15352,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -15305,14 +15366,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -15504,7 +15565,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -15532,7 +15593,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -15773,10 +15834,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -15787,10 +15848,10 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_CACHE=y
 +# CONFIG_CMD_AUTH is not set
 +# CONFIG_CMD_ICC is not set
@@ -15798,7 +15859,7 @@ new file mode 100644
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -15989,7 +16050,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -16019,7 +16080,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -16272,10 +16333,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +# CONFIG_CMD_FIT_LOAD is not set
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -16286,7 +16347,7 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
 +# CONFIG_CMD_SLEEP is not set
@@ -16298,7 +16359,7 @@ new file mode 100644
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -16490,7 +16551,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -16746,10 +16807,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -16760,14 +16821,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -16958,7 +17019,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -16986,7 +17047,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -17212,7 +17273,7 @@ new file mode 100644
 +# CONFIG_CMD_ELF is not set
 +# CONFIG_CMD_FDT is not set
 +# CONFIG_CMD_FIT_LOAD is not set
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -17225,11 +17286,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -17240,7 +17301,7 @@ new file mode 100644
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_SPI=y
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_NET=y
@@ -17250,7 +17311,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -17660,7 +17721,7 @@ new file mode 100644
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -17673,11 +17734,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -17688,7 +17749,7 @@ new file mode 100644
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_SPI=y
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_CACHE=y
@@ -17702,7 +17763,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -18132,7 +18193,7 @@ new file mode 100644
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
 +# CONFIG_CMD_XIMG is not set
-+# CONFIG_CMD_ZBOOT is not set
++CONFIG_CMD_ZBOOT=y
 +# CONFIG_CMD_ASKENV is not set
 +# CONFIG_CMD_EXPORTENV is not set
 +# CONFIG_CMD_IMPORTENV is not set
@@ -18140,11 +18201,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
 +# CONFIG_CMD_DM is not set
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +# CONFIG_CMD_I2C is not set
 +# CONFIG_CMD_LOADB is not set
@@ -18155,7 +18216,7 @@ new file mode 100644
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_SPI=y
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +# CONFIG_CMD_CACHE is not set
@@ -18169,7 +18230,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +# CONFIG_CMD_PING is not set
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -18558,7 +18619,7 @@ new file mode 100644
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -18571,11 +18632,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -18586,7 +18647,7 @@ new file mode 100644
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_SPI=y
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_NET=y
@@ -18596,7 +18657,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -18989,7 +19050,7 @@ new file mode 100644
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -19002,11 +19063,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -19018,7 +19079,7 @@ new file mode 100644
 +CONFIG_CMD_NAND_LOCK_UNLOCK=y
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_NET=y
@@ -19028,7 +19089,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -19213,7 +19274,7 @@ new file mode 100644
 +CONFIG_SPL_WDT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -19435,10 +19496,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -19449,14 +19510,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -19647,7 +19708,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -19675,7 +19736,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -19694,7 +19755,7 @@ diff --git a/configs/octopus-docsis-urx640-sec-mxl86249-4K-ebu_nand_defconfig b/
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-sec-mxl86249-4K-ebu_nand_defconfig
-@@ -0,0 +1,454 @@
+@@ -0,0 +1,455 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -19839,7 +19900,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
@@ -19917,7 +19979,7 @@ new file mode 100644
 +# CONFIG_CMD_ADTIMG is not set
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -19930,11 +19992,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -19946,7 +20008,7 @@ new file mode 100644
 +CONFIG_CMD_NAND_LOCK_UNLOCK=y
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_CACHE=y
@@ -19960,7 +20022,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -20153,7 +20215,7 @@ diff --git a/configs/octopus-docsis-urx640-sec-mxl86249-emmc_defconfig b/configs
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-sec-mxl86249-emmc_defconfig
-@@ -0,0 +1,485 @@
+@@ -0,0 +1,486 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -20301,7 +20363,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
@@ -20376,10 +20439,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -20390,10 +20453,10 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_CACHE=y
 +CONFIG_CMD_AUTH=y
 +CONFIG_CMD_ICC=y
@@ -20401,7 +20464,7 @@ new file mode 100644
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -20592,7 +20655,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -20622,7 +20685,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -20643,7 +20706,7 @@ diff --git a/configs/octopus-docsis-urx640-sec-mxl86249-qspi_nand_defconfig b/co
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-sec-mxl86249-qspi_nand_defconfig
-@@ -0,0 +1,446 @@
+@@ -0,0 +1,447 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -20788,7 +20851,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
@@ -20863,7 +20927,7 @@ new file mode 100644
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -20876,11 +20940,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -20891,7 +20955,7 @@ new file mode 100644
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_SPI=y
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_CACHE=y
@@ -20905,7 +20969,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -21094,7 +21158,7 @@ diff --git a/configs/octopus-docsis-urx640-sec-rtl8261-4K-ebu_nand_defconfig b/c
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-sec-rtl8261-4K-ebu_nand_defconfig
-@@ -0,0 +1,454 @@
+@@ -0,0 +1,455 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -21239,7 +21303,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
@@ -21317,7 +21382,7 @@ new file mode 100644
 +# CONFIG_CMD_ADTIMG is not set
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
@@ -21330,11 +21395,11 @@ new file mode 100644
 +# CONFIG_CMD_GREPENV is not set
 +CONFIG_CMD_SAVEENV=y
 +# CONFIG_CMD_ERASEENV is not set
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS=0
 +CONFIG_CMD_MEMORY=y
-+CONFIG_CMD_DM=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_DM is not set
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_SSO=y
 +CONFIG_CMD_I2C=y
 +CONFIG_CMD_LOADB=y
@@ -21346,7 +21411,7 @@ new file mode 100644
 +CONFIG_CMD_NAND_LOCK_UNLOCK=y
 +# CONFIG_CMD_PCI is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +# CONFIG_CMD_SOURCE is not set
 +CONFIG_CMD_SETEXPR=y
 +CONFIG_CMD_CACHE=y
@@ -21360,7 +21425,7 @@ new file mode 100644
 +# CONFIG_CMD_NFS is not set
 +CONFIG_CMD_PING=y
 +CONFIG_CMD_LED=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_MTDPARTS=y
 +# CONFIG_CMD_DATE is not set
 +# CONFIG_CMD_GETTIME is not set
@@ -21553,7 +21618,7 @@ diff --git a/configs/octopus-docsis-urx640-sec-rtl8261-emmc_defconfig b/configs/
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-sec-rtl8261-emmc_defconfig
-@@ -0,0 +1,485 @@
+@@ -0,0 +1,486 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -21703,7 +21768,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
@@ -21778,10 +21844,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -21792,10 +21858,10 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_CACHE=y
 +CONFIG_CMD_AUTH=y
 +CONFIG_CMD_ICC=y
@@ -21803,7 +21869,7 @@ new file mode 100644
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -21994,7 +22060,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -22024,7 +22090,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -22253,10 +22319,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -22267,14 +22333,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -22465,7 +22531,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -22493,7 +22559,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -22723,10 +22789,10 @@ new file mode 100644
 +# CONFIG_CMD_XIMG is not set
 +CONFIG_CMD_FDT=y
 +CONFIG_CMD_FIT_LOAD=y
-+CONFIG_CMD_GO=y
++# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +CONFIG_CMD_SAVEENV=y
-+CONFIG_CMD_CRC32=y
++# CONFIG_CMD_CRC32 is not set
 +CONFIG_CMD_MEMORY=y
 +CONFIG_CMD_I2C=y
 +# CONFIG_CMD_LOADS is not set
@@ -22737,14 +22803,14 @@ new file mode 100644
 +CONFIG_RANDOM_UUID=y
 +# CONFIG_CMD_GPT_RENAME is not set
 +CONFIG_CMD_ECHO=y
-+CONFIG_CMD_ITEST=y
++# CONFIG_CMD_ITEST is not set
 +CONFIG_CMD_SOURCE=y
 +CONFIG_CMD_SETEXPR=y
-+CONFIG_CMD_SLEEP=y
++# CONFIG_CMD_SLEEP is not set
 +CONFIG_CMD_EXT4=y
 +CONFIG_CMD_EXT4_WRITE=y
 +CONFIG_CMD_FS_GENERIC=y
-+CONFIG_CMD_FS_UUID=y
++# CONFIG_CMD_FS_UUID is not set
 +CONFIG_PARTITIONS=y
 +CONFIG_EFI_PARTITION=y
 +CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=128
@@ -22935,7 +23001,7 @@ new file mode 100644
 +CONFIG_SERIAL_SHIFT_LGM_ENABLE_PIN=y
 +CONFIG_SERIAL_SHIFT_ENABLE_PIN_NO=37
 +CONFIG_CMD_SSO=y
-+CONFIG_CMD_GPIO=y
++# CONFIG_CMD_GPIO is not set
 +CONFIG_CMD_LED=y
 +CONFIG_LED=y
 +CONFIG_LED_BLINK=y
@@ -22963,7 +23029,7 @@ new file mode 100644
 +CONFIG_FDT_OVERLAY_SUPPORT=y
 +CONFIG_CMD_USB=y
 +CONFIG_DOS_PARTITION=y
-+CONFIG_CMD_DM=y
++# CONFIG_CMD_DM is not set
 +CONFIG_USB=y
 +# CONFIG_SPL_DM_USB is not set
 +CONFIG_DM_USB=y
@@ -24764,7 +24830,7 @@ diff --git a/configs/octopus-docsis-urx641-sec-p34x-phy-2G-DDR-emmc_defconfig b/
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx641-sec-p34x-phy-2G-DDR-emmc_defconfig
-@@ -0,0 +1,475 @@
+@@ -0,0 +1,476 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -24906,7 +24972,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
@@ -25244,7 +25311,7 @@ diff --git a/configs/octopus-docsis-urx641-sec-p34x-phy-4K-ebu_nand_defconfig b/
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx641-sec-p34x-phy-4K-ebu_nand_defconfig
-@@ -0,0 +1,425 @@
+@@ -0,0 +1,426 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -25386,7 +25453,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +CONFIG_LGM_SECURE_UART=y
@@ -25674,7 +25742,7 @@ diff --git a/configs/octopus-docsis-urx641-sec-p34x-phy-emmc_defconfig b/configs
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx641-sec-p34x-phy-emmc_defconfig
-@@ -0,0 +1,473 @@
+@@ -0,0 +1,474 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -25816,7 +25884,8 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=5
++CONFIG_ROLLBACKID_VALUE=1
++CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
 +# CONFIG_LGM_SECURE_UART is not set
