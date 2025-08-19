@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  2d4521719bc8fa5dba584d225c23968d3a4ca829
+# Parent  12063ee58c83d2ef53671e320ac0b6c90439d0ef
 
 diff --git a/arch/x86/dts/octopus-640.dts b/arch/x86/dts/octopus-640.dts
 new file mode 100644
@@ -308,7 +308,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_BOOTCOMMAND="run addmisc; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
 +CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} ${mtdparts} maxcpus=4 mem=2048M memmap=31M$1M initcall_debug=0 loglevel=8 intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} intel_pstate=active epu_table_ver=${epu_table_ver}"
 +CONFIG_EXTRA_ENV_DATA="cpu_freq=1560000\0env_size=0x40000\0env_part=\'misc\'\0env_vol_a=\'ubootconfig_a\'\0env_vol_b=\'ubootconfig_b\'\0udt_num=0\0udt_file_1=\"${dtb}\"\0udt_loc=${dtb_vol}\0upgrade_vol=upgrade\0"
@@ -527,7 +527,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_SYS_NAND_PAGE_SIZE=0x800
 +CONFIG_SYS_NAND_BLOCK_SIZE=0x20000
 +CONFIG_BOOTCOMMAND="run ubi_init ; run flashargs addmisc; ubi read ${kernel_loadaddr} ${kernel_vol}; ubi read ${dtb_loadaddr} ${dtb_vol}; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
@@ -809,7 +809,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_BOOTCOMMAND="run addmisc; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
 +CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} ${mtdparts} maxcpus=4 mem=2048M memmap=31M$1M initcall_debug=0 loglevel=8 intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} intel_pstate=active epu_table_ver=${epu_table_ver}"
 +CONFIG_UPDATE_UBOOT="tftp 0x81fffc0 ${u-boot}; sf erase 0 0x100000; sf write 0x8200000 0 0x100000"
@@ -1074,7 +1074,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_SYS_NAND_PAGE_SIZE=0x800
 +CONFIG_SYS_NAND_BLOCK_SIZE=0x20000
 +CONFIG_BOOTCOMMAND="run ubi_init ; run flashargs addmisc; ubi read ${kernel_loadaddr} ${kernel_vol}; ubi read ${dtb_loadaddr} ${dtb_vol}; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
@@ -1364,7 +1364,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -1658,7 +1658,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -2076,7 +2076,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_BOOTCOMMAND="run addmisc; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
 +CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} ${mtdparts} maxcpus=4 mem=2048M memmap=31M$1M initcall_debug=0 loglevel=8 intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} intel_pstate=active epu_table_ver=${epu_table_ver}"
 +CONFIG_NET_RAM="tftpboot ${kernel_loadaddr} ${tftppath}${bootfile}; tftpboot ${dtb_loadaddr} ${tftppath}${dtb}; run ramargs addmisc; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
@@ -2306,7 +2306,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -2734,7 +2734,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_BOOTDELAY=5
 +CONFIG_LOADADDR=0x8200000
 +CONFIG_SYS_NAND_PAGE_SIZE=0x800
@@ -3017,7 +3017,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -3455,7 +3455,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_BOOTCOMMAND="run addmisc; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
 +CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} ${mtdparts} maxcpus=4 mem=2048M memmap=31M$1M initcall_debug=0 loglevel=8 intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} intel_pstate=active epu_table_ver=${epu_table_ver}"
 +CONFIG_NET_RAM="tftpboot ${kernel_loadaddr} ${tftppath}${bootfile}; tftpboot ${dtb_loadaddr} ${tftppath}${dtb}; run ramargs addmisc; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
@@ -3730,7 +3730,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -4170,7 +4170,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_PROTECTION is not set
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -4575,7 +4575,7 @@ new file mode 100644
 +CONFIG_CUSTOMER_TEST_IMG_BUILD=y
 +CONFIG_CUSTOMER_TEST_IMG_OFFSET=0x80000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -4973,7 +4973,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x2C000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -5383,7 +5383,7 @@ new file mode 100644
 +CONFIG_SPL_PAD_SIZE=0x2C000
 +# CONFIG_CUSTOMER_TEST_IMG_BUILD is not set
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -5796,7 +5796,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -6224,7 +6224,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=4
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -6666,7 +6666,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=4
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -7118,7 +7118,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -7523,7 +7523,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -7931,7 +7931,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -8364,7 +8364,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -8783,7 +8783,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -9206,7 +9206,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -9615,7 +9615,7 @@ new file mode 100644
 +CONFIG_SYS_CAR_ADDR=0xECD00000
 +CONFIG_SYS_CAR_SIZE=0x80000
 +CONFIG_TARGET_LIGHTNING_MOUNTAIN=y
-+CONFIG_LGM_U_BOOT_SIZE=0x72000
++CONFIG_LGM_U_BOOT_SIZE=0x74000
 +CONFIG_DRIVER_LIGHTNING=y
 +CONFIG_ROC_VOLTAGE=0x3D
 +CONFIG_CMD_WATCHDOG=y
@@ -9635,7 +9635,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=4
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -10077,7 +10077,7 @@ new file mode 100644
 +# CONFIG_EARLYBOOT_STRICT_UPGRADE is not set
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -10512,7 +10512,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -10988,7 +10988,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -11459,7 +11459,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -11927,7 +11927,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -12395,7 +12395,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -12476,7 +12476,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -12886,7 +12886,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -12969,7 +12969,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -13369,7 +13369,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x1
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -13818,7 +13818,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x1
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_LGM_THERMAL_PROTECTION=y
@@ -14293,7 +14293,7 @@ new file mode 100644
 +## NOTE: ROT Process: automate change iBRH and reset ##
 +#### NOTE: ROT : CONFIG_MANUBOOT (ebu_nand-manuboot-img) ####
 +CONFIG_CUSTOMER_TEST_IMG_OFFSET=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_MANUBOOT_IMG_OFFSET=0x200000
 +#### NOTE: ROT : automate change BRH and reset CONFIG_FIELD_IMAGE (update_fieldimg_hdr) ####
 +CONFIG_BOOTCOMMAND="mw.l 0 0; if cmp.l 0 e0180094 1; then run update_fieldimg_hdr; reset; else echo \"RoT FAILED!\"; fi"
@@ -14760,7 +14760,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x2
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -15209,7 +15209,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -15679,7 +15679,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -16167,7 +16167,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_LOW_THRESH is not set
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -16600,7 +16600,7 @@ diff --git a/configs/octopus-docsis-urx640-mxl86249-emmc_defconfig b/configs/oct
 new file mode 100644
 --- /dev/null
 +++ b/configs/octopus-docsis-urx640-mxl86249-emmc_defconfig
-@@ -0,0 +1,463 @@
+@@ -0,0 +1,465 @@
 +CONFIG_CREATE_ARCH_SYMLINK=y
 +CONFIG_SYS_CACHE_SHIFT_6=y
 +CONFIG_SYS_CACHELINE_SIZE=64
@@ -16667,7 +16667,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -17064,6 +17064,8 @@ new file mode 100644
 +CONFIG_FLASH_FLASH="run check_active_bank; run kernel_uboot_ver; run flashargs && run addmisc; mmc dev 0 0; load mmc 0#${kernel_bank} ${kernel_loadaddr} ${bootfile} && load mmc 0#${rootfs_bank} ${rootfs_loadaddr} ${rootfs} && mmc read ${dtb_loadaddr} ${dtb_bank} ${dtb_bank_size} && fit_load ${dtb_loadaddr} ${dtb_loadaddr} && run set_cma_size && wdt dev wdt@e2500000 && wdt start 60000 && if test ${kernel_bank} = \"extended_boot_a\"; then echo \"Late Boot from Bank A\"; else echo \"Late Boot from Bank B\"; fi; && bootm ${kernel_loadaddr} - ${dtb_loadaddr}; reset"
 +# CONFIG_SHA256 is not set
 +# CONFIG_SPL_SHA1 is not set
++# CONFIG_MXL_SPL_FIT is not set
++# CONFIG_SPL_FIT_SOURCE=""
 diff --git a/configs/octopus-docsis-urx640-mxl86249-qspi_nand-cust-img_defconfig b/configs/octopus-docsis-urx640-mxl86249-qspi_nand-cust-img_defconfig
 new file mode 100644
 --- /dev/null
@@ -17127,7 +17129,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x1
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_SYS_NAND_PAGE_SIZE=0x800
 +CONFIG_SYS_NAND_BLOCK_SIZE=0x20000
 +CONFIG_NAND_FLASH_MXL_256M=y
@@ -17561,7 +17563,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x1
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_SYS_NAND_PAGE_SIZE=0x800
 +CONFIG_SYS_NAND_BLOCK_SIZE=0x20000
 +CONFIG_NAND_FLASH_MXL_256M=y
@@ -18030,7 +18032,7 @@ new file mode 100644
 +## NOTE: ROT Process: automate change iBRH and reset ##
 +#### NOTE: ROT : CONFIG_MANUBOOT (qspi_nand-manuboot-img) ####
 +CONFIG_CUSTOMER_TEST_IMG_OFFSET=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_MANUBOOT_IMG_OFFSET=0x200000
 +#### NOTE: ROT : automate change BRH and reset CONFIG_FIELD_IMAGE (update_fieldimg_hdr) ####
 +CONFIG_BOOTCOMMAND="mw.l 0 0; if cmp.l 0 e0180094 1; then run update_fieldimg_hdr; reset; else echo \"RoT FAILED!\"; fi"
@@ -18480,7 +18482,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x2
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_SYS_NAND_PAGE_SIZE=0x800
 +CONFIG_SYS_NAND_BLOCK_SIZE=0x20000
 +CONFIG_NAND_FLASH_MXL_256M=y
@@ -18906,7 +18908,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x2
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -19354,7 +19356,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -19815,7 +19817,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x2
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_LGM_THERMAL_PROTECTION=y
@@ -19900,7 +19902,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -20282,7 +20284,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -20363,7 +20365,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -20766,7 +20768,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x2
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_SYS_NAND_PAGE_SIZE=0x800
 +CONFIG_SYS_NAND_BLOCK_SIZE=0x20000
 +CONFIG_NAND_FLASH_MXL_256M=y
@@ -20783,11 +20785,11 @@ new file mode 100644
 +CONFIG_DTB_LOADADDR=0x8000000
 +CONFIG_ROOTFS_LOADADDR=0x40000000
 +CONFIG_BOOTCOMMAND="if test ${image_failure} -ne 0; then setenv image_failure 0; run recover_boot; else run check_upgrade; run flash_flash; reset; fi;"
-+CONFIG_FLASH_FLASH="run check_active_bank; run kernel_uboot_ver; run ubi_init; run flashargs addmisc; ubi read ${kernel_loadaddr} ${kernel_vol}; ubi read ${dtb_loadaddr} ${dtb_vol}; fit_load ${dtb_loadaddr} ${dtb_loadaddr} && run set_cma_size && wdt dev wdt@e2500000 && wdt start 60000 && if test ${kernel_vol} = \"kernel_a\"; then echo \"Late Boot from Bank A\"; else echo \"Late Boot from Bank B\"; fi; && bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
++CONFIG_FLASH_FLASH="run check_active_bank; run kernel_uboot_ver; run ubi_init; run flashargs addmisc; ubi read ${rootfs_loadaddr} ${rootfs_vol} && auth 5 ${rootfs_loadaddr} ${rootfs_a_filesize} && cp.b 0x40000000 ${rootfs_loadaddr} ${rootfs_a_filesize} && ubi read ${dtb_loadaddr} ${dtb_vol} && auth 4 ${dtb_loadaddr} dtb_a_filesize && run set_cma_size && ubi read ${kernel_loadaddr} ${kernel_vol} && auth 4 0x8200040 kernel_a_filesize && parsemd ${kernel_loadaddr} ${kernel_loadaddr} && run update_bootargs && icc 1 0x${md_ro_start} 0x${md_ro_end} 0x${rootfs_loadaddr} 0x400 && if test ${kernel_vol} = \"kernel_a\"; then echo \"Late Boot from Bank A\"; else echo \"Late Boot from Bank B\"; fi; && bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
 +CONFIG_NFS_ARGS="setenv bootargs ubi.mtd=extended_boot,2048 root=/dev/nfs rw nfsroot=${serverip}:${rootpath}"
 +CONFIG_RAMARGS="setenv bootargs root=/dev/ram rw init=/init"
-+CONFIG_FLASHARGS="setenv bootargs ubi.mtd=extended_boot,2048 ubi.mtd=data,2048 ubi.mtd=log,2048 gluebi.rootfsname=${rootfs_vol} rootfstype=squashfs"
-+CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} ${mtdparts} maxcpus=2 mem=1024M memmap=31M$1M initcall_debug=0 loglevel=${kernel_loglvl} intel_pstate=active intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} init_cstate_margin=1 init_pstate_threshold=20 epu_table_ver=${epu_table_ver} pci=pcie_bus_perf uboot_ver=${uboot_ver} swiotlb=noforce"
++CONFIG_FLASHARGS="setenv bootargs ubi.mtd=extended_boot,2048 ubi.mtd=data,2048 ubi.mtd=log,2048 root=/dev/mtdblock0 rootfstype=squashfs rootwait"
++CONFIG_ADDMISC="setenv bootargs ${bootargs} earlycon=lantiq,mmio32,0xe0a00000 console=ttyLTQ0,115200n8r ethaddr=${ethaddr} phram.phram=RAM0,0x${rootfs_loadaddr},0x${filesystem_size} ${mtdparts} maxcpus=2 mem=1024M memmap=31M$1M,0x${filesystem_size}$0x${rootfs_loadaddr} initcall_debug=0 loglevel=${kernel_loglvl} rootfs_startaddr=0x${rootfs_loadaddr} rootfs_endaddr=0x${rootfs_loadaddr_end} intel_pstate=active intel_idle.max_cstate=2 max_cpufreq=${max_cpu_freq} init_cstate_margin=1 init_pstate_threshold=20 epu_table_ver=${epu_table_ver} pci=pcie_bus_perf uboot_ver=${uboot_ver} swiotlb=noforce"
 +CONFIG_MTDIDS="spi-nand0=spi0.1"
 +CONFIG_MTDPARTS="mtdparts=spi0.1:512k(rbe_a),1m(uboot_a),512k(rbe_b),1m(uboot_b),2m(tep_firmware_a),2m(tep_firmware_b),168m(extended_boot),50m(data),30m(log),-(res)"
 +CONFIG_RESET_UBOOT_CONFIG="ubi part ${env_part} && ubi remove \"${env_vol_a}\" && ubi remove \"${env_vol_b}\"; ubi create \"${env_vol_a}\" ${env_size} && ubi create \"${env_vol_b}\" ${env_size};"
@@ -20814,7 +20816,7 @@ new file mode 100644
 +CONFIG_FULLIMAGE="image-mb_urx640_fullimage.img"
 +CONFIG_TEP_FIRMWARE="tep_fw.bin"
 +CONFIG_UPDATE_TEP_FIRMWARE="tftpboot ${loadaddr} ${tftppath}${tep_firmware} && run ubi_init && setenv select_partition primary && upgrade ${loadaddr} ${filesize}"
-+CONFIG_EXTRA_ENV_DATA="cpu_freq=1716000\0env_size=0x80000\0kernel_vol_size=0xA00000\0rootfs_vol_size=0x3700000\0dtb_vol_size=0x180000\0nvram=\'nvram\'\0nvram_size=0x1000000\0secure_store=\'securestore\'\0secure_store_size=0x1000000\0log_part=\'log\'\0log_part_size=0x1000000\0env_part=\'data\'\0env_vol_a=\'env_a\'\0env_vol_b=\'env_b\'\0udt_status=0\0kernel_loglvl=8\0kernel_vol=kernel_a\0rootfs_vol=rootfs_a\0dtb_vol=dtb_a\0active_bank=A\0check_boot_retries=if test ${udt_status} -eq 2; then if test ${recovery_image} -eq 1; then setenv recovery_image 0; if test ${early_boot} = \"upgrade\"; then run recover_early_boot; else run switch_partition; fi; else echo \"bootcount OK\"; fi; fi\0check_upgrade=if test ${early_boot} = \"invalid\";then run recover_boot;else if test ${late_boot} = \"invalid\";then run recover_boot;else run check_boot_retries;fi;fi;\0check_boot_retries=if test ${udt_status} -eq 11;then if test ${recovery_image} -eq 1;then setenv recovery_image 0; run recover_boot;else echo \"bootcount OK\"; fi;fi;\0set_cma_size=fdt addr ${dtb_loadaddr} ${dtb_a_block_size} && fdt get value cma_size /reserved-memory/linux,cma size; fdt get value cma_alignment /reserved-memory/linux,cma alignment; setexpr cma_start ${rootfs_loadaddr} - ${cma_size}; setenv bootargs ${bootargs} cma=${cma_size}@0x${cma_start}; run cma_check\0assert_cma_alignment=setexpr result ${rootfs_alignment} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size is not a multiple or larger than RootFS size\"; setexpr ret 1; fi;\0cma_check=run assert_cma_size_align; if test $ret > 0; then false; else run assert_cma_alignment; if test $ret > 0; then false; else true; fi; fi;\0assert_cma_size_align=setexpr result ${cma_size} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size not aligned, pls check DTS\"; setexpr ret 1; fi;\0check_active_bank=if test ${active_bank} = \"A\"; then if test ${rootfs_vol} = \"rootfs_b\"; then run switch_to_primary; fi; fi; if test ${active_bank} = \"B\"; then if test ${rootfs_vol} = \"rootfs_a\"; then run switch_to_secondary; fi; fi;\0kernel_uboot_ver=test -n ${ver} && setexpr uboot_ver gsub \" \" \"_\" \"${ver}\";\0"
++CONFIG_EXTRA_ENV_DATA="cpu_freq=1716000\0env_size=0x80000\0kernel_vol_size=0xA00000\0rootfs_vol_size=0x3C00000\0dtb_vol_size=0x80000\0nvram=\'nvram\'\0nvram_size=0x1000000\0secure_store=\'securestore\'\0secure_store_size=0x1000000\0log_part=\'log\'\0log_part_size=0x1000000\0env_part=\'data\'\0env_vol_a=\'env_a\'\0env_vol_b=\'env_b\'\0udt_status=0\0kernel_loglvl=8\0kernel_vol=kernel_a\0rootfs_vol=rootfs_a\0dtb_vol=dtb_a\0active_bank=A\0check_boot_retries=if test ${udt_status} -eq 2; then if test ${recovery_image} -eq 1; then setenv recovery_image 0; if test ${early_boot} = \"upgrade\"; then run recover_early_boot; else run switch_partition; fi; else echo \"bootcount OK\"; fi; fi\0check_upgrade=if test ${early_boot} = \"invalid\";then run recover_boot;else if test ${late_boot} = \"invalid\";then run recover_boot;else run check_boot_retries;fi;fi;\0check_boot_retries=if test ${udt_status} -eq 11;then if test ${recovery_image} -eq 1;then setenv recovery_image 0; run recover_boot;else echo \"bootcount OK\"; fi;fi;\0set_cma_size=fdt addr ${dtb_loadaddr} ${dtb_a_block_size} && fdt get value cma_size /reserved-memory/linux,cma size; fdt get value cma_alignment /reserved-memory/linux,cma alignment; setexpr cma_start ${rootfs_loadaddr} - ${cma_size}; setenv bootargs ${bootargs} cma=${cma_size}@0x${cma_start}; run cma_check\0update_bootargs=setexpr md_ro_end ${md_ro_end} - 1; setenv bootargs ${bootargs} kernel_startaddr=0x${md_ro_start} kernel_endaddr=0x${md_ro_end}\0assert_cma_alignment=setexpr result ${rootfs_alignment} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size is not a multiple or larger than RootFS size\"; setexpr ret 1; fi;\0assert_cma_size_align=setexpr result ${cma_size} % ${cma_alignment}; if test $result -eq 0; then setexpr ret 0; else echo \"CMA size not aligned, pls check DTS\"; setexpr ret 1; fi;\0cma_check=run assert_cma_size_align; if test $ret > 0; then false; else run assert_cma_alignment; if test $ret > 0; then false; else true; fi; fi;\0check_active_bank=if test ${active_bank} = \"A\"; then if test ${rootfs_vol} = \"rootfs_b\"; then run switch_to_primary; fi; fi; if test ${active_bank} = \"B\"; then if test ${rootfs_vol} = \"rootfs_a\"; then run switch_to_secondary; fi; fi;\0kernel_uboot_ver=test -n ${ver} && setexpr uboot_ver gsub \" \" \"_\" \"${ver}\";\0"
 +CONFIG_CHECK_IMAGE="echo check image"
 +CONFIG_BOOTFILE="/x86_64_uImage_lzma"
 +CONFIG_ROOTFS_A_SIZE=0x4000000
@@ -20851,7 +20853,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -20877,7 +20879,7 @@ new file mode 100644
 +CONFIG_STACK_SIZE=0x2000000
 +CONFIG_SYS_SRAM_BASE=0x0
 +CONFIG_SYS_SRAM_SIZE=0x0
-+CONFIG_FIT=y
++# CONFIG_FIT is not set
 +CONFIG_LEGACY_IMAGE_FORMAT=y
 +CONFIG_SYS_EXTRA_OPTIONS=""
 +CONFIG_HAVE_SYS_TEXT_BASE=y
@@ -20926,7 +20928,7 @@ new file mode 100644
 +# CONFIG_CMD_ADTIMG is not set
 +# CONFIG_CMD_ELF is not set
 +CONFIG_CMD_FDT=y
-+CONFIG_CMD_FIT_LOAD=y
++# CONFIG_CMD_FIT_LOAD is not set
 +# CONFIG_CMD_GO is not set
 +CONFIG_CMD_RUN=y
 +# CONFIG_CMD_IMI is not set
@@ -21135,11 +21137,11 @@ new file mode 100644
 +CONFIG_LZO=y
 +CONFIG_GZIP=y
 +CONFIG_ZLIB=y
-+CONFIG_OF_LIBFDT=y
-+CONFIG_OF_LIBFDT_ASSUME_MASK=0
-+CONFIG_OF_LIBFDT_OVERLAY=y
-+CONFIG_SPL_OF_LIBFDT=y
-+CONFIG_SPL_OF_LIBFDT_ASSUME_MASK=0xff
++# CONFIG_OF_LIBFDT is not set
++# CONFIG_OF_LIBFDT_ASSUME_MASK is not set
++# CONFIG_OF_LIBFDT_OVERLAY is not set
++# CONFIG_SPL_OF_LIBFDT is not set
++# CONFIG_SPL_OF_LIBFDT_ASSUME_MASK is not set
 +# CONFIG_EFI_LOADER is not set
 +CONFIG_LMB=y
 +CONFIG_LMB_USE_MAX_REGIONS=y
@@ -21218,7 +21220,7 @@ new file mode 100644
 +CONFIG_UBOOT_PART_SIZE=0x100000
 +CONFIG_COPIES_OF_RBE=0x2
 +CONFIG_BACKUP_RBE_OFFSET_IN_FLASH=0x180000
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_LGM_THERMAL_PROTECTION=y
@@ -21303,7 +21305,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -21685,7 +21687,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -21768,7 +21770,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -22181,7 +22183,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -22650,7 +22652,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -23109,7 +23111,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -23568,7 +23570,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -24017,7 +24019,7 @@ new file mode 100644
 +# CONFIG_EARLYBOOT_STRICT_UPGRADE is not set
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -24441,7 +24443,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -24897,7 +24899,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -24972,7 +24974,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -25375,7 +25377,7 @@ new file mode 100644
 +# CONFIG_EARLYBOOT_STRICT_UPGRADE is not set
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_LGM_THERMAL_PROTECTION=y
@@ -25453,7 +25455,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -25809,7 +25811,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; run set_dtb_bank; run init_env; if test ${image_failure} -eq 0; then echo \"Early Boot from Bank A\"; else echo \"Early Boot from Bank B\"; fi; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -25884,7 +25886,7 @@ new file mode 100644
 +CONFIG_PROD_UNIQUE_KEY="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/256-bit_huk_product.bin"
 +# CONFIG_ENCRYPTION_SUPPORT is not set
 +CONFIG_ROLLBACKID_SUPPORT=y
-+CONFIG_ROLLBACKID_VALUE=1
++CONFIG_ROLLBACKID_VALUE=5
 +CONFIG_FLEXI_RBID=y
 +CONFIG_CERTIFICATION_SUPPORT=y
 +CONFIG_CERTIFICATION="/nfs/site/proj/chdsw_ci/telco/dist/Secureboot_Keys/LGM_Keys_Vault/Product/384-bit_certificate_product_a.bin"
@@ -26281,7 +26283,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -26726,7 +26728,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -27181,7 +27183,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -27648,7 +27650,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_LOW_THRESH is not set
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -28124,7 +28126,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -28531,7 +28533,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -28983,7 +28985,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x33000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_SYS_NAND_PAGE_SIZE=0x800
 +CONFIG_SYS_NAND_BLOCK_SIZE=0x20000
 +CONFIG_BOOTCOMMAND="run ubi_init ; run flashargs addmisc; ubi read ${kernel_loadaddr} ${kernel_vol}; ubi read ${dtb_temp_loadaddr} ${dtb_vol}; fit ${dtb_temp_loadaddr} ${dtb_loadaddr}; bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
@@ -29279,7 +29281,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -29747,7 +29749,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_LGM_THERMAL_PROTECTION=y
@@ -30180,7 +30182,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -30644,7 +30646,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -31099,7 +31101,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -31565,7 +31567,7 @@ new file mode 100644
 +# CONFIG_LGM_THERMAL_LOW_THRESH is not set
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=1
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -32040,7 +32042,7 @@ new file mode 100644
 +CONFIG_MAX_RBE_PER_PART=1
 +CONFIG_SPL_PAD_SIZE=0x40000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_NAND_FLASH_MXL_256M=y
 +CONFIG_NAND_FLASH_SIZE=256
 +CONFIG_PREBOOT="echo; echo run \"bootcmd\" to bring up the kernel; echo;"
@@ -32452,7 +32454,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -32888,7 +32890,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; echo run \"bootcmd\" to bring up the kernel; echo;"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3
@@ -33338,7 +33340,7 @@ new file mode 100644
 +CONFIG_LGM_THERMAL_LOW_THRESH=-20
 +CONFIG_SPL_PAD_SIZE=0x32000
 +CONFIG_COPIES_OF_RBE=0x1
-+CONFIG_RECOVERY_SPL_PAD_SIZE=0x16000
++CONFIG_RECOVERY_SPL_PAD_SIZE=0x17000
 +CONFIG_PREBOOT="if gpt verify mmc 0 ${partitions}; then echo; else run init_user_partition; fi; echo; wdt dev wdt@e2500000; wdt stop"
 +CONFIG_BOOTDELAY=5
 +CONFIG_MAX_BOOT_COUNTER=3

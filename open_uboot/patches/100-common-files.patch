@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  844299fe107da0977786440b659d8dfb001fdcb9
+# Parent  c1e4c1e845c715580f63c278baa57d077751fe43
 
 diff --git a/Makefile b/Makefile
 --- a/Makefile
@@ -687,7 +687,7 @@ diff --git a/arch/x86/lib/bootm.c b/arch/x86/lib/bootm.c
  	return 0;
  
  error:
-@@ -201,9 +235,16 @@ int boot_linux_kernel(ulong setup_base, 
+@@ -201,9 +235,21 @@ int boot_linux_kernel(ulong setup_base, 
  /* Subcommand: GO */
  static int boot_jump_linux(bootm_headers_t *images)
  {
@@ -695,6 +695,11 @@ diff --git a/arch/x86/lib/bootm.c b/arch/x86/lib/bootm.c
 +	printf("## Transferring control to Linux (at address %08lx, kernel %08lx) ...\n",
  	      images->ep, images->os.load);
  
++#ifdef CONFIG_CMD_ICC_OVERLAY
++	extern void icc_sync_cmd(void);
++	icc_sync_cmd();
++#endif
++
 +#ifdef CONFIG_CMD_ICC
 +	extern void icc_uboot_bootm(void);
 +
@@ -705,7 +710,7 @@ diff --git a/arch/x86/lib/bootm.c b/arch/x86/lib/bootm.c
  	return boot_linux_kernel(images->ep, images->os.load,
  				 images->os.arch == IH_ARCH_X86_64);
  }
-@@ -239,5 +280,44 @@ static ulong get_sp(void)
+@@ -239,5 +285,44 @@ static ulong get_sp(void)
  
  void arch_lmb_reserve(struct lmb *lmb)
  {
@@ -1138,7 +1143,7 @@ diff --git a/cmd/Kconfig b/cmd/Kconfig
  config CMD_PWM
  	bool "pwm"
  	depends on DM_PWM
-@@ -2128,6 +2160,29 @@ config CMD_TPM_TEST
+@@ -2128,6 +2160,35 @@ config CMD_TPM_TEST
  
  endif
  
@@ -1153,6 +1158,12 @@ diff --git a/cmd/Kconfig b/cmd/Kconfig
 +	default y if CHD_SECURE_BOOT
 +	help
 +	  User application to send message to TEP
++
++config CMD_ICC_OVERLAY
++	bool "LGM inter chip communication for overlay"
++	default n
++	help
++	  User application to send message to TEP for overlay
 +
 +config CMD_IA_SWITCH
 +	bool "switch from IA_BOOT to IA_VMM mode"

@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  b6d5bfd910402472a46eb976093bddbd40ec423d
+# Parent  a0944547a1a0e89a80bad027ba70563bccd9745f
 
 diff --git a/arch/x86/cpu/intel_common/microcode.c b/arch/x86/cpu/intel_common/microcode.c
 --- a/arch/x86/cpu/intel_common/microcode.c
@@ -279397,7 +279397,7 @@ diff --git a/arch/x86/lib/spl_lgm_ebu_nand.c b/arch/x86/lib/spl_lgm_ebu_nand.c
 new file mode 100644
 --- /dev/null
 +++ b/arch/x86/lib/spl_lgm_ebu_nand.c
-@@ -0,0 +1,407 @@
+@@ -0,0 +1,438 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -279444,9 +279444,13 @@ new file mode 100644
 +#define TEP_FIRMWARE_OFFSET_NAND	((CONFIG_SYS_NAND_U_BOOT_OFFS + CONFIG_UBOOT_PART_SIZE) * 2)
 +extern int launch_tep(u32 tep_ddr_base, u32 aic_address);
 +#endif /* CONFIG_TEP_PKG */
++
++#ifdef CONFIG_MXL_SPL_FIT
++extern int extract_fit_image(u32 *src, u32 img_load_addr);
++#endif
++
 +extern void uncompress_image(ulong image_addr, int uncompress);
 +unsigned char oob_buf[CONFIG_SYS_NAND_OOBSIZE];
-+
 +
 +static int nand_spl_bad(struct mtd_info *mtd, loff_t ofs)
 +{
@@ -279578,7 +279582,7 @@ new file mode 100644
 +{
 +	int ret;
 +	unsigned long tep_offset;
-+	u32 entry_addr, aic_addr;
++	u32 entry_addr, aic_addr, addr;
 +
 +	/* since we do not have any mtd info, use the build configuration
 +	 * data that we have on the TEP location in flash.
@@ -279601,6 +279605,14 @@ new file mode 100644
 +	if (ret)
 +		return ret;
 +
++#ifdef CONFIG_MXL_SPL_FIT
++	ret = extract_fit_image(&addr, TEP_LOAD_BASE);
++	if (ret)
++		return -EINVAL;
++#else
++	addr = TEP_LOAD_BASE;
++#endif /* CONFIG_MXL_SPL_FIT */
++
 +#if defined(CONFIG_CHD_SECURE_BOOT)
 +	u32 img_rollback_id = 0;
 +	u32 otp_rollback_id  = 0;
@@ -279608,12 +279620,12 @@ new file mode 100644
 +	u32 sb_attrib_err = SB_ATTRIB_VALID;
 +	struct SBIF_Attributes attribute_table;
 +
-+	ret = bootrom_sec_api_auth(TEP_LOAD_BASE, &attribute_table);
++	ret = bootrom_sec_api_auth(addr, &attribute_table);
 +	if (ret)
 +		return ret;
 +
 +	sb_attrib_err = get_sbif_attributes(&attribute_table, &aic_addr,
-+							&entry_addr, &img_rollback_id, &img_id);
++					    &entry_addr, &img_rollback_id, &img_id);
 +	if (SB_ATTRIB_INVALID == sb_attrib_err) {
 +		/* invalid image attribute */
 +		return SB_ATTRIB_INVALID;
@@ -279622,13 +279634,13 @@ new file mode 100644
 +					sb_attrib_err, __FILE__, __LINE__, __func__);
 +	} /* SB_ATTRIB_INVALID */
 +
-+#if defined(CONFIG_ROLLBACKID_SUPPORT)
++ #if defined(CONFIG_ROLLBACKID_SUPPORT)
 +	otp_rollback_id = chk_rollback_id(SB_ROLLBACK_ID_TEP);
 +
 +	/* check image anti-rollback with otp anti-rollback value */
 +	if (img_rollback_id < otp_rollback_id)
 +		return 1;
-+#endif /* CONFIG_ROLLBACKID_SUPPORT */
++ #endif /* CONFIG_ROLLBACKID_SUPPORT */
 +
 +#else
 +	/* TODO: Will remove this, for development purpose only
@@ -279652,6 +279664,7 @@ new file mode 100644
 +			int bootimage)
 +{
 +	int ret;
++	u32 addr;
 +	unsigned long mkimage_size = 0;
 +	unsigned long uboot_offset;
 +	unsigned long spl_pad_size;
@@ -279684,6 +279697,14 @@ new file mode 100644
 +	if (ret)
 +		goto error;
 +
++#ifdef CONFIG_MXL_SPL_FIT
++	ret = extract_fit_image(&addr, LZMA_UBOOT_LOAD_ADDR);
++	if (ret)
++		goto error;
++#else
++	addr = LZMA_UBOOT_LOAD_ADDR;
++#endif
++
 +#if defined(CONFIG_CHD_SECURE_BOOT)
 +	u32 img_rollback_id = 0;
 +	u32 otp_rollback_id  = 0;
@@ -279697,14 +279718,13 @@ new file mode 100644
 +	 * by the authentication process
 +	 */
 +	memcpy((u32 *)(LZMA_UBOOT_LOAD_ADDR - sizeof(struct image_header)),
-+		(u32 *)(LZMA_UBOOT_LOAD_ADDR),
++		(u32 *)(addr),
 +		sizeof(struct image_header));
 +	/*
 +	 * call bootrom seclib api to auth signed lzma u-boot image
 +	 */
-+	ret = bootrom_sec_api_auth(LZMA_UBOOT_LOAD_ADDR
-+				+ sizeof(struct image_header),
-+				&attribute_table);
++	ret = bootrom_sec_api_auth(addr	+ sizeof(struct image_header),
++				   &attribute_table);
 +	if (ret)
 +		goto error;
 +
@@ -279728,11 +279748,22 @@ new file mode 100644
 +#endif /* CONFIG_ROLLBACKID_SUPPORT */
 +#endif /* CONFIG_CHD_SECURE_BOOT */
 +
++	/* In secureboot mode, as the u-boot image is decrypted
++	 * to the address controlled by SB attributes, the resultant
++	 * image is loaded to LZMA_UBOOT_LOAD_ADDR, no matter
++	 * the status of CONFIG_MXL_SPL_FIT.
++	 * When only FIT is enabled, the u-boot image is in and offset
++	 * from LZMA_UBOOT_LOAD_ADDR depending on the FDT header.
++	 */
++	if ((IS_ENABLED(CONFIG_CHD_SECURE_BOOT) &&
++	    IS_ENABLED(CONFIG_MXL_SPL_FIT))
++		|| !IS_ENABLED(CONFIG_MXL_SPL_FIT))
++		addr = LZMA_UBOOT_LOAD_ADDR - mkimage_size;
++
 +	/* read image header, uncompress image and jump
 +	 * should not return
 +	*/
-+	uncompress_image(LZMA_UBOOT_LOAD_ADDR
-+			- mkimage_size, CONFIG_COMPRESS);
++	uncompress_image(addr, CONFIG_COMPRESS);
 +
 +error:
 +	return -EINVAL;
@@ -279809,7 +279840,7 @@ diff --git a/arch/x86/lib/spl_lgm_emmc.c b/arch/x86/lib/spl_lgm_emmc.c
 new file mode 100644
 --- /dev/null
 +++ b/arch/x86/lib/spl_lgm_emmc.c
-@@ -0,0 +1,858 @@
+@@ -0,0 +1,925 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -279847,6 +279878,8 @@ new file mode 100644
 +/* limit compressed uboot (u-boot-ram.bin) to 320kb */
 +#define CONFIG_COMPRESS						1
 +#endif
++
++#define UBOOT_SZ	0x100000
 +
 +/* extern functions */
 +extern int lightning_board_init(void);
@@ -279915,6 +279948,7 @@ new file mode 100644
 +	return err;
 +}
 +
++#ifndef CONFIG_MXL_SPL_FIT
 +static int mmc_load_image_raw_sector(struct mmc *mmc, unsigned long sector,
 +				     u32 *addr)
 +{
@@ -279978,6 +280012,50 @@ new file mode 100644
 +	return ret;
 +}
 +
++#else
++
++static int load_fit_format(struct mmc *mmc, unsigned long sector,
++			   u32 *addr, u32 dst_addr, int img_size)
++{
++	int offset, node_offset;
++	int len;
++	const void *data;
++	u32 load_addr = dst_addr;
++	u32 image_size_sectors =
++			(img_size + mmc->read_bl_len - 1) / mmc->read_bl_len;
++
++	/* Read FIT image from sector */
++	blk_dread(mmc_get_blk_desc(mmc), sector, image_size_sectors,
++			  (void *)(ulong)load_addr);
++
++	/* Check if the buffer contains a valid FIT image */
++	if (fdt_check_header((const void *)load_addr) != 0)
++		return -1;
++
++	/* Locate the 'images' node */
++	offset = fdt_path_offset((const void *)load_addr, "/images");
++	if (offset < 0)
++		return -1;
++
++	/* Iterate through subnodes to find the first 'firmware' binary */
++	node_offset = fdt_first_subnode((const void *)load_addr, offset);
++	while (node_offset >= 0) {
++		const char *type = fdt_getprop((const void *)load_addr,
++						node_offset, "type", NULL);
++		if (type && strcmp(type, "firmware") == 0) {
++			data = fdt_getprop((const void *)load_addr,
++					    node_offset, "data", &len);
++			*addr = (u32)data;
++			return 0;
++		}
++		node_offset = fdt_next_subnode((const void *)load_addr,
++						node_offset);
++	}
++
++	return -1;
++}
++#endif /* CONFIG_MXL_SPL_FIT */
++
 +static int spl_mmc_find_device(struct mmc **mmcp)
 +{
 +	struct udevice *dev;
@@ -280029,9 +280107,9 @@ new file mode 100644
 +	struct mmc *mmc = NULL;
 +	struct blk_desc *mmc_dev;
 +	struct disk_partition info;
-+	int err, count;
-+	int blksize, blkcnt;
-+	u32 entry_addr, aic_addr;
++	int err;
++	int blksize;
++	u32 entry_addr, aic_addr, addr = 0;
 +
 +	err = spl_mmc_find_device(&mmc);
 +	if (err)
@@ -280072,14 +280150,24 @@ new file mode 100644
 +	else
 +		blksize = info.blksz;
 +
-+	blkcnt = TEP_FIRMWARE_SIZE / blksize;
++ #ifdef CONFIG_MXL_SPL_FIT
++	/* Loads FIT formatted u-boot image */
++	err = load_fit_format(mmc, info.start, &addr,
++			     TEP_LOAD_BASE, TEP_FIRMWARE_SIZE);
++	if (err)
++		return err;
++ #else
++	int count, blkcnt;
 +
++	addr = TEP_LOAD_BASE;
++	blkcnt = TEP_FIRMWARE_SIZE / blksize;
 +	count = blk_dread(mmc_get_blk_desc(mmc), info.start, blkcnt,
 +			(u8 *)TEP_LOAD_BASE);
 +	if (!count) {
 +		debug("SPL: TEP image read failure, no blocks read\n");
 +		return 1;
 +	}
++ #endif /* CONFIG_MXL_SPL_FIT */
 +
 +#if defined(CONFIG_CHD_SECURE_BOOT)
 +	u32 img_rollback_id = 0;
@@ -280088,12 +280176,12 @@ new file mode 100644
 +	u32 sb_attrib_err = SB_ATTRIB_VALID;
 +	struct SBIF_Attributes attribute_table;
 +
-+	err = bootrom_sec_api_auth(TEP_LOAD_BASE, &attribute_table);
++	err = bootrom_sec_api_auth(addr, &attribute_table);
 +	if (err)
 +		return err;
 +
 +	sb_attrib_err = get_sbif_attributes(&attribute_table, &aic_addr,
-+							&entry_addr, &img_rollback_id, &img_id);
++					    &entry_addr, &img_rollback_id, &img_id);
 +	if (SB_ATTRIB_INVALID == sb_attrib_err) {
 +		/* invalid image attribute */
 +		return SB_ATTRIB_INVALID;
@@ -280141,15 +280229,8 @@ new file mode 100644
 +
 +#ifdef CONFIG_UBOOT_IN_USER_PART
 +	/* When U-boot binary is located in the User partition */
-+	char partition_name[8];
 +	struct blk_desc *mmc_dev;
 +	struct disk_partition part;
-+
-+	/* depending on bootrom's boot, primary or backup */
-+	if (bootimage == 0)
-+		snprintf(partition_name, 8, "uboot_a");
-+	else
-+		snprintf(partition_name, 8, "uboot_b");
 +
 +	/* select user part */
 +	err = blk_dselect_hwpart(mmc_get_blk_desc(mmc), 0);
@@ -280165,18 +280246,32 @@ new file mode 100644
 +	}
 +
 +	/* get the image partiton info by name */
-+	err = part_get_info_by_name_type(mmc_dev, partition_name,
++	err = part_get_info_by_name_type(mmc_dev, UBOOT_PART_NAME(bootimage + 1),
 +				&part, PART_TYPE_EFI);
 +	if (err < 0) {
-+		printf("Cannot find partition name %s\n", partition_name);
++		printf("Cannot find partition name %s\n",
++			UBOOT_PART_NAME(bootimage));
 +		return err;
 +	}
 +
 +	/* load U-boot from partition */
 +	sector_offset = part.start;
-+	err = mmc_load_image_raw_sector(mmc,
-+					sector_offset,
-+					addr);
++ #ifndef CONFIG_MXL_SPL_FIT
++	/* Loads legacy u-boot LZMA compressed image */
++	err = mmc_load_image_raw_sector(mmc, sector_offset, addr);
++ #else
++	/* Loads FIT formatted u-boot image */
++	err = load_fit_format(mmc, sector_offset, addr,
++			     LZMA_UBOOT_LOAD_ADDR, UBOOT_SZ);
++
++	/* The current framework expects the mkimage hdr
++	 * to be at this offset. Since for FIT image
++	 * this differs, copy this small portion to satisfy
++	 * the current boot framework.
++	 */
++	memcpy((u32 *)(LZMA_UBOOT_LOAD_ADDR - sizeof(struct image_header)),
++			(u32 *)*addr, sizeof(struct image_header));
++ #endif /* CONFIG_MXL_SPL_FIT */
 +#else
 +	/* switch to boot0 (1) or boot1 (2) partition */
 +	err = blk_dselect_hwpart(mmc_get_blk_desc(mmc), bootimage + 1);
@@ -280376,19 +280471,19 @@ new file mode 100644
 +	 * seclib will perform xip decrpytion
 +	 */
 +	ret = bootrom_sec_api_auth(addr + sizeof(struct image_header),
-+								&attribute_table);
++				   &attribute_table);
 +	if (ret)
 +		return 1;
 +
 +	sb_attrib_err = get_sbif_attributes(&attribute_table, NULL, NULL,
-+											&img_rollback_id, NULL);
++					    &img_rollback_id, NULL);
 +	if (SB_ATTRIB_INVALID == sb_attrib_err) {
 +		/* invalid image attribute */
 +		return SB_ATTRIB_INVALID;
 +	} else {
 +		/* todo: image attribute handling, now pass through */
 +		rbe_debug_print("\n TODO: ATTRIB HANDLING <0x%08x>: <%s>:<%d>:<%s> \n",
-+							sb_attrib_err, __FILE__, __LINE__, __func__);
++				sb_attrib_err, __FILE__, __LINE__, __func__);
 +	} /* SB_ATTRIB_INVALID */
 +
 +#if defined(CONFIG_ROLLBACKID_SUPPORT)
@@ -280399,12 +280494,15 @@ new file mode 100644
 +		return 1;
 +#endif /* CONFIG_ROLLBACKID_SUPPORT */
 +
++	/* LZMA U-boot is auth to 0x800.0000 */
++	if (IS_ENABLED(CONFIG_MXL_SPL_FIT))
++		addr = LZMA_UBOOT_LOAD_ADDR;
 +	/* read image header (backup @ 0x7FFFFC0), uncompress image and jump */
 +	uncompress_image(addr - sizeof(struct image_header), CONFIG_COMPRESS);
 +#else
 +	/* uncompress image and jump */
 +	uncompress_image(addr, CONFIG_COMPRESS);
-+#endif
++#endif /* CONFIG_CHD_SECURE_BOOT */
 +
 +	/* return failure because we should not be here */
 +	return 1;
@@ -280672,7 +280770,7 @@ diff --git a/arch/x86/lib/spl_lgm_nand.c b/arch/x86/lib/spl_lgm_nand.c
 new file mode 100644
 --- /dev/null
 +++ b/arch/x86/lib/spl_lgm_nand.c
-@@ -0,0 +1,123 @@
+@@ -0,0 +1,161 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -280796,6 +280894,44 @@ new file mode 100644
 +	hang();
 +}
 +
++#ifdef CONFIG_MXL_SPL_FIT
++int extract_fit_image(u32 *dst_addr, u32 img_load_addr)
++{
++	int offset, node_offset;
++	int len;
++	const void *data;
++	u32 load_addr = img_load_addr;
++
++	/* Check if the buffer contains a valid FIT image */
++	if (fdt_check_header((const void *)load_addr) != 0) {
++		goto error;
++	}
++
++	/* Locate the 'images' node */
++	offset = fdt_path_offset((const void *)load_addr, "/images");
++	if (offset < 0) {
++		goto error;
++	}
++
++	/* Iterate through subnodes to find the first 'firmware' binary */
++	node_offset = fdt_first_subnode((const void *)load_addr, offset);
++	while (node_offset >= 0) {
++		const char *type = fdt_getprop((const void *)load_addr,
++						node_offset, "type", NULL);
++		if (type && strcmp(type, "firmware") == 0) {
++			data = fdt_getprop((const void *)load_addr,
++					    node_offset, "data", &len);
++			*dst_addr = (u32)data;
++			return 0;
++		}
++		node_offset = fdt_next_subnode((const void *)load_addr,
++						node_offset);
++	}
++
++error:
++	return -1;
++}
++#endif /* CONFIG_MXL_SPL_FIT */
 diff --git a/arch/x86/lib/spl_lgm_nor.c b/arch/x86/lib/spl_lgm_nor.c
 new file mode 100644
 --- /dev/null
@@ -280989,7 +281125,7 @@ diff --git a/arch/x86/lib/spl_lgm_spi_nand.c b/arch/x86/lib/spl_lgm_spi_nand.c
 new file mode 100644
 --- /dev/null
 +++ b/arch/x86/lib/spl_lgm_spi_nand.c
-@@ -0,0 +1,296 @@
+@@ -0,0 +1,327 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -281023,11 +281159,16 @@ new file mode 100644
 +
 +#ifdef CONFIG_TEP_PKG
 +#define SIZE_OF_MKIMAGE_HEADER		0x40
-+#define TEP_FIRMWARE_OFFSET_NAND	((CONFIG_SYS_NAND_U_BOOT_OFFS + CONFIG_LGM_U_BOOT_SIZE) * 2)
++/* as defined in mtdparts */
++#define TEP_FIRMWARE_OFFSET_NAND	((CONFIG_SYS_NAND_U_BOOT_OFFS + CONFIG_UBOOT_PART_SIZE) * 2)
 +extern int launch_tep(u32 tep_ddr_base, u32 aic_address);
 +#endif /* CONFIG_TEP_PKG */
-+extern void uncompress_image(ulong image_addr, int uncompress);
 +
++#ifdef CONFIG_MXL_SPL_FIT
++extern int extract_fit_image(u32 *src, u32 img_load_addr);
++#endif
++
++extern void uncompress_image(ulong image_addr, int uncompress);
 +
 +/* hw abstraction layer of loading from nand flash */
 +static int nand_load(struct mtd_info *mtd, unsigned int offset,
@@ -281068,7 +281209,7 @@ new file mode 100644
 +{
 +	int ret;
 +	unsigned long tep_offset;
-+	u32 entry_addr, aic_addr;
++	u32 entry_addr, aic_addr, addr;
 +
 +	/* since we do not have any mtd info, use the build configuration
 +	 * data that we have on the TEP location in flash.
@@ -281081,15 +281222,23 @@ new file mode 100644
 +	/*
 +	 * Load TEP image from NAND into RAM
 +	 */
-+	rbe_debug_print("\n SPL: <TEP_FIRMWARE_OFFSET_NAND:0x%x>\n", TEP_FIRMWARE_OFFSET_NAND);
 +	rbe_debug_print(" SPL: <TEP_FIRMWARE_SIZE:0x%x>\n", TEP_FIRMWARE_SIZE);
 +	rbe_debug_print(" SPL: <TEP_LOAD_BASE:0x%x>\n", TEP_LOAD_BASE);
++	rbe_debug_print(" SPL: <tep_offset:0x%x>\n", tep_offset);
 +
 +	ret = nand_load(mtd_data, tep_offset,
 +			TEP_FIRMWARE_SIZE,
 +			(uchar *)TEP_LOAD_BASE);
 +	if (ret)
 +		return ret;
++
++#ifdef CONFIG_MXL_SPL_FIT
++	ret = extract_fit_image(&addr, TEP_LOAD_BASE);
++	if (ret)
++		return -EINVAL;
++#else
++	addr = TEP_LOAD_BASE;
++#endif /* CONFIG_MXL_SPL_FIT */
 +
 +#if defined(CONFIG_CHD_SECURE_BOOT)
 +	u32 img_rollback_id = 0;
@@ -281098,12 +281247,12 @@ new file mode 100644
 +	u32 sb_attrib_err = SB_ATTRIB_VALID;
 +	struct SBIF_Attributes attribute_table;
 +
-+	ret = bootrom_sec_api_auth(TEP_LOAD_BASE, &attribute_table);
++	ret = bootrom_sec_api_auth(addr, &attribute_table);
 +	if (ret)
 +		return ret;
 +
 +	sb_attrib_err = get_sbif_attributes(&attribute_table, &aic_addr,
-+							&entry_addr, &img_rollback_id, &img_id);
++					    &entry_addr, &img_rollback_id, &img_id);
 +	if (SB_ATTRIB_INVALID == sb_attrib_err) {
 +		/* invalid image attribute */
 +		return SB_ATTRIB_INVALID;
@@ -281142,6 +281291,7 @@ new file mode 100644
 +			int bootimage)
 +{
 +	int ret;
++	u32 addr;
 +	unsigned long mkimage_size = 0;
 +	unsigned long uboot_offset;
 +	unsigned long spl_pad_size;
@@ -281164,17 +281314,24 @@ new file mode 100644
 +	/*
 +	 * Load U-Boot image from NAND into RAM
 +	 */
-+	rbe_debug_print("\n SPL: <CONFIG_SYS_NAND_U_BOOT_OFFS:0x%x>\n", CONFIG_SYS_NAND_U_BOOT_OFFS);
-+	rbe_debug_print(" SPL: <CONFIG_SYS_NAND_U_BOOT_SIZE:0x%x>\n", CONFIG_SYS_NAND_U_BOOT_SIZE);
 +	rbe_debug_print(" SPL: <LZMA_UBOOT_LOAD_ADDR:0x%x>\n", LZMA_UBOOT_LOAD_ADDR);
-+	rbe_debug_print("\n SPL: <spl_pad_size:0x%x>\n", spl_pad_size);
-+	rbe_debug_print(" SPL: <uboot_part_size:0x%x>\n", uboot_part_size);
++	rbe_debug_print("\n SPL: <spl_pad_size:0x%lx>\n", spl_pad_size);
++	rbe_debug_print(" SPL: <uboot_part_size:0x%lx>\n", uboot_part_size);
++	rbe_debug_print(" SPL: <uboot_offset:0x%lx>\n", uboot_offset);
 +
 +	ret = nand_load(mtd_data, uboot_offset,
 +			CONFIG_SYS_NAND_U_BOOT_SIZE,
 +			(uchar *)LZMA_UBOOT_LOAD_ADDR);
 +	if (ret)
 +		goto error;
++
++#ifdef CONFIG_MXL_SPL_FIT
++	ret = extract_fit_image(&addr, LZMA_UBOOT_LOAD_ADDR);
++	if (ret)
++		goto error;
++#else
++	addr = LZMA_UBOOT_LOAD_ADDR;
++#endif /* CONFIG_MXL_SPL_FIT */
 +
 +#if defined(CONFIG_CHD_SECURE_BOOT)
 +	u32 img_rollback_id = 0;
@@ -281189,14 +281346,13 @@ new file mode 100644
 +	 * by the authentication process
 +	 */
 +	memcpy((u32 *)(LZMA_UBOOT_LOAD_ADDR - sizeof(struct image_header)),
-+		(u32 *)(LZMA_UBOOT_LOAD_ADDR),
++		(u32 *)(addr),
 +		sizeof(struct image_header));
 +	/*
 +	 * call bootrom seclib api to auth signed lzma u-boot image
 +	 */
-+	ret = bootrom_sec_api_auth(LZMA_UBOOT_LOAD_ADDR
-+				+ sizeof(struct image_header),
-+				&attribute_table);
++	ret = bootrom_sec_api_auth(addr	+ sizeof(struct image_header),
++				   &attribute_table);
 +	if (ret)
 +		goto error;
 +
@@ -281220,11 +281376,22 @@ new file mode 100644
 +#endif /* CONFIG_ROLLBACKID_SUPPORT */
 +#endif /* CONFIG_CHD_SECURE_BOOT */
 +
++	/* In secureboot mode, as the u-boot image is decrypted
++	 * to the address controlled by SB attributes, the resultant
++	 * image is loaded to LZMA_UBOOT_LOAD_ADDR, no matter
++	 * the status of CONFIG_MXL_SPL_FIT.
++	 * When only FIT is enabled, the u-boot image is in and offset
++	 * from LZMA_UBOOT_LOAD_ADDR depending on the FDT header.
++	 */
++	if (IS_ENABLED(CONFIG_CHD_SECURE_BOOT) &&
++	    IS_ENABLED(CONFIG_MXL_SPL_FIT)
++		|| !IS_ENABLED(CONFIG_MXL_SPL_FIT))
++		addr = LZMA_UBOOT_LOAD_ADDR - mkimage_size;
++
 +	/* read image header, uncompress image and jump
 +	 * should not return
 +	*/
-+	uncompress_image(LZMA_UBOOT_LOAD_ADDR
-+			- mkimage_size, CONFIG_COMPRESS);
++	uncompress_image(addr, CONFIG_COMPRESS);
 +
 +error:
 +	return -EINVAL;

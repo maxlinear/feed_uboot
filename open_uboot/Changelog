@@ -1,5 +1,45 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.360
+	* - Fixes for FIT fullimage upgrade due to partition name not found
+
+Changes for U-boot version: 4.0.359
+	* UGW_SW-91497 : Support upgrade of fullimage FIT format Modified upgrade funtion to parse and upgrade FIT format fullimage
+
+Changes for U-boot version: 4.0.358
+	* UGW_SW-91946 - Updated support for configurable name of early boot and kernel partitions
+
+Changes for U-boot version: 4.0.357
+	* - Fixes upgrade issue when FIT is disabled
+
+Changes for U-boot version: 4.0.356
+	* UGW_SW-90939 - Support in EMMC SPL to load U-boot in FIT format
+	* UGW_SW-90939 - Added FIT format u-boot to EBU and QSPI NAND flash boot modes
+	* UGW_SW-90939 - Secureboot changes to allow authentication of U-boot in FIT image
+	* UGW_SW-90939 - Added support for TEP firmware in FIT format
+	* UGW_SW-90939 - Upgrade tool support for u-boot and firmware ITB files
+
+Changes for U-boot version: 4.0.355
+	* UBOOT_SW-2093 - SPL padding changes to allow for bigger binaries from updated DDR tuning firmwares
+	* UBOOT_SW-2089 - Fixes memory range limitation for LPDDR4 configurations
+	* UBOOT_SW-2093 - Fixes SPL write size issues on smaller 2K flash
+
+Changes for U-boot version: 4.0.353
+	* UGW_SW-90315 added single image u-boot changes for eth and pon wan.
+
+Changes for U-boot version: 4.0.352
+	* UGW_SW-89339: Fix for SPI nand secure is not booting up
+
+Changes for U-boot version: 4.0.351
+	* UGW_SW-91083 - SPI nand secure is not booting up
+
+Changes for U-boot version: 4.0.350
+	* UGW_SW-90760 - Revert RBE rollbackID to 5 to allow compatibility across MXL boards
+
+Changes for U-boot version: 4.0.349
+	* UBOOT_SW-2089 - DDR4 firmware upgrade to release 2023
+	* UBOOT_SW-2089 - LPDDR4 firmware update to 2023 release
+
 Changes for U-boot version: 4.0.348
 	* configuration added for OSPv2-B board
 

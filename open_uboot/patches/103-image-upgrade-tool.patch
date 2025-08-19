@@ -1,11 +1,11 @@
 # HG changeset patch
-# Parent  1cc2f99d4d9b04276b8d5ca714a5e3b819bce6f0
+# Parent  7cfea49db25c815167a8579d16c3ace37b5e6845
 
 diff --git a/cmd/mxl/upgrade.c b/cmd/mxl/upgrade.c
 new file mode 100644
 --- /dev/null
 +++ b/cmd/mxl/upgrade.c
-@@ -0,0 +1,532 @@
+@@ -0,0 +1,676 @@
 +/*
 + * (C) Copyright 2000
 + * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -41,10 +41,93 @@ new file mode 100644
 +
 +#ifdef CONFIG_BOOT_FROM_EMMC
 +#define EMMC_UPGRADE_SUPPORT
++/* We pass the partition name to the upgrade API */
++#define ROOTFS_PART_NAME	"ext4-fs"
++#define KERNEL_PART_NAME	"ext4-fs"
++#define ROOTFS_PART_SZ		8
++#define KERNEL_PART_SZ		8
 +#include <memalign.h>
++#else
++#define ROOTFS_PART_NAME	"rootfs"
++#define KERNEL_PART_NAME	"kernel"
++#define ROOTFS_PART_SZ		7
++#define KERNEL_PART_SZ		7
 +#endif
 +
++#if !defined(CONFIG_FIT)
++/* If FIT is not defined, then we assume FDT images provided
++ * to the system is only the DTB.
++ * Manual upgrade of U-boot and RBE needed to be able
++ * to use the additional FIT libraries needed.
++ */
++int fit_image_get_os(const void *fit, int noffset, uint8_t *os)
++{
++	return -1;
++}
++
++int fit_image_get_type(const void *fit, int noffset, uint8_t *type)
++{
++	return -1;
++}
++int fit_image_get_data(const void *fit, int noffset,
++                const void **data, size_t *size)
++{
++	return -1;
++}
++#endif /* CONFIG_FIT*/
++
 +static void update_env_filesize(char *name, u32 size);
++
++static int get_fit_info(const void *addr, uint8_t image_type, int noffset,
++			char **filename, char *image_name, char *env_name)
++{
++	uint8_t image_os;
++
++	switch (image_type) {
++	case IH_TYPE_RAMDISK:
++	case IH_TYPE_FILESYSTEM:
++		*filename = env_get("rootfs");
++		snprintf(image_name, ROOTFS_PART_SZ,
++				      ROOTFS_PART_NAME);
++		snprintf(env_name, 7, "rootfs");
++		break;
++	case IH_TYPE_KERNEL:
++		*filename = env_get("bootfile");
++		snprintf(image_name, KERNEL_PART_SZ,
++				      KERNEL_PART_NAME);
++		snprintf(env_name, 7, "kernel");
++		break;
++	case IH_TYPE_FIRMWARE:
++		if (fit_image_get_os(addr, noffset, &image_os)) {
++			error("cannot fine os property in FIT image\n");
++			return -EINVAL;
++		}
++
++		if (image_os == IH_OS_U_BOOT) {
++			*filename = env_get("u-boot");
++			snprintf(image_name, 6, "uboot");
++			snprintf(env_name, 6, "uboot");
++		} else if (image_os == IH_OS_TEE) {
++			*filename = env_get("tep_firmware");
++			snprintf(image_name, 13, "tep_firmware");
++			snprintf(env_name, 13, "tep_firmware");
++		} else {
++			error("Image OS %d not supported\n", image_os);
++			return -1;
++		}
++		break;
++	case IH_TYPE_FLATDT:
++		*filename = env_get("dtb");
++		snprintf(image_name, 4, "dtb");
++		snprintf(env_name, 4, "dtb");
++		break;
++	default:
++		error("Wrong image type %d!\n", image_type);
++		return -1;
++	}
++
++	return 0;
++}
 +
 +/* TODO: Will not work with a standalone dtb image
 + * either the image has to be tweaked or need to
@@ -55,7 +138,11 @@ new file mode 100644
 +{
 +	const void *data;
 +	int noffset, depth = 0;
-+	int len = 0;
++	int err, len = 0;
++	uint8_t image_type = 0;
++	char *filename;
++	char image_name[16], env_name[16];
++	int fitimage_size = fdt_totalsize(addr);
 +
 +	/* Look for dtb within fit image, which is in
 +	 * the node below parent.
@@ -74,48 +161,48 @@ new file mode 100644
 +		return fdt_totalsize(addr);
 +	}
 +
-+	data = fdt_getprop(addr, noffset, FIT_DATA_PROP, &len);
-+	if (!len) {
-+		error("Unable to find image data\n");
-+		return fdt_totalsize(addr);
++	/* When FIT is not enabled, the API doesn't exist and
++	 * we assume that the image given is an FDT. If image is indeed
++	 * invalid, the next check will flag the error.
++	 */
++	err = fit_image_get_type(addr, noffset, &image_type);
++	if (err < 0)
++		image_type = IH_TYPE_FLATDT;
++
++	if (image_type == IH_TYPE_FLATDT) {
++		data = fdt_getprop(addr, noffset, FIT_DATA_PROP, &len);
++		if (!len) {
++			error("Unable to find DTB image data\n");
++			return fdt_totalsize(addr);
++		}
++		printf("Found device tree image at %px len %zu\n", data, len);
 +	}
 +
-+	printf("Found device tree image at %px len %zu\n", data, len);
++	err = get_fit_info(addr, image_type, noffset,
++			   &filename, image_name, env_name);
++	if (err)
++		return err;
 +
 +#ifdef EMMC_UPGRADE_SUPPORT
-+	uint8_t image_type;
-+	char *filename;
-+	int fitimage_size = fdt_totalsize(addr);
-+
-+#ifdef CONFIG_FIT
-+	if (fit_image_get_type(addr, noffset, &image_type))
-+		return 0;
++	if (image_type == IH_TYPE_FLATDT)
++		err = upgrade_img((ulong)data, len, image_name, NULL);
++	else
++		err = upgrade_img((ulong)addr, fdt_totalsize(addr),
++				  image_name, filename);
 +#else
-+	image_type = IH_TYPE_FLATDT;
++	if (image_type == IH_TYPE_FLATDT)
++		err = upgrade_img((ulong)data, len, image_name, 0, 0);
++	else
++		err = upgrade_img((ulong)addr, fdt_totalsize(addr),
++				  image_name, 0, 0);
 +#endif
++	if (err)
++		return err;
 +
-+	printf("image type %d fitimage_size %d data_len %d\n", image_type,
-+		fitimage_size, len);
++	update_env_filesize(env_name, fdt_totalsize(addr));
++	printf("image %s type %d fitimage_size %d\n",
++		image_name, image_type, fitimage_size);
 +
-+	if (image_type == IH_TYPE_RAMDISK || image_type == IH_TYPE_FILESYSTEM) {
-+		filename = env_get("rootfs");
-+		if (upgrade_img((ulong)addr, fitimage_size, "extended_boot", filename))
-+			error("failed to upgrade rootfs\n");
-+		update_env_filesize("rootfs", fdt_totalsize(addr));
-+	} else if (image_type == IH_TYPE_KERNEL) {
-+		filename = env_get("bootfile");
-+		if (upgrade_img((ulong)addr, fitimage_size, "extended_boot", filename))
-+			error("failed to upgrade kernel\n");
-+		update_env_filesize("kernel", fdt_totalsize(addr));
-+	} else if (image_type == IH_TYPE_FLATDT) {
-+		if (upgrade_img((ulong)data, len, "dtb", NULL))
-+			error("failed to upgrade dtb\n");
-+		update_env_filesize("dtb", fdt_totalsize(addr));
-+	}
-+#else
-+	if (upgrade_img((ulong)data, len, "dtb", 0, 0))
-+		error("failed to upgrade dtb\n");
-+#endif /* EMMC_UPGRADE_SUPPORT */
 +	return fdt_totalsize(addr);
 +}
 +
@@ -203,11 +290,11 @@ new file mode 100644
 +	if (inc_ih_size)
 +		size += sizeof(image_header_t);
 +
-+	debug("selected partition: %s, len: %d\n", selected_partition, len);
-+	debug("env_set %s %s\n", env_name, env_size);
-+
 +	snprintf(env_size, 32, "%08x", size);
 +	env_set(env_name, env_size);
++
++	debug("selected partition: %s, len: %d\n", selected_partition, len);
++	debug("env_set %s %s\n", env_name, env_size);
 +
 +	/* Get the filesize of the boot partiton rootfs.
 +	 * If for some reason the rootfs size is not found,
@@ -255,6 +342,51 @@ new file mode 100644
 +	}
 +}
 +
++int upgrade_nested_fit(void *fit) {
++
++	int noffset, depth = 0;
++	const void *data = NULL;
++	int err, len = 0;
++	int nested_fit = 0;
++	uint8_t image_type = 0;
++
++	if (genimg_get_format(fit) != IMAGE_FORMAT_FIT){
++		printf ("\nImage in not int FIT format");
++		return -1;
++	}
++
++	noffset = fdt_path_offset(fit, FIT_IMAGES_PATH);
++	if (noffset < 0){
++		printf ("\nFIT image is missing image nodes");
++		return -1;
++	}
++
++	while ((noffset = fdt_next_node(fit, noffset, &depth)) >= 0) {
++		if (depth < 1)
++			break;
++
++		if (depth == 1) {
++			if (fit_image_get_data(fit, noffset, &data, &len) != 0 || !data || len <= 0)
++				continue;
++
++			if (genimg_get_format(data) == IMAGE_FORMAT_FIT) {
++				err = fit_image_get_type(fit, noffset, &image_type);
++				if (err < 0)
++					image_type = IH_TYPE_FLATDT;
++				printf("\nupgrade_nested_fit called for image_type %d",image_type);
++				if(image_type != IH_TYPE_FLATDT) {
++					if (upgrade_fitimage((void *)data) < 0) {
++						printf ("\nUpgrading nested fit image failed");
++						return -1;
++					}
++					nested_fit = 1;
++				}
++			}
++		}
++	}
++	return nested_fit;
++}
++
 +int do_upgrade(struct cmd_tbl *cmdtp, int flag, int argc,
 +			char * const argv[]) {
 +	int image_hcrc_pass,image_dcrc_pass;
@@ -268,6 +400,7 @@ new file mode 100644
 +#endif
 +	image_header_t *pimg_header = NULL;
 +	char name[32], strimg_crc[32], buf[32];
++	int nested_fit = 0;
 +#ifdef CONFIG_CMD_UBI
 +	int ubi = 0;
 +#endif /* CONFIG_CMD_UBI */
@@ -287,7 +420,18 @@ new file mode 100644
 +		 * header
 +		 */
 +		if (genimg_get_format((void *)srcHeader) == IMAGE_FORMAT_FIT) {
-+			curParSize = upgrade_fitimage((void *)srcHeader);
++			nested_fit = upgrade_nested_fit((void *)srcHeader);
++			if (nested_fit < 0) {
++				printf ("fullimage(FIT format) failed to upgrade\n");
++				return -1;
++			} else if (nested_fit > 0) {
++				curParSize = fdt_totalsize((void *)srcHeader);
++				printf ("fullimage(FIT format) upgrade succeed\n");
++			} else {
++				curParSize = upgrade_fitimage((void *)srcHeader);
++				if (curParSize < 0)
++					return -1;
++			}
 +			continue;
 +		}
 +
@@ -414,7 +558,7 @@ new file mode 100644
 +		/* rootfs & kernel belongs to extended partition */
 +		if (!strncmp(name, "kernel", 6) ||
 +			!strncmp(name, "rootfs", 6)) {
-+			snprintf(name, 14, "extended_boot");
++			snprintf(name, 8, "ext4-fs");
 +		}
 +
 +		emmc_buf = (unsigned char *)srcHeader;
@@ -542,7 +686,7 @@ diff --git a/common/img_upgrade.c b/common/img_upgrade.c
 new file mode 100644
 --- /dev/null
 +++ b/common/img_upgrade.c
-@@ -0,0 +1,748 @@
+@@ -0,0 +1,754 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright © 2022 MaxLinear, Inc.
@@ -837,11 +981,13 @@ new file mode 100644
 +	 * The latter may be much larger than the former and the size could
 +	 * span all the blocks in the RBE partition. This is not
 +	 * recommended (junk bytes)
-+	 * RBE Size = ibrh tail size + nand page size + pad to nand writesize
++	 * RBE Size = ibrh + tail size + tail-data + pad
 +	*/
 +	if (!strncmp(imgName, "rbe", 3)) {
 +		rom_tail_len = (u32 *)(srcAddr + nand_info->writesize + 4);
 +		rbe_wr_len = *rom_tail_len + nand_info->writesize;
++		/* brh + tail data */
++		rbe_wr_len += 0x30;
 +		pad = nand_info->writesize -
 +			(rbe_wr_len & (nand_info->writesize - 1));
 +		srcLen = rbe_wr_len + pad;
@@ -858,8 +1004,10 @@ new file mode 100644
 +				MTD_DEV_TYPE_NAND, nand_info->size))
 +			return -1;
 +
-+		destAddr = (unsigned long)off;
++		printf("Writing 0x%08x bytes to partition %s\n",
++			srcLen, partition_name);
 +
++		destAddr = (unsigned long)off;
 +		ret = program_img(srcAddr, srcLen, destAddr);
 +		if (ret) {
 +			printf("Error writing to %s at off: 0x%08lx length: %d\n",
@@ -1108,7 +1256,9 @@ new file mode 100644
 +		}
 +	}
 +
-+	if (pimg_header && pimg_header->ih_type == IH_TYPE_UBOOT) {
++	/* Compare image header type (Legacy) or image name (FIT) */
++	if ((pimg_header && pimg_header->ih_type == IH_TYPE_UBOOT)
++		|| !strncmp(imgName, "uboot", 5)) {
 +		/* U-boot image */
 +		ret = update_early_boot_components(srcAddr, srcLen, imgName);
 +		if (ret) {
@@ -1124,9 +1274,9 @@ new file mode 100644
 +				UPG_IMAGE_MKIMAGE_HDR_CHECK_FAIL);
 +			return ret;
 +		}
-+	} else if (pimg_header &&
-+			!strncmp((char *)pimg_header->ih_name,
-+				  "TEP firmware", 12)) {
++	} else if ((pimg_header &&
++			!strncmp((char *)pimg_header->ih_name, "TEP firmware", 12))
++			|| !strncmp(imgName, "tep_firmware", 12)) {
 +		ret = update_early_boot_components(srcAddr, srcLen, imgName);
 +		if (ret) {
 +			update_udt_failure(UDT_UPGRADE_FAILED,
@@ -1295,7 +1445,7 @@ diff --git a/common/img_upgrade_emmc.c b/common/img_upgrade_emmc.c
 new file mode 100644
 --- /dev/null
 +++ b/common/img_upgrade_emmc.c
-@@ -0,0 +1,410 @@
+@@ -0,0 +1,441 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright © 2022 MaxLinear, Inc.
@@ -1338,6 +1488,42 @@ new file mode 100644
 +	return ret;
 +}
 +
++static void set_partition_name(char *partition_name, char *image_name,
++				int partition)
++{
++	if (!strncmp(image_name, "uboot", 6)) {
++		if (partition == 0)
++			snprintf(partition_name,
++				strlen(CONFIG_UBOOT_PART_A) + 1,
++				CONFIG_UBOOT_PART_A);
++		else
++			snprintf(partition_name,
++				strlen(CONFIG_UBOOT_PART_B) + 1,
++				CONFIG_UBOOT_PART_B);
++	} else if (!strncmp(image_name, "tep_firmware", 13)) {
++		if (partition == 0)
++			snprintf(partition_name,
++				strlen(CONFIG_TEP_PART_A) + 1,
++				CONFIG_TEP_PART_A);
++		else
++			snprintf(partition_name,
++				strlen(CONFIG_TEP_PART_B) + 1,
++				CONFIG_TEP_PART_B);
++	} else if (!strncmp(image_name, "dtb", 4)) {
++		snprintf(partition_name, 6, "dtb_%s",
++				(partition == 0) ? "a" : "b");
++	} else if (!strncmp(image_name, "ext4-fs", 8)) {
++		if (partition == 0)
++			snprintf(partition_name,
++				strlen(CONFIG_FILESYSTEM_PART_A) + 1,
++				CONFIG_FILESYSTEM_PART_A);
++		else
++			snprintf(partition_name,
++				strlen(CONFIG_FILESYSTEM_PART_B) + 1,
++				CONFIG_FILESYSTEM_PART_B);
++	}
++}
++
 +static struct blk_desc *select_user_part(struct mmc *mmc, char *fs_part,
 +				char *partition_name, char *img_name)
 +{
@@ -1353,13 +1539,11 @@ new file mode 100644
 +		printf("No partition selected\n");
 +		goto err;
 +	} else if (!strncmp(select_part, "primary", 7)) {
-+		snprintf(partition_name, (MAX_PART_NAME_LEN-2), img_name);
-+		strncat(partition_name, "_a", 2);
++		set_partition_name(partition_name, img_name, 0);
 +		snprintf(fs_part, MAX_PART_NAME_LEN,
 +			 "0#%s", CONFIG_FILESYSTEM_PART_A);
 +	} else if ((!strncmp(select_part, "secondary", 9))) {
-+		snprintf(partition_name, (MAX_PART_NAME_LEN-2), img_name);
-+		strncat(partition_name, "_b", 2);
++		set_partition_name(partition_name, img_name, 1);
 +		snprintf(fs_part, MAX_PART_NAME_LEN,
 +			  "0#%s", CONFIG_FILESYSTEM_PART_B);
 +	} else {
@@ -1469,9 +1653,7 @@ new file mode 100644
 +#endif /* CONFIG_EARLYBOOT_STRICT_UPGRADE */
 +
 +	for (partition = 0; partition < boot_partitions; partition++) {
-+		snprintf(partition_name, (sizeof(partition_name)-2), image_name);
-+		strncat(partition_name,
-+			((partition == 0) ? "_a" : "_b"), 2);
++		set_partition_name(partition_name, image_name, partition);
 +
 +		/* get the image partiton info by name */
 +		ret = part_get_info_by_name(mmc_blk, partition_name, &part);
@@ -1626,9 +1808,8 @@ new file mode 100644
 +	return true;
 +}
 +
-+
 +int upgrade_img(ulong src_addr, int64_t src_len,
-+	char *img_name, char *filename)
++		char *img_name, char *filename)
 +{
 +	int ret = 0;
 +	int dev = mmc_get_env_dev();
@@ -1654,7 +1835,7 @@ new file mode 100644
 +		pimg_header = (image_header_t *)src_addr;
 +
 +	if (pimg_header && ntohl(pimg_header->ih_magic) == IH_MAGIC) {
-+		printf("Image contains header with name [%.*s]\n", IH_NMLEN, pimg_header->ih_name); 
++		printf("Image contains header with name [%.*s]\n", IH_NMLEN, pimg_header->ih_name);
 +		if (!is_preserve_header(pimg_header)) {
 +			printf("This is not kernel image and so removing header\n");
 +			src_addr += sizeof(*pimg_header);

@@ -182,6 +182,8 @@ UBOOT_IMAGES:=u-boot-recovery.bin u-boot-recovery.asc \
 #for emmc 
 UBOOT_IMAGES+=*-emmc.bin
 UBOOT_IMAGES+=spl/*-emmc.bin
+#for emmc fit
+UBOOT_IMAGES+=*.itb
 #for nand
 UBOOT_IMAGES+=*-nand.bin
 UBOOT_IMAGES+=spl/*-nand.bin
@@ -215,10 +217,9 @@ define Package/$(PKG_NAME)/install
 		fi; \
 	done
 	mkdir -p $(BIN_DIR)/uboot-$(BUILD_VARIANT)
-	cp -vf $(variant_path)/u-boot-* $(BIN_DIR)/uboot-$(BUILD_VARIANT)
+	cp -vf $(variant_path)/u-boot* $(BIN_DIR)/uboot-$(BUILD_VARIANT)
 endef
 endif
-
 
 # dummy package for global config options
 $(eval $(call BuildPackage,$(PKG_NAME)))
