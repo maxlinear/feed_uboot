@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  a0944547a1a0e89a80bad027ba70563bccd9745f
+# Parent  edc1a0d3f5c1f666e74affbd4f258776e9809012
 
 diff --git a/arch/x86/cpu/intel_common/microcode.c b/arch/x86/cpu/intel_common/microcode.c
 --- a/arch/x86/cpu/intel_common/microcode.c
@@ -87,7 +87,7 @@ diff --git a/arch/x86/cpu/lightning_mountain/Kconfig b/arch/x86/cpu/lightning_mo
 new file mode 100644
 --- /dev/null
 +++ b/arch/x86/cpu/lightning_mountain/Kconfig
-@@ -0,0 +1,455 @@
+@@ -0,0 +1,463 @@
 +# SoC specific configurations
 +
 +config ATOM
@@ -541,6 +541,14 @@ new file mode 100644
 +	bool "Secure Boot ENV protection"
 +	default n
 +	depends on CHD_SECURE_BOOT
++
++config SB_ENV_WHITELIST
++	string "The environment variables to be whitelisted"
++	default "ipaddr;ethaddr;serverip;fullimage"
++	depends on SB_ENV_PROTECTION
++	help
++	  The list of variables to be white listed separated by
++	  using a delimiter ';'
 +
 +endmenu
 diff --git a/arch/x86/cpu/lightning_mountain/Makefile b/arch/x86/cpu/lightning_mountain/Makefile
@@ -263018,7 +263026,7 @@ diff --git a/arch/x86/include/asm/arch-lightning/noc/noc_fw_eff_sai.h b/arch/x86
 new file mode 100644
 --- /dev/null
 +++ b/arch/x86/include/asm/arch-lightning/noc/noc_fw_eff_sai.h
-@@ -0,0 +1,490 @@
+@@ -0,0 +1,491 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
 + *
@@ -263236,7 +263244,7 @@ new file mode 100644
 +		9, //  55 
 +		0, //  56 
 +		0, //  57 
-+		0, //  58 
++		16, //  58 
 +		0, //  59 
 +		10, //  60 
 +		0, //  61 
@@ -263473,7 +263481,7 @@ new file mode 100644
 +		15, //  28 
 +		15, //  29 
 +		9, //  30 
-+		10, //  31 
++		9, //  31 
 +		2, //  32 
 +		15, //  33 
 +		0, //  34 
@@ -263498,7 +263506,7 @@ new file mode 100644
 +		14, //  53 
 +		8, //  54 
 +		15, //  55 
-+		16, //  56 
++		5, //  56 
 +		5, //  57 
 +		17, //  58 
 +		0, //  59 
@@ -263509,6 +263517,7 @@ new file mode 100644
 +	}}, // NoC_FW_DDR
 +};
 +#endif
++
 diff --git a/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ddr_rules.h b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ddr_rules.h
 new file mode 100644
 --- /dev/null

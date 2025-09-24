@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  9f374955f85aba8d38a45dd0bdfc8ebd27e7df09
+# Parent  295b6e47d8b638c6218f76b2d49130ce70f5d62b
 
 diff --git a/arch/sandbox/dts/sandbox.dtsi b/arch/sandbox/dts/sandbox.dtsi
 --- a/arch/sandbox/dts/sandbox.dtsi
@@ -619,7 +619,7 @@ diff --git a/cmd/bootm.c b/cmd/bootm.c
  	return ret;
  }
  
-@@ -126,7 +154,7 @@ int do_bootm(struct cmd_tbl *cmdtp, int 
+@@ -126,12 +154,12 @@ int do_bootm(struct cmd_tbl *cmdtp, int 
  	}
  
  	return do_bootm_states(cmdtp, flag, argc, argv, BOOTM_STATE_START |
@@ -628,6 +628,12 @@ diff --git a/cmd/bootm.c b/cmd/bootm.c
  		BOOTM_STATE_LOADOS |
  #ifdef CONFIG_SYS_BOOT_RAMDISK_HIGH
  		BOOTM_STATE_RAMDISK |
+ #endif
+-#if defined(CONFIG_PPC) || defined(CONFIG_MIPS)
++#if defined(CONFIG_PPC) || defined(CONFIG_MIPS) || (defined(CONFIG_X86) && defined(CONFIG_CMD_ICC_OVERLAY))
+ 		BOOTM_STATE_OS_CMDLINE |
+ #endif
+ 		BOOTM_STATE_OS_PREP | BOOTM_STATE_OS_FAKE_GO |
 @@ -178,6 +206,9 @@ static char bootm_help_text[] =
  	"must be\n"
  	"issued in the order below (it's ok to not issue all sub-commands):\n"

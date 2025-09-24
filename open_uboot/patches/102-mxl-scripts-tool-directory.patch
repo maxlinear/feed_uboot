@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  3e819da03a138ca06015648689072db13cb3c8d7
+# Parent  6869e58685a8668b8e29b66b08e1901198672a95
 
 diff --git a/scripts_platform/Kconfig b/scripts_platform/Kconfig
 new file mode 100755
@@ -3450,7 +3450,7 @@ diff --git a/scripts_platform/mk_sb_envimg.sh b/scripts_platform/mk_sb_envimg.sh
 new file mode 100755
 --- /dev/null
 +++ b/scripts_platform/mk_sb_envimg.sh
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,94 @@
 +#!/bin/bash
 +#Build uboot environment block image
 +#To be used in u-boot root directory of UGW package
@@ -3460,6 +3460,14 @@ new file mode 100755
 +#Usage: mk_sb_envimg.sh target_file
 +
 +# set -x
++
++# whitelist the variable by removing them from the binary
++remove_env_var() {
++    local entry="$1"
++    echo "entry=$entry env added to whitelist"
++    sed "/^$entry=/d" env.tmp.lines > env.tmp.cleaned
++    cp env.tmp.cleaned env.tmp.lines
++}
 +
 +packhex(){
 +    PACK_DATA_LEN=`echo $1 |wc -c`
@@ -3475,7 +3483,6 @@ new file mode 100755
 +    echo $PACK_RESULT
 +}
 +
-+
 +OUTPUT=$1
 +
 +ADDRHEX=`sed -e '/default_environment/!d' u-boot-2.sym |awk '{print substr($1,length($1)-4,5)}'`
@@ -3487,19 +3494,28 @@ new file mode 100755
 +
 +LEN=`echo $((16#$LENHEX))`
 +
++echo "env addr: $ADDR, len: $LEN"
 +
 +dd if=u-boot.bin of=env.tmp ibs=1 skip=$ADDR count=$LEN
++cp env.tmp env.bak
 +
-+# secure boot env remove protection of some variables:
-+# NOTE: hardcode for now
-+# 1. ipaddr variable unprotect
-+sed -i.bak 's/ipaddr=\([^\x0]\+\)\x0//' env.tmp
-+# 2. ethaddr variable unprotect
-+sed -i.bak 's/ethaddr=\([^\x0]\+\)\x0//' env.tmp
-+# 3. serverip variable unprotect
-+sed -i.bak 's/serverip=\([^\x0]\+\)\x0//' env.tmp
-+# 4. fullimage variable unprotect
-+sed -i.bak 's/fullimage=\([^\x0]\+\)\x0//' env.tmp
++# convert null to newline to allow sed changes
++tr '\0' '\n' < env.tmp > env.tmp.lines
++
++# >> define all the variables to be whitelisted here << 
++whitelist=$2
++echo "Whitelist = $whitelist"
++
++# Use IFS (Internal Field Separator) to split the string
++IFS=';' read -ra substrings <<< "$whitelist"
++
++# Loop through and print each substring
++for item in "${substrings[@]}"; do
++  remove_env_var "$item"
++done
++
++# convert newline back to null
++tr '\n' '\0' < env.tmp.cleaned > env.tmp
 +
 +# now this guy is in .config
 +CONFIG_ENV_SIZE=$(grep -r CONFIG_ENV_SIZE .config | awk -F'=' '{print $2}')
@@ -3526,7 +3542,7 @@ new file mode 100755
 +
 +cat env.tmp >>$OUTPUT
 +
-+rm -rf env.tmp
++#rm -rf env.tmp
 +
 +# set +x
 diff --git a/scripts_platform/mk_sf.pl b/scripts_platform/mk_sf.pl

@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  12063ee58c83d2ef53671e320ac0b6c90439d0ef
+# Parent  ca7bbfdb6e1897dad42466377964fd307ce0cb99
 
 diff --git a/arch/x86/dts/octopus-640.dts b/arch/x86/dts/octopus-640.dts
 new file mode 100644
@@ -14463,7 +14463,7 @@ new file mode 100644
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
 +# CONFIG_CMD_XIMG is not set
-+CONFIG_CMD_ZBOOT=y
++# CONFIG_CMD_ZBOOT is not set
 +# CONFIG_CMD_ASKENV is not set
 +# CONFIG_CMD_EXPORTENV is not set
 +# CONFIG_CMD_IMPORTENV is not set
@@ -18195,7 +18195,7 @@ new file mode 100644
 +# CONFIG_CMD_IMI is not set
 +# CONFIG_CMD_IMLS is not set
 +# CONFIG_CMD_XIMG is not set
-+CONFIG_CMD_ZBOOT=y
++# CONFIG_CMD_ZBOOT is not set
 +# CONFIG_CMD_ASKENV is not set
 +# CONFIG_CMD_EXPORTENV is not set
 +# CONFIG_CMD_IMPORTENV is not set

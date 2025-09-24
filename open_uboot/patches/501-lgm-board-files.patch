@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  9297146570be5ee85dfc9e876b9ec2a8d1ef920c
+# Parent  f502b2ca49ae1dc7cec61451645b787716d11fb2
 
 diff --git a/board/maxlinear/Kconfig b/board/maxlinear/Kconfig
 new file mode 100644
@@ -784,7 +784,7 @@ diff --git a/board/maxlinear/lightning/Makefile b/board/maxlinear/lightning/Make
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/Makefile
-@@ -0,0 +1,82 @@
+@@ -0,0 +1,83 @@
 +#
 +# Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
 +# Copyright (C) 2022 Maxlinear
@@ -832,6 +832,7 @@ new file mode 100644
 +$(info "Makefile Log: >>> Board MaxLinear >>>")
 +obj-y	+=  datapath_clear.o lightning.o
 +obj-y	+= lightning_start.o board_gpio_init.o
++obj-$(CONFIG_CMD_ICC_OVERLAY)	+= cmdline.o
 +obj-$(CONFIG_ROHM_PMIC) += ocp_settings.o
 +obj-$(CONFIG_TEP_PKG) += tep.o
 +obj-$(CONFIG_CMD_ICC) += icc/drv_icc.o
@@ -1081,7 +1082,7 @@ new file mode 100644
 +ifdef CONFIG_SB_ENV_PROTECTION
 +$(SB_ENV_BLOCK): FORCE
 +	$(NM) -Ss u-boot >u-boot-2.sym
-+	$(TOPDIR)/scripts_platform/mk_sb_envimg.sh $@
++	$(TOPDIR)/scripts_platform/mk_sb_envimg.sh $@ ${CONFIG_SB_ENV_WHITELIST}
 +endif
 +
 +ifdef CONFIG_MANUBOOT
@@ -1641,7 +1642,7 @@ new file mode 100644
 +ifdef CONFIG_SB_ENV_PROTECTION
 +$(SB_ENV_BLOCK): FORCE
 +	$(NM) -Ss u-boot >u-boot-2.sym
-+	$(TOPDIR)/scripts_platform/mk_sb_envimg.sh $@
++	$(TOPDIR)/scripts_platform/mk_sb_envimg.sh $@ ${CONFIG_SB_ENV_WHITELIST} 
 +else
 +$(ENV_BLOCK): u-boot u-boot.bin
 +	$(NM) -Ss u-boot >u-boot.sym
@@ -3764,6 +3765,172 @@ new file mode 100644
 +	/DISCARD/ : { *(.interp*) }
 +	/DISCARD/ : { *(.gnu*) }
 +
++}
+diff --git a/board/maxlinear/lightning/cmdline.c b/board/maxlinear/lightning/cmdline.c
+new file mode 100644
+--- /dev/null
++++ b/board/maxlinear/lightning/cmdline.c
+@@ -0,0 +1,161 @@
++#include <stdlib.h>
++#include <command.h>
++#include <fdt_support.h>
++
++#define BOOTARGS_EXTRA_LEN 30
++
++/* Function to get environment variables */
++static char *get_env_var(char *var_name)
++{
++	char *value = env_get(var_name);
++	if (!value)
++		printf("[%s] Error: %s not found\n", __func__, var_name);
++	return value;
++}
++
++/* Function to get device tree properties */
++static char *get_fdt_property(const void *fdt, int node_offset,
++		char *prop_name, int *len)
++{
++	char *prop = fdt_getprop(fdt, node_offset, prop_name, len);
++	if (!prop)
++		printf("[%s] Error: Cannot find '%s' property\n",
++			__func__, prop_name);
++	return prop;
++}
++
++/* Function to read CMA size from device tree and update the bootargs */
++int read_cma_size(void)
++{
++	const void *fdt;
++	int node_offset, len, bootargs_len;
++	char *prop;
++	char *str_bootargs = NULL;
++	char *str_new_bootargs = NULL;
++	char *str_dtb_loadaddr = NULL;
++	char *str_rootfs_loadaddr = NULL;
++	char *str_rootfs_alignment = NULL;
++	u32 rootfs_load_addr = 0;
++	ulong cma_size, cma_alignment, cma_start, rootfs_alignment;
++	ulong dtb_loadaddr = 0;
++	ulong loadaddr = 0x8000000;
++
++	// Get dtb_loadaddr
++	str_dtb_loadaddr = get_env_var("dtb_loadaddr");
++	if (!str_dtb_loadaddr)
++		return -1;
++	dtb_loadaddr = simple_strtoul(str_dtb_loadaddr, NULL, 16);
++	if (!dtb_loadaddr) {
++		printf("[%s] Error: Invalid dtb_loadaddr value\n", __func__);
++		return -1;
++	}
++
++#ifdef CONFIG_CMD_ICC_OVERLAY
++	fdt = (void *)dtb_loadaddr;
++	node_offset = fdt_path_offset(fdt, "/images/fdt");
++	if (node_offset < 0) {
++		printf("[%s] Error: Cannot find /images/fdt, error code: %d\n",
++			__func__, node_offset);
++		return -1;
++	}
++	prop = get_fdt_property(fdt, node_offset, "load", &len);
++	if (!prop)
++		return -1;
++	loadaddr = fdt32_to_cpu(*(const uint32_t *)prop);
++#else
++	loadaddr = dtb_loadaddr;
++#endif
++	fdt = (void *)loadaddr;
++	node_offset = fdt_path_offset(fdt, "/reserved-memory/linux,cma");
++	if (node_offset < 0) {
++		printf("[%s] Error: Cannot find /reserved-memory/linux,cma node, error code: %d\n",
++			__func__, node_offset);
++		return -1;
++	}
++	// Get CMA size
++	prop = get_fdt_property(fdt, node_offset, "size", &len);
++	if (!prop)
++		return -1;
++	cma_size = fdt32_to_cpu(*(const uint32_t *)prop);
++
++	// Get CMA alignment
++	prop = get_fdt_property(fdt, node_offset, "alignment", &len);
++	if (!prop)
++		return -1;
++	cma_alignment = fdt32_to_cpu(*(const uint32_t *)prop);
++
++	// Get rootfs_loadaddr and rootfs_alignment
++	str_rootfs_loadaddr = get_env_var("rootfs_loadaddr");
++	str_rootfs_alignment = get_env_var("rootfs_alignment");
++
++	if (str_rootfs_loadaddr && str_rootfs_alignment) {
++		rootfs_load_addr = simple_strtoul(str_rootfs_loadaddr, NULL, 16);
++		rootfs_alignment = simple_strtoul(str_rootfs_alignment, NULL, 16);
++
++		if (rootfs_load_addr && rootfs_alignment) {
++			debug("[%s] rootfs_loadaddr = 0x%08X\n",
++				__func__, rootfs_load_addr);
++			debug("[%s] rootfs_alignment = 0x%lx\n",
++				__func__, rootfs_alignment);
++
++			if (cma_size && cma_alignment) {
++				// Validate CMA alignment
++				if (cma_size % cma_alignment != 0) {
++					printf("[%s] Error: CMA size is not aligned, please check DTS\n",
++						__func__);
++					return -1;
++				}
++				if (rootfs_alignment % cma_alignment != 0) {
++					printf("[%s] Error: CMA size is not a multiple or larger than RootFS size\n",
++						__func__);
++					return -1;
++				}
++				cma_start = rootfs_load_addr - cma_size;
++
++				// Get bootargs
++				str_bootargs = get_env_var("bootargs");
++				if (!str_bootargs)
++					return -1;
++
++				bootargs_len = strlen(str_bootargs) + BOOTARGS_EXTRA_LEN;
++				str_new_bootargs = malloc(bootargs_len);
++				if (!str_new_bootargs) {
++					printf("[%s] Error: Failed to allocate memory for bootargs\n",
++						__func__);
++					return -1;
++				}
++
++				snprintf(str_new_bootargs, bootargs_len, "%s cma=0x%lx@0x%lx",
++						str_bootargs, cma_size, cma_start);
++
++				if (env_set("bootargs", str_new_bootargs)) {
++					printf("[%s] Error: Failed to set bootargs\n",
++						__func__);
++					free(str_new_bootargs);
++					return -1;
++				}
++				free(str_new_bootargs);
++			} else {
++				printf("[%s] Error: Invalid values for cma_size or cma_alignment\n",
++					__func__);
++				return -1;
++			}
++		} else {
++			printf("[%s] Error: Invalid values for rootfs_loadaddr or rootfs_alignment\n",
++				__func__);
++			return -1;
++		}
++	} else {
++		printf("[%s] Error: rootfs_loadaddr or rootfs_alignment not found\n",
++			__func__);
++		return -1;
++	}
++	return 0;
++}
++
++/* Function to parse the OS command line arguments */
++int parse_os_cmdline(void)
++{
++	// Read CMA size from device tree and update the bootargs
++	return read_cma_size();
 +}
 diff --git a/board/maxlinear/lightning/datapath_clear.c b/board/maxlinear/lightning/datapath_clear.c
 new file mode 100644
