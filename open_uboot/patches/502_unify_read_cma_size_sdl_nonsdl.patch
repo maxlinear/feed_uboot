@@ -1,0 +1,52 @@
+diff --git a/arch/x86/lib/bootm.c b/arch/x86/lib/bootm.c
+index 8e64f78af..60052ef88 100644
+--- a/arch/x86/lib/bootm.c
++++ b/arch/x86/lib/bootm.c
+@@ -263,7 +263,7 @@ int do_bootm_linux(int flag, int argc, char *const argv[],
+ 
+ 
+ 	if (flag & BOOTM_STATE_OS_CMDLINE) {
+-#ifdef CONFIG_CMD_ICC_OVERLAY
++#ifdef CONFIG_MXL_SPL_FIT
+ 		extern int parse_os_cmdline(void);
+ 		return parse_os_cmdline();
+ #else
+diff --git a/board/maxlinear/lightning/Makefile b/board/maxlinear/lightning/Makefile
+index 5bd389d66..a650b8dd2 100644
+--- a/board/maxlinear/lightning/Makefile
++++ b/board/maxlinear/lightning/Makefile
+@@ -45,7 +45,7 @@ export ddr_speed ddr_type
+ $(info "Makefile Log: >>> Board MaxLinear >>>")
+ obj-y	+=  datapath_clear.o lightning.o
+ obj-y	+= lightning_start.o board_gpio_init.o
+-obj-$(CONFIG_CMD_ICC_OVERLAY)	+= cmdline.o
++obj-$(CONFIG_MXL_SPL_FIT)	+= cmdline.o
+ obj-$(CONFIG_ROHM_PMIC) += ocp_settings.o
+ obj-$(CONFIG_TEP_PKG) += tep.o
+ obj-$(CONFIG_CMD_ICC) += icc/drv_icc.o
+diff --git a/board/maxlinear/lightning/cmdline.c b/board/maxlinear/lightning/cmdline.c
+index a1fb38d84..4760436b6 100644
+--- a/board/maxlinear/lightning/cmdline.c
++++ b/board/maxlinear/lightning/cmdline.c
+@@ -50,7 +50,7 @@ int read_cma_size(void)
+ 		return -1;
+ 	}
+ 
+-#ifdef CONFIG_CMD_ICC_OVERLAY
++#ifdef CONFIG_MXL_SPL_FIT
+ 	fdt = (void *)dtb_loadaddr;
+ 	node_offset = fdt_path_offset(fdt, "/images/fdt");
+ 	if (node_offset < 0) {
+diff --git a/cmd/bootm.c b/cmd/bootm.c
+index 11a27e3b3..3127e8d7b 100644
+--- a/cmd/bootm.c
++++ b/cmd/bootm.c
+@@ -159,7 +159,7 @@ int do_bootm(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
+ #ifdef CONFIG_SYS_BOOT_RAMDISK_HIGH
+ 		BOOTM_STATE_RAMDISK |
+ #endif
+-#if defined(CONFIG_PPC) || defined(CONFIG_MIPS) || (defined(CONFIG_X86) && defined(CONFIG_CMD_ICC_OVERLAY))
++#if defined(CONFIG_PPC) || defined(CONFIG_MIPS) || (defined(CONFIG_X86) && defined(CONFIG_MXL_SPL_FIT))
+ 		BOOTM_STATE_OS_CMDLINE |
+ #endif
+ 		BOOTM_STATE_OS_PREP | BOOTM_STATE_OS_FAKE_GO |

@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  e4b112e80003b2605a3cfbf2711927b97287d78e
+# Parent  3159d8653d7a6a8386e0e789216e8d93d231b317
 
 diff --git a/env/common.c b/env/common.c
 --- a/env/common.c
@@ -15,19 +15,26 @@ diff --git a/env/common.c b/env/common.c
  
  DECLARE_GLOBAL_DATA_PTR;
  
-@@ -310,9 +314,38 @@ int env_import(const char *buf, int chec
- 	if (himport_r(&env_htab, (char *)ep->data, ENV_SIZE, '\0', flags, 0,
- 			0, NULL)) {
- 		gd->flags |= GD_FLG_ENV_READY;
+@@ -288,6 +292,49 @@ int env_set_default_vars(int nvars, char
+ 				flags, 0, nvars, vars);
+ }
+ 
 +#if !defined(CONFIG_SB_ENV_PROTECTION) || defined(CONFIG_SPL_BUILD)
-+		return 0;
-+#endif /* CONFIG_SB_ENV_PROTECTION */
-+	}
-+
-+#if defined(CONFIG_SB_ENV_PROTECTION) && !defined(CONFIG_SPL_BUILD)
-+	/* LGM : */
-+	struct fdt_header * fdt = (struct fdt_header *)((ulong)_end - gd->reloc_off);
++static int secure_env_force(env_t *ep, int flags)
++{
++	return 0;
++}
++#else
++/* Apply black-listed ENV to the loaded ENV */
++static int secure_env_force(env_t *ep, int flags)
++{
++#if defined (CONFIG_OF_SEPARATE)
++	struct fdt_header * fdt =
++			(struct fdt_header *)((ulong)_end - gd->reloc_off);
 +	u32 fdt_size = fdt_totalsize(fdt);
++#else
++	u32 fdt_size = 0;
++#endif
 +	u32 dtb_end = (ulong)_end - gd->reloc_off + fdt_size;
 +	uint32_t crc;
 +
@@ -43,18 +50,31 @@ diff --git a/env/common.c b/env/common.c
 +	}
 +
 +	flags = H_NOCLEAR | H_EXTERNAL;
-+	if (himport_r(&env_htab, (char *)ep->data, ENV_SIZE, '\0', flags, 0, 0, NULL)) {
++	if (himport_r(&env_htab, (char *)ep->data, ENV_SIZE,
++				'\0', flags, 0, 0, NULL)) {
 +		gd->flags |= GD_FLG_ENV_READY;
 +		rbe_debug_print("[env_import protection] import sb env\n");
- 		return 0;
++		return 0;
++	}
++
++	rbe_debug_print("[env_import protection] import sb env fail\n");
++	return -EIO;
++}
++#endif /* !defined(CONFIG_SB_ENV_PROTECTION) || defined(CONFIG_SPL_BUILD) */
++
+ /*
+  * Check if CRC is valid and (if yes) import the environment.
+  * Note that "buf" may or may not be aligned.
+@@ -310,7 +357,7 @@ int env_import(const char *buf, int chec
+ 	if (himport_r(&env_htab, (char *)ep->data, ENV_SIZE, '\0', flags, 0,
+ 			0, NULL)) {
+ 		gd->flags |= GD_FLG_ENV_READY;
+-		return 0;
++		return secure_env_force(ep, flags);
  	}
  
-+	rbe_debug_print("[env_import protection] import sb env fail\n");
-+#endif /* CONFIG_SB_ENV_PROTECTION */
  	pr_err("Cannot import environment: errno = %d\n", errno);
- 
- 	env_set_default("import failed", 0);
-@@ -320,6 +353,34 @@ int env_import(const char *buf, int chec
+@@ -320,6 +367,34 @@ int env_import(const char *buf, int chec
  	return -EIO;
  }
  

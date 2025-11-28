@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  c1e4c1e845c715580f63c278baa57d077751fe43
+# Parent  a42611f89f865dee3f113b894a69b83480eaa078
 
 diff --git a/Makefile b/Makefile
 --- a/Makefile
@@ -710,7 +710,28 @@ diff --git a/arch/x86/lib/bootm.c b/arch/x86/lib/bootm.c
  	return boot_linux_kernel(images->ep, images->os.load,
  				 images->os.arch == IH_ARCH_X86_64);
  }
-@@ -239,5 +285,44 @@ static ulong get_sp(void)
+@@ -212,9 +258,19 @@ int do_bootm_linux(int flag, int argc, c
+ 		   bootm_headers_t *images)
+ {
+ 	/* No need for those on x86 */
+-	if (flag & BOOTM_STATE_OS_BD_T || flag & BOOTM_STATE_OS_CMDLINE)
++	if (flag & BOOTM_STATE_OS_BD_T)
+ 		return -1;
+ 
++
++	if (flag & BOOTM_STATE_OS_CMDLINE) {
++#ifdef CONFIG_CMD_ICC_OVERLAY
++		extern int parse_os_cmdline(void);
++		return parse_os_cmdline();
++#else
++		return -1;
++#endif
++	}
++
+ 	if (flag & BOOTM_STATE_OS_PREP)
+ 		return boot_prep_linux(images);
+ 
+@@ -239,5 +295,44 @@ static ulong get_sp(void)
  
  void arch_lmb_reserve(struct lmb *lmb)
  {

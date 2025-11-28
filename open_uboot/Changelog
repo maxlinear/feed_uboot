@@ -1,5 +1,18 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.364
+	* UGW_SW-92964 - Fix regex limitations in the env binary creation script
+	* UGW_SW-92964 - Fix EMBEDDED DTB setup and included build configuration changes as an input to the script
+
+Changes for U-boot version: 4.0.363
+	* UGW_SW-90763: CMA size support for secure-boot single images.
+
+Changes for U-boot version: 4.0.362
+	* UBOOT_SW-2104 - EFF_SAI values for PP port rule in Linux
+
+Changes for U-boot version: 4.0.361
+	* UGW_SW-92248 - RoT manuboot compilation failure for SPI and EBU NAND
+
 Changes for U-boot version: 4.0.360
 	* - Fixes for FIT fullimage upgrade due to partition name not found
 
