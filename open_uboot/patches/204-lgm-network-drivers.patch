@@ -1,11 +1,11 @@
 # HG changeset patch
-# Parent  8165c1e4576315ed41a90e038c47375a967eb9a9
+# Parent  e40e48a5a703cc53a47fe500a683d2548db536d9
 
 diff --git a/drivers/net/lightning_mountain_combophy.c b/drivers/net/lightning_mountain_combophy.c
 new file mode 100644
 --- /dev/null
 +++ b/drivers/net/lightning_mountain_combophy.c
-@@ -0,0 +1,728 @@
+@@ -0,0 +1,785 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright © 2022 MaxLinear, Inc.
@@ -345,6 +345,63 @@ new file mode 100644
 +	stat = get_reset_bit_status(RST_STAT_ETHNOC, REQ_PON);
 +	/* LGM_NET_DBG("ETHNOC_REQ PON Reset BIT9 Status = %d\n", stat); */
 +	return stat;
++}
++
++#define XPCS5_RST_STAT_CHK_CNT 5000
++int verify_xpcs5_sgmii_2500basex_reset_status(void)
++{
++	int i;
++
++	for (i = 0; i <= XPCS5_RST_STAT_CHK_CNT; i++) {
++		if (((REG32(RCU_MODULE_BASE + RST_STAT_ETHNOC) >> REQ_XPCS5_CPHY ) & 0x1)!= 1) {
++			LGM_NET_DBG("xpcs5 COMBO phy resets deasserted\n");
++			break;
++		}
++	}
++
++	if (i > XPCS5_RST_STAT_CHK_CNT) {
++		printf("xpcs5 COMBO phy resets failed to de-assert");
++		return -1;
++	}
++
++
++	for (i = 0; i <= XPCS5_RST_STAT_CHK_CNT; i++) {
++		if (((REG32(RCU_MODULE_BASE + RST_STAT_ETHNOC) >> REQ_XPCS5_PHY0 ) & 0x1)!= 1) {
++			LGM_NET_DBG("xpcs5 phy resets deasserted\n");
++			break;
++		}
++	}
++
++	if (i > XPCS5_RST_STAT_CHK_CNT) {
++		printf("xpcs5 phy resets failed to de-assert");
++		return -1;
++	}
++
++	for (i = 0; i <= XPCS5_RST_STAT_CHK_CNT; i++) {
++		if (((REG32(RCU_MODULE_BASE + RST_STAT_ETHNOC) >> REQ_XPCS5_PCS0 ) & 0x1)!= 1) {
++			LGM_NET_DBG("xpcs5 PCS0 resets deasserted\n");
++			break;
++		}
++	}
++
++	if (i > XPCS5_RST_STAT_CHK_CNT) {
++		printf("xpcs5 PCS0 resets failed to de-assert");
++		return -1;
++	}
++	return 0;
++}
++
++void reset_xpcs5_sgmii_2500basex(void)
++{
++	set_reset(RST_REQ_ETHNOC, REQ_XPCS5_CPHY);//17
++	set_reset(RST_REQ_ETHNOC, REQ_XPCS5_PHY0);//16
++	set_reset(RST_REQ_ETHNOC, REQ_XPCS5_PCS0);//15
++	mdelay(10);
++
++	clear_reset(RST_REQ_ETHNOC, REQ_XPCS5_CPHY);//17
++	clear_reset(RST_REQ_ETHNOC, REQ_XPCS5_PHY0);//16
++	clear_reset(RST_REQ_ETHNOC, REQ_XPCS5_PCS0);//15
++	mdelay(100);
 +}
 +
 +int combophy_rst_assert(int port)
@@ -738,7 +795,7 @@ diff --git a/drivers/net/lightning_mountain_combophy.h b/drivers/net/lightning_m
 new file mode 100644
 --- /dev/null
 +++ b/drivers/net/lightning_mountain_combophy.h
-@@ -0,0 +1,1097 @@
+@@ -0,0 +1,1106 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright © 2022 MaxLinear, Inc.
@@ -1771,9 +1828,15 @@ new file mode 100644
 +#define SR_AN_STS_LD_PDF			BIT(9)
 +
 +#define SR_XS_PCS_STS1_RLU			BIT(2)
++#define SR_XS_PCS_STS2_CAP_EN		BIT(0)
++#define SR_XS_PCS_STS2_CAP_10_1GC	BIT(1)
++#define SR_XS_PCS_STS2_CAP_10GBW	BIT(2)
++#define SR_XS_PCS_STS2_CAP_10GBT	BIT(3)
 +#define SR_XS_PCS_STS2_RF			BIT(10)
 +#define SR_XS_PCS_STS2_TF			BIT(11)
++#define SR_XS_PCS_STS2_DS			BIT(15)
 +#define SR_XS_PCS_KR_STS1_RLU		BIT(12)
++#define SR_XS_PCS_CTRL2_TYPE_SEL	0xF
 +
 +#define SR_MII_STS_LINK_STS					BIT(2)
 +#define VR_MII_AN_CTRL_STS					BIT(4)
@@ -1826,6 +1889,9 @@ new file mode 100644
 +void combophy_paraclk_div2_cfg(struct combo_port *paddr, int port, int en);
 +void combophy_sram_bypass_cfg(struct combo_port *paddr, int port, int en);
 +
++void reset_xpcs5_sgmii_2500basex(void);
++int verify_xpcs5_sgmii_2500basex_reset_status(void);
++
 +void clear_reset(u32 regoff, u32 bitn);
 +void set_reset(u32 regoff, u32 bitn);
 +u32 get_reset_bit_status(u32 regoff, u32 bitn);
@@ -1840,7 +1906,7 @@ diff --git a/drivers/net/lightning_mountain_sw.c b/drivers/net/lightning_mountai
 new file mode 100644
 --- /dev/null
 +++ b/drivers/net/lightning_mountain_sw.c
-@@ -0,0 +1,5143 @@
+@@ -0,0 +1,5216 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright © 2022 MaxLinear, Inc.
@@ -1893,7 +1959,7 @@ new file mode 100644
 +#define MAC_LAST	9
 +#endif /* CONFIG_LGM_P34X_SUPPORT */
 +
-+#if defined(CONFIG_LGM_P34X_SUPPORT) || defined(CONFIG_XPCS5_USXGMII_RTL8261)
++#if defined(CONFIG_LGM_P34X_SUPPORT) || defined(CONFIG_XPCS5_USXGMII_RTL8261) || defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140)
 +#define MDC_CLK_DIV_LSB		GENMASK(21, 19)
 +#define MDC_CLK_DIV_MSB		BIT(31)
 +#define MDC_CLK_DIV_MSK		(MDC_CLK_DIV_MSB | MDC_CLK_DIV_LSB)
@@ -1938,6 +2004,11 @@ new file mode 100644
 +extern int gswip_xpcs5_init(int spd);
 +extern int gswip_xpcs5_init_rtl8261(int spd);
 +extern int set_adp_dvfs_level(int level);
++
++extern int xpcs5_sgmii_2500basex_clk_addr_settings(void);
++extern void init_xpcs5_sgmii_2500basex(void);
++extern void reset_xpcs5_sgmii_2500basex(void);
++extern int verify_xpcs5_sgmii_2500basex_reset_status(void);
 +
 +#if defined(CONFIG_LGMC_SGMII) || defined(CONFIG_XPCS5_USXGMII_RTL8261)
 +void sso_init(int sso_no);
@@ -3926,7 +3997,7 @@ new file mode 100644
 +	else
 +#else
 +
-+#if defined(CONFIG_LAN_HSIO_R_SGMII_2500BASEX) || defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET)
++#if defined(CONFIG_LAN_HSIO_R_SGMII_2500BASEX) || defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET) || defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140)
 +	mac_set_duplex(pdata, GSW_DUPLEX_FULL);
 +#else
 +	mac_set_duplex(pdata, GSW_DUPLEX_AUTO); /* auto */
@@ -3940,7 +4011,7 @@ new file mode 100644
 +
 +	/* Configure MAC Speed to 10/2.5/1 G */
 +	/* mac_set_physpeed(pdata, pdata->phy_speed); */
-+#if defined(CONFIG_LAN_HSIO_R_SGMII_2500BASEX) || defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET)
++#if defined(CONFIG_LAN_HSIO_R_SGMII_2500BASEX) || defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET) || defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140)
 +	mac_set_physpeed(pdata, SPEED_GMII_25G);
 +#else
 +	mac_set_physpeed(pdata, SPEED_MAC_AUTO); /* auto */
@@ -5789,7 +5860,7 @@ new file mode 100644
 +}
 +#endif
 +
-+#if defined(CONFIG_LGM_P34X_SUPPORT) || defined(CONFIG_XPCS5_USXGMII_RTL8261)
++#if defined(CONFIG_LGM_P34X_SUPPORT) || defined(CONFIG_XPCS5_USXGMII_RTL8261)  || defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140)
 +int init_gswip_core(struct udevice *dev, struct mac_prv_data *pdata)
 +{
 +	int ret, cdb_clock = 1;
@@ -5805,24 +5876,27 @@ new file mode 100644
 +			>> LJPLL3_CFG0_PLLEN_POS == 1)) {
 +		timeout--;
 +		if (timeout <= 0) {
-+			LGM_NET_DBG("PLL3 not ready\n");
++			printf("LJPLL3 not enabled\n");
 +			return -1;
 +		}
 +	}
++		if (timeout > 0) {
++			LGM_NET_DBG("LJPLL3  enabled\n");
++		}
 +
 +	/* config cdb clock to 25Mhz */
 +	if (cdb_clock == 1) {
 +		LGM_NET_DBG("\nLJPLL3_CFG1 default readout: 0x%x\n", REG32(CGU_LJPLL3_CFG1));
 +
 +		REG32(CGU_LJPLL3_CFG1) &= ~(0x1 << 24); //FOUT0EN Bit 24 PLL Clock Output 0 Disable
-+		REG32(CGU_LJPLL3_CFG1) = (REG32(CGU_LJPLL3_CFG1) & ~0x7) | 0x7; //POST_DIV0A=0X7
-+		REG32(CGU_LJPLL3_CFG1) = (REG32(CGU_LJPLL3_CFG1) & ~(0x7<<3)) | (0x4<<3); //POST_DIV0B=0X4
-+
-+		//To wait for LJPLL3 lock status
-+		while((REG32(CGU_LJPLL3_CFG0) & LJPLL3_CFG0_PLLEN_MASK)!=1);
-+
++		REG32(CGU_LJPLL3_CFG1) = (REG32(CGU_LJPLL3_CFG1) & ~0x7) | 0x7; //POST_DIV0A=0X7 = /8
++		REG32(CGU_LJPLL3_CFG1) = (REG32(CGU_LJPLL3_CFG1) & ~(0x7<<3)) | (0x4<<3); //POST_DIV0B=0X4 = /5
 +		REG32(CGU_LJPLL3_CFG1) |= 0x1 << 24; //FOUT0EN Bit 24 PLL Clock Output 0 Enable
 +		LGM_NET_DBG("\nLJPLL3_CFG1 configured for 25Mhz: 0x%x\n", REG32(CGU_LJPLL3_CFG1));	//POST_DIV0A=0X7, POST_DIV0B=0X4
++
++		//To wait for LJPLL3 lock status
++		while((REG32(CGU_LJPLL3_CFG0) & LJPLL3_CFG0_LOCK_MASK)!= LJPLL3_CFG0_LOCK_MASK );
++		LGM_NET_DBG("\nLJPLL3_CFG0 default readout: 0x%x\n", REG32(CGU_LJPLL3_CFG0));
 +	}
 +
 +	/* release gswip, dma1 rx/tx out of reset */
@@ -6334,7 +6408,7 @@ new file mode 100644
 +}
 +#endif /* CONFIG_WAN_XPCS */
 +
-+#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G) || defined(CONFIG_WAN_XPCS_XFI_10G_KR_NO_ANEG_USXGMII_10G) || defined(CONFIG_XPCS5_USXGMII_RTL8261)
++#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G) || defined(CONFIG_WAN_XPCS_XFI_10G_KR_NO_ANEG_USXGMII_10G) || defined(CONFIG_XPCS5_USXGMII_RTL8261)   || defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140)
 +int lightning_mountain_mdio_cfg(struct udevice *dev)
 +{
 +	struct mac_prv_data *pdata = &xgmac_prv_data[0];
@@ -6533,6 +6607,67 @@ new file mode 100644
 +}
 +#endif
 +
++#ifdef CONFIG_XPCS5_SGMII_2500BASEX_GSW140
++#define GPIO_FUNCTION_NUM 0
++#define GPIO_OUTPUT_DIRECTION 1
++
++int xpcs5_gsw140_init(struct udevice *dev)
++{
++	int ret;
++	struct lightning_mountain_eth_priv *priv = dev_get_priv(dev);
++
++	if (!priv)
++		return -EINVAL;
++
++	struct mac_prv_data *pdata = &xgmac_prv_data[0];
++	int i, val;
++
++	priv->phy_addr = 0x1f;//customer board, gsw140 phy address
++	pdata->phy_id = priv->phy_addr;
++	gpio_direction_output(75, 0);
++	mdelay(10);
++	gpio_direction_output(75, 1);
++	mdelay(200);
++
++	/* Enable XGMII/SGMII/2500BASEX clk for B0 xpcs5 init */
++	writel(readl(XPCS5_CFG_REG) | CHIP_TOP_XGMII_CLK_EN,
++		XPCS5_CFG_REG);
++
++	ret = init_gswip_core(dev, &pdata[0]);
++	if (ret)
++		return -1;
++
++	val = XGMAC_RGRD(pdata, MDIO_SCCDR);
++	val &= ~MDC_CLK_DIV_MSK;
++
++	/*change MDC/MDIO (GPIO94/95) drive strength to 12 mA*/
++	REG32(GPIO_PAD_CONTROL_DCC_5) |= 0xf0000000;
++	/*change MDC frequency to 5.56MHz*/
++	val |= 0x80380000;
++
++	XGMAC_RGWR(pdata, MDIO_SCCDR, val);
++
++	reset_xpcs5_sgmii_2500basex();
++
++	ret = verify_xpcs5_sgmii_2500basex_reset_status();
++	if (ret)
++		return ret;
++
++	ret = xpcs5_sgmii_2500basex_clk_addr_settings();
++	if (ret)
++		return -1;
++
++	init_xpcs5_sgmii_2500basex();
++
++	for (i = MAC_START; i < MAC_LAST; i++) {
++		xgmac_powerup(&xgmac_prv_data[i]);
++	}
++
++	lightning_mountain_mdio_cfg(dev);
++	return 0;
++}
++#endif
++
 +int lightning_mountain_sw_init(struct udevice *dev)
 +{
 +	int ret;
@@ -6624,7 +6759,11 @@ new file mode 100644
 +
 +#ifdef CONFIG_XPCS5_USXGMII_RTL8261
 +	xpcs5_rtl8261_init(dev);
-+#endif /*CONFIG_XPCS5_USXGMII_RTL8261*/
++#endif
++
++#ifdef CONFIG_XPCS5_SGMII_2500BASEX_GSW140
++	xpcs5_gsw140_init(dev);
++#endif
 +
 +#ifdef CONFIG_LAN_HSIO_R
 +	printf("lan1 P20/21 ");
@@ -9347,7 +9486,7 @@ diff --git a/drivers/net/lightning_mountain_xpcs.c b/drivers/net/lightning_mount
 new file mode 100644
 --- /dev/null
 +++ b/drivers/net/lightning_mountain_xpcs.c
-@@ -0,0 +1,8609 @@
+@@ -0,0 +1,8757 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright © 2022 MaxLinear, Inc.
@@ -9369,6 +9508,11 @@ new file mode 100644
 +
 +#include "lightning_mountain_sw.h"
 +#include "lightning_mountain_combophy.h"
++//#define LGM_NET_DBG(fmt,args...)	printf(fmt, ##args)
++#define LGM_NET_DBG(fmt,args...)
++//#ifndef LGM_NET_VERBOSE
++//#define LGM_NET_VERBOSE
++//#endif
 +
 +#if defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET)
 +#define SRAM_INIT_DONE			BIT(2)
@@ -9580,8 +9724,8 @@ new file mode 100644
 +u32 HSIO_XPCS1 = 0;
 +#endif
 +
-+#if defined(CONFIG_LAN_HSIO_R_SGMII_2500BASEX) || defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET)
-+
++#if defined(CONFIG_LAN_HSIO_R_SGMII_2500BASEX) || defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET) || defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140)
++void dump_port_pcs(int xpcs);
 +#define PCS_DBG_CTRL		0xE0014
 +u32 lane = 1;
 +u32 ref_clk_ctrl = 0x0F1; /* REF_RPT_CLK_EN was enabled in FMX */
@@ -9678,15 +9822,24 @@ new file mode 100644
 +void set_mode_usxgmii(int xpcs_prt);
 +void xpcs_disable_an(int xpcs_prt);
 +
-+#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G ) || defined(CONFIG_WAN_XPCS_XFI_10G_KR_NO_ANEG_USXGMII_10G) || defined(CONFIG_XPCS5_USXGMII_RTL8261)
++#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G ) || defined(CONFIG_WAN_XPCS_XFI_10G_KR_NO_ANEG_USXGMII_10G) \
++	|| defined(CONFIG_XPCS5_USXGMII_RTL8261) \
++	|| defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140) \
++	|| defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET)
++
 +#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G )
 +static void disable_xpcs_clk(u32 base);
 +#endif
-+static void xpcs_cfg_clk(int xpcs_prt);
 +static void xpcs_cfg_table(int xpcs_prt);
-+static int xpcs_vs_reset(u32 xpcs_prt);
++
++#ifndef CONFIG_XPCS5_SGMII_2500BASEX_GSW140
 +static void tx_eq_config_kernel(u32 xpcs_prt);
++static void xpcs_cfg_clk(int xpcs_prt);
++static int xpcs_vs_reset(u32 xpcs_prt);
 +static void xpcs_an(u32 xpcs_prt);
++#endif
++
++static void xpcs5_cfg_table(int xpcs_prt);
 +
 +u32 XPCS_RGRD(u32 xpcs_prt, u32 reg);
 +void XPCS_RGWR(u32 xpcs_prt, u32 reg, u32 reg_val);
@@ -11393,6 +11546,7 @@ new file mode 100644
 +	indirect_pcs_wr(VR_XS_PCS_DIG_ERRCNT_SEL,(read_data | 0x0070),port);
 +}
 +
++
 +void linkup_status(int port)
 +{
 +#ifdef LGM_NET_VERBOSE
@@ -12102,6 +12256,7 @@ new file mode 100644
 +
 +	/*Set VR_XS_PMA_GEN5_12G_16G_TX_EQ_CTRL1 TX_EQ_POST BIT5:0, TX_EQ_OVR_RIDE BIT6 */
 +	LGM_NET_DBG("\nRead VR_XS_PMA_GEN5_12G_16G_TX_EQ_CTRL1 TX_EQ_POST BIT5:0, TX_EQ_OVR_RIDE BIT6 \n");
++	indirect_pcs_rd(VR_XS_PMA_GEN5_12G_16G_TX_EQ_CTRL1 ,port);
 +	/*Clear BITS */
 +	read_data &= ~(0x3F << 0); /*Clear BIT5:0 EQ_PRE */
 +	read_data &= ~(0x1 << 6); /*Clear BIT6 EQ_MAIN */
@@ -12343,8 +12498,8 @@ new file mode 100644
 +
 +	//Set PCS type to 01 -10GBASE-R PCS Type
 +	//SR_XS_PCS_CTRL2
-+	LGM_NET_DBG("\nSet SR_XS_PCS_CTRL2 Bit 1:0 PCS Type = 0\n");
 +	indirect_pcs_rd(SR_XS_PCS_CTRL2,port);
++	LGM_NET_DBG("[WR]read bit3:0 to 0xe=2.5GBASE-X, SR_XS_PCS_CTRL2 = 0x%08x\n", read_data);
 +	if (speed == KR_10G) {
 +		read_data = read_data & 0xFFFFFFF0; //Clear Bit3:0 equals to zero.
 +	} else if (speed == KR_5G) {
@@ -12353,11 +12508,14 @@ new file mode 100644
 +	} else if (speed == BASER_10G) {
 +		read_data = read_data & 0xFFFFFFF0; //Clear Bit3:0 equals to 0xF.
 +		read_data |= 0x0001; //Set to 4'b0001. to BASE-R mode
++	} else if (speed == KR_2P5G) {
++		read_data = read_data & 0xFFFFFFF0; //Clear Bit3:0 equals to 0xF.
++		read_data |= 0x000e; //Set to 4'b1110. to 2.5GBASE-X PCS Type
 +	}
 +
 +	indirect_pcs_wr(SR_XS_PCS_CTRL2,(read_data),port);
 +	indirect_pcs_rd(SR_XS_PCS_CTRL2,port);
-+	LGM_NET_DBG("[WR]SR_XS_PCS_CTRL2 (0x%08x) Bit 1:0 PCS Type = 0x%08x\n", SR_XS_PCS_CTRL2, read_data);
++	LGM_NET_DBG("[WR]set bit3:0 to 0xe=2.5GBASE-X, SR_XS_PCS_CTRL2 = 0x%08x\n", read_data);
 +
 +	// ##### PMA MPLLA Configuration ######
 +	LGM_NET_DBG("########### PMA MPLLA Configuration ############ \n");
@@ -13894,7 +14052,7 @@ new file mode 100644
 +	read_data &= ~0x00001000; /* wr_data[12] = 1'b0; */
 +	indirect_pcs_wr(SR_MII_CTRL, read_data, port);
 +	indirect_pcs_rd(SR_MII_CTRL, port);
-+	LGM_NET_DBG("[WR]Set SR_AN_CTRL Setting BIT12 AN_EN = 0x%08x\n", read_data);
++	LGM_NET_DBG("[WR]Setting BIT12 AN_EN=0=disable clause37,Set SR_AN_CTRL  = 0x%08x\n", read_data);
 +}
 +
 +void base_1g_bringup(int port)
@@ -13981,7 +14139,7 @@ new file mode 100644
 +	printf("\nPort%d 1G XPCS and Serdes Bring Up Complete.\n", port);
 +}
 +
-+#if defined(CONFIG_LAN_HSIO_R_SGMII_2500BASEX) || defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET)
++#if defined(CONFIG_LAN_HSIO_R_SGMII_2500BASEX) || defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET) || defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140)
 +void xpcs_disable_an_gsw140(int port)
 +{
 +	/* Disable CL73 Autoneg */
@@ -14135,6 +14293,24 @@ new file mode 100644
 +	return 0;
 +}
 +
++int xpcs5_cfg_clk_pair(void)
++{
++	int port0 = P34X_PORT5;
++
++	//XPCS_RGWR(pdata, PMA_REF_CLK_CTRL, val);
++	indirect_pcs_wr(VR_XS_PMA_GEN5_12G_16G_REF_CLK_CTRL, ref_clk_ctrl, port0);
++
++	xpcs_cfg_mplla(port0);
++
++	//bit10:8	tx_vboost_lvl
++	//XPCS_RGWR_VAL(pdata, PMA_TX_GENCTRL1, VBOOST_LVL, val);
++	indirect_pcs_rd(VR_XS_PMA_GEN5_12G_16G_TX_GENCTRL1,port0);
++	indirect_pcs_wr(VR_XS_PMA_GEN5_12G_16G_TX_GENCTRL1,((read_data & (~0x700)) | (gsw140_xpcs_serdes_cfg.tx_vboost_lvl<<8)),port0);
++	indirect_pcs_rd(VR_XS_PMA_GEN5_12G_16G_TX_GENCTRL1,port0);
++	LGM_NET_DBG("indirect_pcs_rd(VR_XS_PMA_GEN5_12G_16G_TX_GENCTRL1,port=%d); = 0x%x\n", port0, read_data);
++
++	return 0;
++}
 +
 +int xpcs_cfg_clk_pair(int port0, int port1)
 +{
@@ -14160,7 +14336,7 @@ new file mode 100644
 +	return 0;
 +}
 +
-+void xpcs_cfg_table(int port)
++static void xpcs5_cfg_table(int port)
 +{
 +	/*
 +	XPCS_RGWR(pdata, PMA_MPLL_CMN_CTRL, 0);
@@ -14921,7 +15097,9 @@ new file mode 100644
 +static void enable_xpcs_clk(u32 base) {};
 +#endif /* !CONFIG_LIGHTNING_A0 */
 +
-+#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G ) || defined(CONFIG_WAN_XPCS_XFI_10G_KR_NO_ANEG_USXGMII_10G) || defined(CONFIG_XPCS5_USXGMII_RTL8261)
++#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G ) || defined(CONFIG_WAN_XPCS_XFI_10G_KR_NO_ANEG_USXGMII_10G) || defined(CONFIG_XPCS5_USXGMII_RTL8261)  || defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140)
++
++#ifndef CONFIG_XPCS5_SGMII_2500BASEX_GSW140
 +static void xpcs_usxgmii_an(u32 xpcs_prt)
 +{
 +	int i;
@@ -15076,7 +15254,8 @@ new file mode 100644
 +	xpcs_disable_an(xpcs_prt);
 +	xpcs_usxgmii_an(xpcs_prt);
 +}
-+
++#endif
++#ifndef CONFIG_XPCS5_SGMII_2500BASEX_GSW140
 +/* XPCS Vendor Specific Soft Reset
 + * When the host sets this bit, the CSR block triggers the software reset
 + * process in which all internal blocks are reset, except the Management
@@ -15117,6 +15296,7 @@ new file mode 100644
 +
 +	return 0;
 +}
++#endif
 +#endif
 +
 +#ifdef CONFIG_XPCS5_USXGMII_RTL8261
@@ -15201,6 +15381,104 @@ new file mode 100644
 +
 +	return 0;
 +}
++#endif
++
++#ifdef CONFIG_XPCS5_SGMII_2500BASEX_GSW140
++
++void init_xpcs5_sgmii_2500basex(void)
++{
++	int p0_id = P34X_PORT5;
++	int port = p0_id;
++	int speed = KR_2P5G;
++	int base1000x_en = 0;
++	int ret;
++
++	/* disable XGMII/SGMII/2500BASEX clk for B0 xpcs5 init */
++	writel(readl(XPCS5_CFG_REG) & ~(CHIP_TOP_XGMII_CLK_EN),
++		XPCS5_CFG_REG);
++
++	LGM_NET_DBG("SRAM Init for Port %d\n", p0_id);
++	ret = sram_init_chk(p0_id, base1000x_en);
++	if (ret)
++		return;
++
++	//2. Program bit[9] (USXG_EN) of VR_XS_PCS_DIG_CTRL1 Register to 1 to enable USXGMII Mode inside DWC_xpcs.
++	indirect_pcs_rd(VR_XS_PCS_DIG_CTRL1,port);
++	LGM_NET_DBG("[WR] VR_XS_PCS_DIG_CTRL1 BIT9 USXG_EN = 0x%08x\n", read_data);
++	read_data &= ~(0x1 << 9); // bit[9] = 0 -- disable USXGMII Mode inside DWC_xpcs
++	indirect_pcs_wr(VR_XS_PCS_DIG_CTRL1,read_data,port);
++	indirect_pcs_rd(VR_XS_PCS_DIG_CTRL1,port);
++	LGM_NET_DBG("[WR] bit[9]=0=disable usxgmii,VR_XS_PCS_DIG_CTRL1 BIT9 USXG_EN = 0x%08x\n", read_data);
++
++	//3. Select the appropriate USXGMII mode by programming USXG_MODE field of VR_XS_PCS_KR_CTRL register to suitable values.
++	/*	BIT12:10 USXG_MODE
++	USXGMII Mode Select
++	This field chooses the current USXGMII mode in which
++	DWC_xpcs should operate. The encoding of the mode is as
++	*/
++	indirect_pcs_rd(VR_XS_PCS_KR_CTRL,port);
++	LGM_NET_DBG("[WR] VR_XS_PCS_KR_CTRL BIT12:10 USXG_MODE = 0x%08x\n", read_data);
++
++	read_data &= ~(0x7 << 10); 	//Clear BIT[12:10] USXG_MODE
++	read_data |= (0x2 << 10);	// BIT[12:10] = 010 : 2.5G-SXGMII
++
++	indirect_pcs_wr(VR_XS_PCS_KR_CTRL,read_data,port);
++	indirect_pcs_rd(VR_XS_PCS_KR_CTRL,port);
++	LGM_NET_DBG("[WR] BIT[12:10] = 010 : 2.5G-SXGMII, VR_XS_PCS_KR_CTRL BIT12:10 USXG_MODE = 0x%08x\n", read_data);
++
++
++ 	auto_10g_enable = 0; /*Default '0' disable, '1' enable. */
++ 	autoneg_2p5g = 0; /*Default '0' disable (2500BASE-X), '1' (2.5G SGMII ANEG mode) enable. To enable/disable 2.5G SGMII autoneg */
++ 	autoneg_1g = 0; /*Default '0' disable (1000BASE-X), '1' (1G SGMII ANEG mode) enable. To enable/disable 1G SGMII autoneg */
++
++	xfi_10g5g2p5g_kr_cl73_bringup(port, speed);
++
++	check_rxtx_stable(p0_id);
++	xpcs_disable_an_gsw140(p0_id);
++	xpcs_set_mode_2500basex(p0_id);
++
++	xpcs5_cfg_clk_pair();
++
++	xpcs5_cfg_table(p0_id);
++
++	ret = xpcs_vs_reset_sgmii_2500basex(p0_id);
++	if (ret)
++		return;
++
++	tx_eq_config_sgmii_2500basex(p0_id);
++	kr_workaround(p0_id);
++
++	xpcs_disable_an_gsw140(p0_id);
++
++	/* Enable XGMII/SGMII/2500BASEX clk for B0 xpcs5 init */
++	writel(readl(XPCS5_CFG_REG) | CHIP_TOP_XGMII_CLK_EN,
++		XPCS5_CFG_REG);
++
++	/*Enable RX auto adapt */
++	phy_rxeq_autoadapt(p0_id, LANE0);
++
++}
++
++int xpcs5_sgmii_2500basex_clk_addr_settings(void)
++{
++	int p0_id = P34X_PORT5;
++	int ret;
++	struct combo_port *paddr = &g_combo_port_defs[0];
++
++	init_combo_base(&paddr[p0_id], p0_id);
++
++	combophy_paraclk_div2_cfg(paddr, p0_id, 1); /*1 means CR parallel clock divider = 2 */
++
++	udelay(100);
++
++	/* Enable SRAM_BYPASS */
++	combophy_sram_bypass_cfg(paddr, p0_id, 1); /*1 means SRAM been Bypassed, use hard wired value, not internal FW. */
++
++	LGM_NET_DBG("SRAM Init for Port %d\n", p0_id);
++	ret = sram_init_chk(p0_id, 0);
++	return ret;
++}
++
 +#endif
 +
 +#if defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET)
@@ -17455,6 +17733,9 @@ new file mode 100644
 +	 * re-init after u-boot reconfigs the ljpll3 */
 +	/*ljpll3_cfg_frac_eth(); */
 +
++	//HSIOR,BASE:0XE0080000
++	//CLK_DIS_REG,offset:0x124
++	//XPCS0_CLK_DIS,bit2=0=enable , port20,xpcs
 +	hsiotop_clk_gate_cfg(p0_id, 0);
 +	hsiotop_clk_gate_cfg(p1_id, 0);
 +
@@ -17634,7 +17915,12 @@ new file mode 100644
 +	indirect_pcs_wr(VR_XS_PCS_KR_CTRL, (read_data & (~(0x7 << 10))), xpcs_prt);
 +}
 +
-+#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G ) || defined(CONFIG_WAN_XPCS_XFI_10G_KR_NO_ANEG_USXGMII_10G) || defined(CONFIG_XPCS5_USXGMII_RTL8261)
++#if defined(CONFIG_LAN_HSIO_R_USXGMII_10G ) || defined(CONFIG_WAN_XPCS_XFI_10G_KR_NO_ANEG_USXGMII_10G) \
++	|| defined(CONFIG_XPCS5_USXGMII_RTL8261) \
++	|| defined(CONFIG_XPCS5_SGMII_2500BASEX_GSW140) \
++	|| defined(CONFIG_LAN_HSIO_L_SGMII_1G_2G5_AUTO_DET)
++
++#ifndef CONFIG_XPCS5_SGMII_2500BASEX_GSW140
 +static void xpcs_cfg_clk(int xpcs_prt)
 +{
 +	const struct xpcs_mode_cfg *mode_cfg = &mode_cfg_tbl[0];
@@ -17682,6 +17968,7 @@ new file mode 100644
 +	read_data |= lane_cfg->tx_vboost_lvl << 8;
 +	indirect_pcs_wr(VR_XS_PMA_GEN5_12G_16G_TX_GENCTRL1, (read_data), xpcs_prt);
 +}
++#endif
 +
 +static void xpcs_cfg_table(int xpcs_prt)
 +{
@@ -17918,8 +18205,7 @@ new file mode 100644
 +		XPCS_RGWR_VAL_SHIFT(xpcs_prt, VR_XS_PMA_GEN5_16G_MISC_CTRL2, 0xff, 0,
 +				  1, 0);
 +}
-+
-+
++#ifndef CONFIG_XPCS5_SGMII_2500BASEX_GSW140
 +static void tx_eq_config_kernel(u32 xpcs_prt)
 +{
 +	const struct xpcs_mode_cfg *mode_cfg = &mode_cfg_tbl[0];
@@ -17956,6 +18242,7 @@ new file mode 100644
 +			      lane_cfg->tx_iboost_lvl, lane * 4);
 +	}
 +}
++#endif
 +#endif
 diff --git a/drivers/net/mxl3710_aic.c b/drivers/net/mxl3710_aic.c
 new file mode 100644

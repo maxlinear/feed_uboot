@@ -1,5 +1,68 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.383
+	* UGW_SW-96866 - Remove debug loop
+
+Changes for U-boot version: 4.0.382
+	* UGW_SW-96866 - Boot Retry Flow update
+
+Changes for U-boot version: 4.0.383
+	* Code changes for commits between 526310b and f2c9140bffb8e0c2798c577e64cd5e31bf846c90
+
+
+Changes for U-boot version: 4.0.379
+	* Implement max_boot_count-env-variable-must-be-renamed-to-bootlimit and use it for the logic check
+
+Changes for U-boot version: 4.0.378
+	* UGW_SW-93621 - This fixes the kernel DTB update for PRPL bootflow
+
+Changes for U-boot version: 4.0.377
+	* UGW_SW-94438 : ui firmware upgrade cause boot-up fail after increase rootfs size
+	* UGW_SW-94438 : ui firmware upgrade cause boot-up fail after increase rootfs size
+
+Changes for U-boot version: 4.0.376
+	* UGW_SW-93620 - Boot sequence supports non-PERM-FAILOVER boot with option to overwrite EOW commands
+
+Changes for U-boot version: 4.0.375
+	* UGW_SW-93542 - Added perm failover mode to PRPL boot and End-of-World recovery overwrite configurations
+
+Changes for U-boot version: 4.0.374
+	* UGW_SW-93621 - Update U-boot's DTB with the chosen node to reflect booted bank status
+	* UGW_SW-93621 - Add fixups to kernel DTB to include booted bank information
+	* UGW_SW-93621 - The decision for boot-bank info is made from the existing boot_part instead of NRST register
+
+Changes for U-boot version: 4.0.373
+	* PUMARTSYS-81174: UBOOT: CBSP and Cable defconfigs sync and optimization
+	* PUMARTSYS-81174: UBOOT: CBSP and Cable defconfigs sync and optimization
+	* PUMARTSYS-81174: UBOOT: CBSP and Cable defconfigs sync and optimization
+	* PUMARTSYS-81174: UBOOT: CBSP and Cable defconfigs sync and optimization
+	* PUMARTSYS-81174: UBOOT: CBSP and Cable defconfigs sync and optimization
+
+Changes for U-boot version: 4.0.372
+	* UGW_SW-93542 - Separate the LGM flow in emmc to a common file
+	* UGW_SW-93542 - Updated RBE boot with PRPL boot sequence with temp. failover method
+
+Changes for U-boot version: 4.0.371
+	* UGW_SW-93139 : Recover failes while image upgrade process
+	* UGW_SW-93827: Unify read_cma_size function for SDL and non-SDL boards
+
+Changes for U-boot version: 4.0.369
+	* UGW_SW-93340 - Fix all compilation issues from U-boot size check
+
+Changes for U-boot version: 4.0.368
+	* UGW_SW-93340 - Updated build configuration error due to U-boot size issue
+
+Changes for U-boot version: 4.0.367
+	* UGW_SW-92992,add support to micron 1x1024Mx16b and 1x512Mx16b ddr4
+
+Changes for U-boot version: 4.0.366
+	* UGW_SW-92912 - Additional firewall rules for HSIO-L and Thermal sensor
+
+Changes for U-boot version: 4.0.365
+	* UBOOT_SW-2103-support-customer-gsw140-on-xpcs5
+	* use original gpio function, update function name
+	* update uboot size
+
 Changes for U-boot version: 4.0.364
 	* UGW_SW-92964 - Fix regex limitations in the env binary creation script
 	* UGW_SW-92964 - Fix EMBEDDED DTB setup and included build configuration changes as an input to the script

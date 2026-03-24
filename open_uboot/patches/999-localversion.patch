@@ -1,9 +1,8 @@
 # HG changeset patch
-# Parent  924f2225c95ad326cd51216d582cb175045c2c74
+# Parent  d57c782e2a9e72ee71f222ee49f0d91530c28568
 
-diff --git a/localversion-mxl b/localversion-mxl
-new file mode 100644
---- /dev/null
-+++ b/localversion-mxl
+diff -r d57c782e2a9e localversion-mxl
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/localversion-mxl	Mon Mar 23 16:15:13 2026 +0800
 @@ -0,0 +1,1 @@
-+-MXL-v-4.0.364
++-MXL-v-4.0.383

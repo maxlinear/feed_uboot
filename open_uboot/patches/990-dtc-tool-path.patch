@@ -1,14 +1,5 @@
-From da58371d7098b72ae35750a59686ce81ea00181c Mon Sep 17 00:00:00 2001
-From: knkumar <knkumar@maxlinear.com>
-Date: Mon, 4 Aug 2025 09:25:11 +0200
-Subject: [PATCH] UGW_SW-92461: Uboot dts compilation using build toolchain
-
----
- board/maxlinear/lightning/Makefile.emmc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
 diff --git a/board/maxlinear/lightning/Makefile.emmc b/board/maxlinear/lightning/Makefile.emmc
-index ff3b4c9f5..c9a2b9349 100644
+index e44070a7c..1ce05b292 100644
 --- a/board/maxlinear/lightning/Makefile.emmc
 +++ b/board/maxlinear/lightning/Makefile.emmc
 @@ -174,7 +174,7 @@ $(obj)/u-boot-spl.dis: $(obj)/u-boot-spl
@@ -20,6 +11,3 @@ index ff3b4c9f5..c9a2b9349 100644
  
  ### create u-boot lzma image ###
  u-boot.lzimg: System.map $(if $(filter $(CONFIG_SB_ENV_PROTECTION),$(strip y)),$(SB_ENV_BLOCK),)
--- 
-2.43.5
-

@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  d34d25bc681f1878ca5c16e1ae667f8e528b8b26
+# Parent  e608ff10b0ac7d0bf91c504ea1da0e85eecb10a5
 
 diff --git a/doc/device-tree-bindings/gpio/mxl,x86-lightning-mountain-gpio.txt b/doc/device-tree-bindings/gpio/mxl,x86-lightning-mountain-gpio.txt
 new file mode 100644
@@ -73,7 +73,7 @@ diff --git a/drivers/gpio/lgm_gpio.c b/drivers/gpio/lgm_gpio.c
 new file mode 100644
 --- /dev/null
 +++ b/drivers/gpio/lgm_gpio.c
-@@ -0,0 +1,515 @@
+@@ -0,0 +1,574 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (c) 2018, Intel Corporation.
@@ -413,6 +413,65 @@ new file mode 100644
 +	__config_gpio_reg(gpio_base, rel_pin, dir, func_num);
 +}
 +
++void set_gpio_output_value(unsigned int pin, int val)
++{
++	int rel_pin, bank = 0;
++	u32 gpio_base,reg;
++
++	bank = gpio_get_bank(pin);
++	if (bank < 0)
++		return;
++
++	rel_pin = pin - (32 * bank);
++	gpio_base = GPIO_FUNCTION_CONTROL_MODULE_BASE + 0x100 * bank;
++	reg = readl(gpio_base + OUT_0);
++
++	if (val) {
++		reg |= (1 << rel_pin);
++	} else {
++		reg &= ~(1 << rel_pin);
++	}
++	writel(reg, gpio_base + OUT_0);
++
++}
++
++void set_gpio_direction(unsigned int pin, int dir)
++{
++	int rel_pin, bank = 0;
++	u32 gpio_base,reg;
++
++	bank = gpio_get_bank(pin);
++	if (bank < 0)
++		return;
++
++	rel_pin = pin - (32 * bank);
++	gpio_base = GPIO_FUNCTION_CONTROL_MODULE_BASE + 0x100 * bank;
++	reg = readl(gpio_base + DIR_0);
++
++	if (dir) {
++		reg |= (1 << rel_pin);
++	} else {
++		reg &= ~(1 << rel_pin);
++	}
++	writel(reg, gpio_base + DIR_0);
++
++}
++
++void set_gpio_function(unsigned int pin,	unsigned int func_num)
++{
++	int bank;
++	int rel_pin;
++	u32 pinmux_base;
++
++	bank = gpio_get_bank(pin);
++	if (bank < 0)
++		return;
++
++	rel_pin = pin - (32 * bank);
++	pinmux_base = GPIO_PAD_CONTROL_MODULE_BASE + 0x100 * bank;//0xE2880000u +
++	config_pinmux(pinmux_base, rel_pin, func_num);
++}
++
 +#if defined(CONFIG_DM_GPIO)
 +static int lgm_gpio_set_value(struct udevice *device, unsigned offset,
 +			      int value)
@@ -593,7 +652,7 @@ diff --git a/include/lgm_gpio.h b/include/lgm_gpio.h
 new file mode 100755
 --- /dev/null
 +++ b/include/lgm_gpio.h
-@@ -0,0 +1,18 @@
+@@ -0,0 +1,22 @@
 +/*
 + * Copyright 2008,2010 Freescale Semiconductor, Inc
 + * Andy Fleming
@@ -610,5 +669,9 @@ new file mode 100755
 +int gpio_reserve_and_set(unsigned int gpio, unsigned int direction,	unsigned int value);
 +int gpio_set_value(unsigned int gpio, int value);
 +int gpio_get_value(unsigned int gpio);
++
++void set_gpio_output_value(unsigned int pin, int val);
++void set_gpio_direction(unsigned int pin, int dir);
++void set_gpio_function(unsigned int pin, unsigned int func_num);
 +
 +#endif /* _MMC_H_ */
