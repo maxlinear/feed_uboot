@@ -1,8 +1,8 @@
 # HG changeset patch
-# Parent  d57c782e2a9e72ee71f222ee49f0d91530c28568
+# Parent  cb70b015d9c48bc879bcabe8be2089c2b2a1ba41
 
-diff -r d57c782e2a9e localversion-mxl
+diff -r cb70b015d9c4 localversion-mxl
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/localversion-mxl	Mon Mar 23 16:15:13 2026 +0800
++++ b/localversion-mxl	Wed Mar 25 15:59:14 2026 +0800
 @@ -0,0 +1,1 @@
-+-MXL-v-4.0.383
++-MXL-v-4.0.384

@@ -1,5 +1,8 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.384
+	* - Force Inactive in BootFLow
+
 Changes for U-boot version: 4.0.383
 	* UGW_SW-96866 - Remove debug loop
 

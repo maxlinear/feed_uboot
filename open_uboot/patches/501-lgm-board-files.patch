@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  401b9434d924e9a18757b75c3baeb6a096ab9675
+# Parent  36ec47d15f49d6b56cd9c7ea0596222c4eb80adf
 
 diff --git a/board/maxlinear/Kconfig b/board/maxlinear/Kconfig
 new file mode 100644
@@ -70679,7 +70679,7 @@ diff --git a/board/maxlinear/lightning/lightning.c b/board/maxlinear/lightning/l
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/lightning.c
-@@ -0,0 +1,986 @@
+@@ -0,0 +1,992 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright � 2022 MaxLinear, Inc.
@@ -71620,22 +71620,28 @@ new file mode 100644
 +	int ret;
 +	int chosen_node;
 +	u32 boot_reg;
++	u32 force_inactive_mask;
 +	const char *boot_bank_str;
 +
 +	/* Read boot control register from NRST_REG_NRST_2 */
 +	boot_reg = readl(NRST_REG_NRST_2);
++	force_inactive_mask = (1U << 16) | (1U << 17);
 +
-+	/* Determine the boot bank string based on bit 29 and bit 16
++	/* Determine the boot bank string based on bit 29 and forced markers
 +	 * Bit 29 = 0: ACTIVE partition was used
 +	 * Bit 29 = 1: INACTIVE partition was used
-+	 * Bit 16 = 1: force_inactive flag is set
++	 * Bit 16 = 1: force_inactive request flag is set
++	 * Bit 17 = 1: force_inactive latched marker set by SPL
 +	 */
 +	if (boot_reg & (1 << 29)) {
 +		/* INACTIVE partition was used */
-+		if (boot_reg & (1 << 16)) {
++		if (boot_reg & force_inactive_mask)
++		{
 +			/* force_inactive flag is set */
 +			boot_bank_str = "inactive,forced";
-+		} else {
++		}
++		else
++		{
 +			boot_bank_str = "inactive";
 +		}
 +	} else {
@@ -71982,7 +71988,7 @@ diff --git a/board/maxlinear/lightning/pre_kern_fixups.c b/board/maxlinear/light
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/pre_kern_fixups.c
-@@ -0,0 +1,306 @@
+@@ -0,0 +1,312 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2025 Maxlinear Corporation
@@ -72181,6 +72187,7 @@ new file mode 100644
 +	int node_offset, ret;
 +	ulong loadaddr = 0;
 +	u32 boot_reg;
++	u32 force_inactive_mask;
 +	const char *boot_bank_str;
 +
 +	/* Get the FDT load address using the common API */
@@ -72219,21 +72226,26 @@ new file mode 100644
 +
 +	/* Read boot control register from NRST_REG_NRST_2 to check force_inactive flag */
 +	boot_reg = readl(NRST_REG_NRST_2);
++	force_inactive_mask = (1U << 16) | (1U << 17);
 +
-+	/* Determine the boot bank string based on boot_part env variable and bit 16
++	/* Determine the boot bank string based on boot_part env variable and forced markers
 +	 * boot_part = "active": ACTIVE partition was used
 +	 * boot_part = "inactive": INACTIVE partition was used
-+	 * Bit 16 = 1: force_inactive flag is set (fallback occurred)
++	 * Bit 16 = 1: force_inactive request flag is set
++	 * Bit 17 = 1: force_inactive latched marker set by SPL
 +	 */
 +	if (strncmp(boot_part, "active", 6) == 0) {
 +		/* ACTIVE partition was used */
 +		boot_bank_str = "active";
 +	} else if (strncmp(boot_part, "inactive", 8) == 0) {
 +		/* INACTIVE partition was used */
-+		if (boot_reg & (1 << 16)) {
++		if (boot_reg & force_inactive_mask)
++		{
 +			/* force_inactive flag is set - fallback occurred */
 +			boot_bank_str = "inactive,forced";
-+		} else {
++		}
++		else
++		{
 +			boot_bank_str = "inactive";
 +		}
 +	} else {
