@@ -1,0 +1,16 @@
+Index: u-boot-2022.01/include/configs/maxlinear/common.h
+===================================================================
+--- u-boot-2022.01.orig/include/configs/maxlinear/common.h
++++ u-boot-2022.01/include/configs/maxlinear/common.h
+@@ -138,6 +138,11 @@
+ /* #define CONFIG_LZMA */
+ #define CONFIG_ENV_OVERWRITE
+ 
++/* Environment flags list for octopus boards with P34X PHY */
++#if defined(CONFIG_ENV_WRITEABLE_LIST)
++#define CONFIG_ENV_FLAGS_LIST_STATIC "failover:sw,wantype:sw"
++#endif
++
+ /* allow longer tftp pathnames, default 128 in tftp.c */
+ #define CONFIG_TFTP_FILE_NAME_MAX_LEN      256
+ 

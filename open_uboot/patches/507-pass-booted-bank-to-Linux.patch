@@ -1,0 +1,146 @@
+Index: u-boot-2022.01/common/prpl/Kconfig
+===================================================================
+--- u-boot-2022.01.orig/common/prpl/Kconfig
++++ u-boot-2022.01/common/prpl/Kconfig
+@@ -2,6 +2,7 @@ menu "prpl"
+ 
+ config PRPL_BOOT
+        bool "prpl boot"
++       select OF_SYSTEM_SETUP
+        default n
+        help
+          Enable prpl boot related feature
+Index: u-boot-2022.01/common/prpl/Makefile
+===================================================================
+--- u-boot-2022.01.orig/common/prpl/Makefile
++++ u-boot-2022.01/common/prpl/Makefile
+@@ -3,3 +3,4 @@
+ # Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
+ 
+ obj-$(CONFIG_PRPL_BOOT) += prpl_boot_mmc.o
++obj-$(CONFIG_PRPL_BOOT) += prpl_boot.o
+Index: u-boot-2022.01/common/prpl/prpl_boot.c
+===================================================================
+--- /dev/null
++++ u-boot-2022.01/common/prpl/prpl_boot.c
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
++ *
++ */
++#include <env.h>
++#include <fdt_support.h>
++#include <linux/io.h>
++#include <stdlib.h>
++#include <asm/global_data.h>
++
++DECLARE_GLOBAL_DATA_PTR;
++
++#define BOOTARGS_EXTRA_LEN 40
++
++/**
++ * set_root_bootargs() - Set bank information in the bootargs
++ *
++ * @is_active_bank:	Set 1 when the active bank is booted
++ *
++ * @return 0 on success, a negative number otherwise
++ */
++static int set_root_bootargs(int is_active_bank)
++{
++	int ret = 0;
++	char *bootargs = NULL;
++	char *new_bootargs = NULL;
++	char *root = NULL;
++	int len;
++
++	bootargs = env_get("bootargs");
++	len = bootargs ? strlen(bootargs) : 0;
++
++	new_bootargs = malloc(len + BOOTARGS_EXTRA_LEN);
++	if (!new_bootargs) {
++		printf("%s: ERROR: Failed to allocate memory for bootargs!\n", __func__);
++		ret = -1;
++		goto out;
++	}
++
++	memset(new_bootargs, 0, len + BOOTARGS_EXTRA_LEN);
++	if (bootargs) {
++		memcpy(new_bootargs, bootargs, len);
++		/* Replace the NULL terminating character by a space to concatenate more options */
++		new_bootargs[len] = ' ';
++	}
++
++	/* Append root information to the bootargs */
++	root = is_active_bank ? "root=PARTLABEL=rootfs-active" : "root=PARTLABEL=rootfs-inactive";
++	strcpy(new_bootargs + len + 1, root);
++
++	/* Set updated bootargs in Linux device tree */
++	debug("%s: Setting bootargs to %s\n", __func__, new_bootargs);
++	env_set("bootargs", new_bootargs);
++ out:
++	free(new_bootargs);
++	return ret;
++}
++
++/**
++ * ft_system_setup() - Overwrite ft_system_setup()
++ *
++ * ft_system_setup() is used to pass the booted bank information in the Linux
++ * device tree and set the bootargs accordingly.
++ *
++ * @blob:	Linux device tree pointer
++ * @bd:		Board information passed to the Linux kernel
++ *
++ * @return 0 on success, a negative number otherwise
++ */
++int ft_system_setup(void *blob, struct bd_info *bd)
++{
++	const void *fdt = gd->fdt_blob;
++	int nodeoffset, len;
++	const char *booted_bank;
++	int ret = 0;
++
++	/* Check the booted bank as set in U-Boot device tree */
++        nodeoffset = fdt_path_offset(fdt, "/chosen");
++        if (nodeoffset < 0) {
++		printf("%s: ERROR: Missing chosen node in U-Boot's device tree\n", __func__);
++                ret = nodeoffset;
++                goto out;
++        }
++	booted_bank = (const char *)fdt_getprop(fdt, nodeoffset, "u-boot,booted-bank", &len);
++	if (!booted_bank) {
++		printf("%s: ERROR: Failed to retrieve the booted bank in U-Boot's device tree\n",
++		       __func__);
++		ret = -1;
++		goto out;
++	}
++
++	/* Update the bootargs in Linux device tree */
++	if (!strncmp(booted_bank, "active", strlen("active"))) {
++		if (set_root_bootargs(1)) {
++			printf("%s: ERROR: Failed to set the bootargs\n", __func__);
++			ret = -1;
++			goto out;
++		}
++	}
++	else if (!strncmp(booted_bank, "inactive", strlen("inactive"))) {
++		if (set_root_bootargs(0)) {
++			printf("%s: ERROR: Failed to set the bootargs\n", __func__);
++			ret = -1;
++			goto out;
++		}
++	}
++	else {
++		printf("%s: ERROR: Wrong booted bank information: %s)\n",
++		       __func__, booted_bank);
++		ret = -1;
++		goto out;
++	}
++
++	/* Set u-boot,booted-bank in Linux device tree */
++	debug("%s: Setting u-boot,booted-bank to %s\n", __func__, booted_bank);
++	fdt_find_and_setprop(blob, "/chosen", "u-boot,booted-bank", booted_bank, len, 1);
++ out:
++	return ret;
++}

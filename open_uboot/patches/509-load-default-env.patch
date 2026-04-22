@@ -1,0 +1,44 @@
+Index: u-boot-2022.01/env/Kconfig
+===================================================================
+--- u-boot-2022.01.orig/env/Kconfig
++++ u-boot-2022.01/env/Kconfig
+@@ -698,6 +698,7 @@ config ENV_APPEND
+ 
+ config ENV_WRITEABLE_LIST
+ 	bool "Permit write access only to listed variables"
++	select ENV_APPEND
+ 	help
+ 	  If defined, only environment variables which explicitly set the 'w'
+ 	  writeable flag can be written and modified at runtime. No variables
+Index: u-boot-2022.01/env/env.c
+===================================================================
+--- u-boot-2022.01.orig/env/env.c
++++ u-boot-2022.01/env/env.c
+@@ -172,6 +172,14 @@ int env_load(void)
+ 	int best_prio = -1;
+ 	int prio;
+ 
++	if (CONFIG_IS_ENABLED(ENV_WRITEABLE_LIST)) {
++		/*
++		 * When using a list of writeable variables, the baseline comes
++		 * from the built-in default env. So load this first.
++		 */
++		env_set_default(NULL, 0);
++	}
++
+ 	for (prio = 0; (drv = env_driver_lookup(ENVOP_LOAD, prio)); prio++) {
+ 		int ret;
+ 
+Index: u-boot-2022.01/lib/hashtable.c
+===================================================================
+--- u-boot-2022.01.orig/lib/hashtable.c
++++ u-boot-2022.01/lib/hashtable.c
+@@ -949,7 +949,7 @@ int himport_r(struct hsearch_data *htab,
+ 		e.data = value;
+ 
+ 		hsearch_r(e, ENV_ENTER, &rv, htab, flag);
+-#if !CONFIG_IS_ENABLED(ENV_WRITEABLE_LIST)
++#ifndef CONFIG_ENV_WRITEABLE_LIST
+ 		if (rv == NULL) {
+ 			printf("himport_r: can't insert \"%s=%s\" into hash table\n",
+ 				name, value);

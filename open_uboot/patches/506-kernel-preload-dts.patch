@@ -1,0 +1,23 @@
+diff --git a/arch/x86/dts/octopus.dts b/arch/x86/dts/octopus.dts
+--- a/arch/x86/dts/octopus.dts
++++ b/arch/x86/dts/octopus.dts
+@@ -48,6 +48,19 @@
+ 			public-key = [30 82 02 0a 02 82 02 01 00 bd 64 9b 64 e8 57 d5 f0 6c 2c c1 b3 ad 27 cc 82 50 13 9f d9 12 0e b8 2c ea 6b 63 b3 f6 cc ed 5a 6f f7 8b d5 66 7c 91 2f c2 69 39 73 ac cb ec e9 79 86 c4 8e fb 98 e0 22 38 d7 4a f3 cb c9 43 e2 5c 94 1f a2 b0 87 69 02 ca b2 6b d7 d2 95 f1 cb d4 63 39 9b 65 40 70 eb b6 c1 7a 20 dd 34 7e 83 71 46 a5 9d 36 75 c6 6d e6 25 dc 89 8d a8 6b 1e cf 6e 66 87 fc 47 30 8f ba ac f8 14 a1 6a da 18 1e d3 04 d3 67 60 b5 86 ed 53 5d 96 66 d7 af 8a 8e 87 e5 17 b7 cb 42 63 46 8e 13 f9 b3 e2 da 1b 90 a7 a1 03 75 33 5d 91 39 e8 26 eb 5b a7 cf 58 b3 cc 6d 6a 34 d0 1d fb a4 bc ee e8 e6 80 88 95 c0 6d 1d 6d fe 56 cd 20 35 27 e2 12 4d 21 cb 93 03 30 f7 77 e3 d6 da e3 b5 37 b9 b3 1a a5 27 28 bb 96 20 bc e3 d3 06 a6 c7 6a da 7c da 60 b1 bd 1f 0c 95 54 34 c9 9b 09 b2 e8 11 56 18 7c 1a b5 d6 40 02 a1 d3 8e 10 26 15 cf 21 32 69 b3 49 4f 70 71 ae 58 f4 2e 3a 15 30 84 be 25 55 e4 71 12 03 47 00 fd c7 69 3f c2 9c 5e cb a2 cb ad 4f 7d ff 44 5a 56 64 fd c8 82 33 5a db 27 1e c9 9a 6d e6 64 c4 6d 68 4b a7 69 72 cb fb 42 27 63 3f 82 86 a3 66 7e b5 f6 b4 df ec b8 fa ca d2 78 81 4a dd 0a 6d 0f 29 1e 47 57 aa 22 f6 c8 10 87 75 73 a1 90 50 e4 f5 cc ad c8 1f a4 55 32 d6 d5 66 f5 86 20 6b c5 a2 38 c4 eb 2b 9b bb b5 e0 e3 7a 39 01 7f da 79 2e 8c 30 37 6c 0b aa 08 75 28 07 0a 25 11 b8 fb f0 88 56 58 bd 22 b8 27 42 6f 4b f9 41 d3 ab af 96 72 3e 76 d3 5f 05 ed bd 43 22 34 17 6d 00 a9 db 29 ef f9 a1 67 8b 43 80 88 cf 19 92 ce 15 0c 9a 01 e0 02 85 cb 76 61 d3 e6 c5 d6 be 55 f5 29 04 30 22 1e 5b ae f8 85 e1 f8 c6 da 6e 2f 3e 4f d0 60 af c3 ce 81 58 1b 8f b9 f0 93 02 03 01 00 01];
+ 		};
+ 	};
++
++	image {
++		pre-load {
++			sig {
++				header-size = <0x1000>;
++				padding-name = "pss";
++				algo-name = "sha256,rsa4096";
++				signature-size = <0x200>;
++				mandatory = "yes";
++				public-key = [30 82 02 0a 02 82 02 01 00 af 22 6f fc f1 a1 91 ea d3 ee da 58 b7 2d cc 04 b1 86 4c 69 42 1b f2 ea a9 b9 a1 46 55 1b 0d 79 f9 9a b1 5e b3 bd 40 8e 23 d1 b6 28 b2 15 d0 17 d0 6b 17 e4 c4 df cf f6 07 fe 92 59 71 23 b4 32 04 78 55 3c 98 87 38 12 df 0a 24 55 36 05 5f 83 75 cc b5 e5 44 02 b1 ab ef 3f d4 64 1c 5b 5f 66 e8 97 0d 41 fa e0 48 ff e1 ef da 64 6a aa f0 0a bb 0e 17 6e e9 78 74 d3 1f fa 5a ed fd b9 66 14 43 9a 27 f5 cf d7 16 ce 59 c1 e8 8c c0 90 fc 76 af d2 50 41 7b 55 05 a7 90 f8 60 09 cd 44 19 1f 03 13 54 16 5f d1 d1 ca 47 bc 0f c5 5c 59 1a dc 82 1b 95 78 3e 27 c1 6d 69 7b 1b 5b f6 bc 05 90 c7 07 42 ff b9 35 71 7b 32 81 5f c6 d9 0c 3c bf ba 5f 09 d7 0c f8 a7 39 db 09 2a 9f 00 95 56 7d ca 16 cd 1f f0 58 d2 6e 13 8b 87 43 2a b2 98 02 42 59 ef 58 6e 01 d7 3a a6 bc e6 2f 37 c6 6a d1 8d ce ad 6d d1 60 0d 86 1a 40 24 74 8e d3 75 5a e3 e8 40 16 1f 63 f3 99 82 18 a8 5c 28 81 ab aa 8f ef ec 7e b9 c6 d4 15 fc ae d3 81 a4 7c 57 1a 0a 3a 57 64 71 2e 38 58 8d 0c 12 49 f2 d7 9f b2 3a 2f 7a e2 7a 4f 0f 6e 06 ef 28 86 e2 24 f9 bd 9b 13 78 14 c2 28 3b e8 04 69 e3 47 47 72 bd 99 44 a4 77 40 21 63 b5 ea 22 c3 5c f7 57 99 e7 f3 53 20 42 4a db 60 cd 95 62 97 6d b7 aa d3 1d ad f8 36 2b ac cf cc 15 39 b9 6e d8 c6 ec af ed ce 52 1e fe ca 02 2f 1c 35 09 cd 48 73 bc 33 93 29 1d 0e b0 24 5a 24 15 19 ec 9a 3b 00 0b d3 ba 40 f8 15 9e 60 49 e9 43 5f 26 93 ec 84 dc 0a 39 08 fa cb be 35 3c c0 a6 8c be b5 b4 01 ba e8 7c a0 e3 1c c4 44 c4 34 bf a2 fb 24 e7 ec d6 48 d0 b7 14 da 2a 7d e0 65 51 e0 bd c8 87 c5 56 fb b4 69 72 de 21 7b c7 be e4 0b 7a 72 a9 7d 0d 35 00 61 02 03 01 00 01];
++			};
++		};
++	};
+ };
+ 
+ &eth0 {

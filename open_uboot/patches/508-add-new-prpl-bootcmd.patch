@@ -1,0 +1,488 @@
+From 15c43285a22ca507f60b3abdbdd4e78df1db43a2 Mon Sep 17 00:00:00 2001
+From: Mohamed-nour Toumi <mohamed.toumi_ext@softathome.com>
+Date: Fri, 13 Feb 2026 16:17:10 +0100
+Subject: [PATCH] 508-add new bootcmd
+
+---
+ cmd/prpl/Kconfig         |   7 ++
+ cmd/prpl/Makefile        |   1 +
+ cmd/prpl/bootprpl.c      |  23 ++++
+ common/prpl/Kconfig      |  15 +++
+ common/prpl/prpl_boot.c  | 250 ++++++++++++++++++++++++++++++++++++++-
+ include/prpl/prpl_boot.h |  29 +++++
+ 6 files changed, 321 insertions(+), 4 deletions(-)
+ create mode 100644 cmd/prpl/bootprpl.c
+ create mode 100644 include/prpl/prpl_boot.h
+
+Index: u-boot-2022.01/cmd/prpl/Kconfig
+===================================================================
+--- u-boot-2022.01.orig/cmd/prpl/Kconfig
++++ u-boot-2022.01/cmd/prpl/Kconfig
+@@ -8,4 +8,11 @@ config CMD_MFG
+ 	help
+ 	  Enable MFG support command
+ 
++config CMD_BOOTPRPL
++	bool "Enable bootprpl command"
++	default y
++	depends on PRPL_BOOT
++	help
++	  Enable bootprpl support command
++
+ endmenu
+Index: u-boot-2022.01/cmd/prpl/Makefile
+===================================================================
+--- u-boot-2022.01.orig/cmd/prpl/Makefile
++++ u-boot-2022.01/cmd/prpl/Makefile
+@@ -3,3 +3,4 @@
+ # Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
+ 
+ obj-$(CONFIG_CMD_MFG) += mfg.o
++obj-$(CONFIG_CMD_BOOTPRPL) += bootprpl.o
+\ No newline at end of file
+Index: u-boot-2022.01/cmd/prpl/bootprpl.c
+===================================================================
+--- /dev/null
++++ u-boot-2022.01/cmd/prpl/bootprpl.c
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2026 Mohamed-Nour TOUMI <mohamed.toumi_ext@softathome.com>
++ *
++ */
++#include <common.h>
++#include <command.h>
++
++#include <prpl/prpl_boot.h>
++
++static int do_bootprpl_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
++{
++	(void)cmdtp;
++	(void)flag;
++
++	if (argc > 2)
++		return CMD_RET_USAGE;
++
++	return do_bootprpl(argc, argv);
++}
++
++U_BOOT_CMD(
++	bootprpl, 2, 0, do_bootprpl_cmd,
++	"prpl boot command (retrieve the bank from U-Boot DTB to load the FIT)",
++	"[conf_uname] - configuration specification\n"
++);
+Index: u-boot-2022.01/common/prpl/Kconfig
+===================================================================
+--- u-boot-2022.01.orig/common/prpl/Kconfig
++++ u-boot-2022.01/common/prpl/Kconfig
+@@ -3,6 +3,7 @@ menu "prpl"
+ config PRPL_BOOT
+        bool "prpl boot"
+        select OF_SYSTEM_SETUP
++       select FIT
+        default n
+        help
+          Enable prpl boot related feature
+@@ -21,6 +22,21 @@ config PRPL_BOOT_MMC_DEVICE
+ 	help
+ 	  Define the number of the interface. For example 0 for the first device.
+ 
++config PRPL_BOOT_USE_EXT4LOAD
++	bool "bootprpl: load FIT from ext4 partition"
++	default n
++	depends on PRPL_BOOT && MMC
++	help
++	  If enabled, the 'bootprpl' command will load the FIT image using:
++	      ext4load mmc 0#<kernel_gpt> <loadaddr> /kernel.itb
++
++	  from the selected bank (kernel-active / kernel-inactive).
++	  If disabled, bootprpl assumes the FIT image is already present
++	  in RAW storage
++	  and will directly execute:
++
++	      bootm ${loadaddr}#kernel-dtb-config
++
+ source "cmd/prpl/Kconfig"
+ source "lib/prpl/Kconfig"
+ endmenu
+Index: u-boot-2022.01/common/prpl/prpl_boot.c
+===================================================================
+--- u-boot-2022.01.orig/common/prpl/prpl_boot.c
++++ u-boot-2022.01/common/prpl/prpl_boot.c
+@@ -1,26 +1,43 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+  * Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
+- *
++ * Copyright (C) 2026 Mohamed-Nour TOUMI <mohamed.toumi_ext@softathome.com>
+  */
++
++#include <common.h>
+ #include <env.h>
++#include <malloc.h>
++#include <linux/libfdt.h>
+ #include <fdt_support.h>
+-#include <linux/io.h>
+-#include <stdlib.h>
+ #include <asm/global_data.h>
++#include <image.h>
++#include <bootm.h>
++#include <prpl/prpl_boot_mmc.h>
++#include <fs.h>
++#include <blk.h>
++#include <part.h>
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+-#define BOOTARGS_EXTRA_LEN 40
++
++#ifndef DEFAULT_BOOTFILE
++#define DEFAULT_BOOTFILE "/kernel.itb"
++#endif
++
++#ifndef DEFAULT_KERNEL_LOADADDR
++#define DEFAULT_KERNEL_LOADADDR CONFIG_SYS_LOAD_ADDR
++#endif
++
++#define BOOTARGS_EXTRA_LEN 64
+ 
+ /**
+  * set_root_bootargs() - Set bank information in the bootargs
+  *
+- * @is_active_bank:	Set 1 when the active bank is booted
++ * @bank:	Set to 0 for the active bank and 1 for inactive bank
+  *
+  * @return 0 on success, a negative number otherwise
+  */
+-static int set_root_bootargs(int is_active_bank)
++static int set_root_bootargs(int bank)
+ {
+ 	int ret = 0;
+ 	char *bootargs = NULL;
+@@ -28,13 +45,18 @@ static int set_root_bootargs(int is_acti
+ 	char *root = NULL;
+ 	int len;
+ 
++	if (0 != bank && 1 != bank) {
++		ret = -EINVAL;
++		goto out;
++	}
++
+ 	bootargs = env_get("bootargs");
+ 	len = bootargs ? strlen(bootargs) : 0;
+ 
+ 	new_bootargs = malloc(len + BOOTARGS_EXTRA_LEN);
+ 	if (!new_bootargs) {
+ 		printf("%s: ERROR: Failed to allocate memory for bootargs!\n", __func__);
+-		ret = -1;
++		ret = -ENOMEM;
+ 		goto out;
+ 	}
+ 
+@@ -46,7 +68,7 @@ static int set_root_bootargs(int is_acti
+ 	}
+ 
+ 	/* Append root information to the bootargs */
+-	root = is_active_bank ? "root=PARTLABEL=rootfs-active" : "root=PARTLABEL=rootfs-inactive";
++	root = bank ? "root=PARTLABEL=rootfs-inactive" : "root=PARTLABEL=rootfs-active";
+ 	strcpy(new_bootargs + len + 1, root);
+ 
+ 	/* Set updated bootargs in Linux device tree */
+@@ -58,6 +80,192 @@ static int set_root_bootargs(int is_acti
+ }
+ 
+ /**
++ * get_booted_bank() - Retrieve booted bank from U-Boot DT
++ * @fdt: Pointer to U-Boot device tree blob
++ *
++ * Reads the "u-boot,booted-bank" property from /chosen node.
++ *
++ * Returns:
++ * 	0 if the active was booted, 1 if the inactive bank was booted and
++ *	-1 if no bank information could be retrieved.
++ */
++static int get_booted_bank(const void *fdt)
++{
++	int ret = -1;
++	int node;
++	int len;
++	const char *bank;
++
++	if (!fdt || fdt_check_header(fdt))
++		goto out;
++
++	node = fdt_path_offset(fdt, "/chosen");
++	if (node < 0)
++		goto out;
++
++	bank = fdt_getprop(fdt, node,
++			   "u-boot,booted-bank", &len);
++
++	if (!bank || len <= 0)
++		goto out;
++
++	if (len >= strlen("active") &&
++	    !memcmp(bank, "active", strlen("active")))
++		ret = 0;
++	else if (len >= strlen("inactive") &&
++		 !memcmp(bank, "inactive", strlen("inactive")))
++		ret = 1;
++
++ out:
++	return ret;
++}
++
++
++/**
++ * load_fit_ext4() - Load FIT file from ext4 partition
++ * @volume: GPT partition name
++ * @filename: FIT filename inside filesystem
++ * @loadaddr: RAM address where FIT is loaded
++ *
++ * Uses filesystem layer (no CLI) to load a FIT image stored
++ * inside an ext4 formatted partition.
++ *
++ * Return:
++ * 0 on success
++ * Negative error code on failure
++ */
++static int load_fit_ext4(const char *part_name,
++                         const char *filename,
++                         ulong loadaddr)
++{
++	struct blk_desc *desc;
++	struct disk_partition info;
++	int part;
++	loff_t size;
++	int ret = 0;
++
++	printf("Loading FIT %s from ext4 partition %s\n",
++	       filename, part_name);
++
++	desc = blk_get_dev("mmc", 0);
++	if (!desc) {
++		printf("Cannot get MMC device\n");
++		ret = -ENODEV;
++		goto out;
++	}
++
++	part = part_get_info_by_name(desc, part_name, &info);
++	if (part < 0) {
++		printf("Partition %s not found\n", part_name);
++		ret = -ENOENT;
++		goto out;
++	}
++
++	ret = fs_set_blk_dev_with_part(desc, part);
++	if (ret) {
++		printf("Cannot set block device\n");
++		goto out;
++	}
++
++	ret = fs_read(filename, loadaddr, 0, 0, &size);
++	if (ret) {
++		printf("Failed to read file %s\n", filename);
++		goto out;
++	}
++
++	printf("Loaded %lld bytes\n", size);
++
++ out:
++	return ret;
++}
++
++/**
++ * load_fit_raw() - Load FIT from raw GPT partition
++ * @volume: GPT partition name
++ * @loadaddr: RAM address where FIT is loaded
++ *
++ * Uses board_read_firmware() to read the full partition into memory.
++ *
++ * Return:
++ * 0 on success
++ * Negative error code on failure
++ */
++static int load_fit_raw(const char *volume, ulong loadaddr)
++{
++	printf("Loading raw FIT from partition %s\n", volume);
++
++	return board_read_firmware(volume, (char *)loadaddr);
++}
++
++/**
++ * do_bootprpl() - U-Boot command entrypoint for prpl boot
++ * @argc: Argument count
++ * @argv: Argument vector
++ *
++ * This function serves as the exported command entry point.
++ * It optionally accepts a configuration.
++ *
++ * If no configuration is provided, the default one is used.
++ *
++ * Supports to load a FIT from:
++ *   - a raw partition
++ *   - a file inside an ext4 partition
++ *
++ * Returns:
++ * 0 on success or a negative value otherwise.
++ */
++int do_bootprpl(int argc, char *const argv[])
++{
++	const void *fdt = gd->fdt_blob;
++	int bank;
++	const char *kernel_part;
++	ulong loadaddr;
++	char addr_str[64];
++	char *bootm_argv[2];
++	int ret;
++
++	loadaddr = env_get_hex("loadaddr",
++			       DEFAULT_KERNEL_LOADADDR);
++
++	bank = get_booted_bank(fdt);
++	if (bank < 0) {
++		printf("Failed to retrieve booted bank information in U-Boot DTB\n");
++		return -1;
++	}
++
++	kernel_part = bank ? "kernel-inactive" : "kernel-active";
++	ret = set_root_bootargs(bank);
++	if (ret)
++		return ret;
++
++	if (CONFIG_IS_ENABLED(PRPL_BOOT_USE_EXT4LOAD)) {
++		ret = load_fit_ext4(kernel_part,
++				    DEFAULT_BOOTFILE,
++				    loadaddr);
++	}
++	else {
++		ret = load_fit_raw(kernel_part,
++				   loadaddr);
++	}
++
++	if (ret)
++		return ret;
++
++	if (argc > 1)
++		snprintf(addr_str, sizeof(addr_str), "0x%lx#%s",
++			 loadaddr, argv[1]);
++	else
++		snprintf(addr_str, sizeof(addr_str), "0x%lx", loadaddr);
++
++	printf("Booting FIT image at %s\n", addr_str);
++	bootm_argv[0] = "bootm";
++	bootm_argv[1] = addr_str;
++
++	return do_bootm(NULL, 0, 2, bootm_argv);
++}
++
++
++/**
+  * ft_system_setup() - Overwrite ft_system_setup()
+  *
+  * ft_system_setup() is used to pass the booted bank information in the Linux
+@@ -90,31 +298,48 @@ int ft_system_setup(void *blob, struct b
+ 		goto out;
+ 	}
+ 
+-	/* Update the bootargs in Linux device tree */
+-	if (!strncmp(booted_bank, "active", strlen("active"))) {
+-		if (set_root_bootargs(1)) {
+-			printf("%s: ERROR: Failed to set the bootargs\n", __func__);
+-			ret = -1;
+-			goto out;
+-		}
+-	}
+-	else if (!strncmp(booted_bank, "inactive", strlen("inactive"))) {
+-		if (set_root_bootargs(0)) {
+-			printf("%s: ERROR: Failed to set the bootargs\n", __func__);
+-			ret = -1;
+-			goto out;
+-		}
+-	}
+-	else {
+-		printf("%s: ERROR: Wrong booted bank information: %s)\n",
+-		       __func__, booted_bank);
+-		ret = -1;
+-		goto out;
+-	}
+-
+ 	/* Set u-boot,booted-bank in Linux device tree */
+ 	debug("%s: Setting u-boot,booted-bank to %s\n", __func__, booted_bank);
+ 	fdt_find_and_setprop(blob, "/chosen", "u-boot,booted-bank", booted_bank, len, 1);
+  out:
+ 	return ret;
+ }
++
++/**
++ * @brief Runs the board-specific boot command when CONFIG_CMDLINE is disabled.
++ *
++ * This function is called by U-Boot in scenarios where command-line parsing
++ * is not available (CONFIG_CMDLINE is disabled). Instead of interpreting
++ * a string command, it directly invokes the PRPL boot flow through
++ * do_bootprpl().
++ *
++ * The function ignores the `cmdline` parameter and always calls
++ * do_bootprpl() with a single argument, which causes the boot flow
++ * to use the default bootfile (DEFAULT_BOOTFILE). After do_bootprpl()
++ * returns, execution should never reach the printf statement unless
++ * something goes wrong.
++ *
++ * @param cmdline Pointer to a command line string (ignored).
++ *
++ * @return Returns the value from do_bootprpl(). Typically, this function
++ *         should not return under normal boot flow.
++ */
++int board_run_command(const char *cmdline)
++{
++	int ret;
++	char *bootprpl_argv[] = {
++	  "bootprpl",
++	  /* Optional: add a second arg to pass the configuration to be used */
++	};
++
++	/* cmdline is ignored on purpose (no command line available). */
++	(void)cmdline;
++
++	/* argc = 1 => do_bootprpl() will use the configuration */
++	ret = do_bootprpl(1, bootprpl_argv);
++
++	printf("%s: something bad happens, no u-boot/kernel has started ...\n",
++	       __func__);
++
++	return ret;
++}
+Index: u-boot-2022.01/include/prpl/prpl_boot.h
+===================================================================
+--- /dev/null
++++ u-boot-2022.01/include/prpl/prpl_boot.h
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2026 Mohamed-Nour TOUMI <mohamed.toumi_ext@softathome.com>
++ *
++ */
++#ifndef __PRPL_BOOT_H__
++#define __PRPL_BOOT_H__
++
++/**
++ * do_bootprpl() - U-Boot command entrypoint for prpl boot
++ * @argc: Argument count
++ * @argv: Argument vector
++ *
++ * This function serves as the exported command entry point.
++ * It optionally accepts a configuration.
++ *
++ * If no configuration is provided, the default one is used.
++ *
++ * Supports to load a FIT from:
++ *   - a raw partition
++ *   - a file inside an ext4 partition
++ *
++ * Returns:
++ * 0 on success or a negative value otherwise.
++ */
++int do_bootprpl(int argc, char *const argv[]);
++
++#endif /* __PRPL_BOOT_H__ */
+\ No newline at end of file

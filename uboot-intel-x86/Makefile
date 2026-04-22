@@ -182,8 +182,6 @@ UBOOT_IMAGES:=u-boot-recovery.bin u-boot-recovery.asc \
 #for emmc 
 UBOOT_IMAGES+=*-emmc.bin
 UBOOT_IMAGES+=spl/*-emmc.bin
-#for emmc fit
-UBOOT_IMAGES+=*.itb
 #for nand
 UBOOT_IMAGES+=*-nand.bin
 UBOOT_IMAGES+=spl/*-nand.bin
