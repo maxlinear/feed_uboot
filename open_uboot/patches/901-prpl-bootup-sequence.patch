@@ -1,49 +1,10 @@
-From 15c43285a22ca507f60b3abdbdd4e78df1db43a2 Mon Sep 17 00:00:00 2001
-From: Mohamed-nour Toumi <mohamed.toumi_ext@softathome.com>
-Date: Fri, 13 Feb 2026 16:17:10 +0100
-Subject: [PATCH] 508-add new bootcmd
+# HG changeset patch
+# Parent  3a1b3e8fd953e19b59619a1ad36fb60e172ec20c
 
----
- cmd/prpl/Kconfig         |   7 ++
- cmd/prpl/Makefile        |   1 +
- cmd/prpl/bootprpl.c      |  23 ++++
- common/prpl/Kconfig      |  15 +++
- common/prpl/prpl_boot.c  | 250 ++++++++++++++++++++++++++++++++++++++-
- include/prpl/prpl_boot.h |  29 +++++
- 6 files changed, 321 insertions(+), 4 deletions(-)
- create mode 100644 cmd/prpl/bootprpl.c
- create mode 100644 include/prpl/prpl_boot.h
-
-Index: u-boot-2022.01/cmd/prpl/Kconfig
-===================================================================
---- u-boot-2022.01.orig/cmd/prpl/Kconfig
-+++ u-boot-2022.01/cmd/prpl/Kconfig
-@@ -8,4 +8,11 @@ config CMD_MFG
- 	help
- 	  Enable MFG support command
- 
-+config CMD_BOOTPRPL
-+	bool "Enable bootprpl command"
-+	default y
-+	depends on PRPL_BOOT
-+	help
-+	  Enable bootprpl support command
-+
- endmenu
-Index: u-boot-2022.01/cmd/prpl/Makefile
-===================================================================
---- u-boot-2022.01.orig/cmd/prpl/Makefile
-+++ u-boot-2022.01/cmd/prpl/Makefile
-@@ -3,3 +3,4 @@
- # Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
- 
- obj-$(CONFIG_CMD_MFG) += mfg.o
-+obj-$(CONFIG_CMD_BOOTPRPL) += bootprpl.o
-\ No newline at end of file
-Index: u-boot-2022.01/cmd/prpl/bootprpl.c
-===================================================================
+diff --git a/cmd/prpl/bootprpl.c b/cmd/prpl/bootprpl.c
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/cmd/prpl/bootprpl.c
++++ b/cmd/prpl/bootprpl.c
 @@ -0,0 +1,26 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -71,70 +32,52 @@ Index: u-boot-2022.01/cmd/prpl/bootprpl.c
 +	"prpl boot command (retrieve the bank from U-Boot DTB to load the FIT)",
 +	"[conf_uname] - configuration specification\n"
 +);
-Index: u-boot-2022.01/common/prpl/Kconfig
-===================================================================
---- u-boot-2022.01.orig/common/prpl/Kconfig
-+++ u-boot-2022.01/common/prpl/Kconfig
-@@ -3,6 +3,7 @@ menu "prpl"
- config PRPL_BOOT
-        bool "prpl boot"
-        select OF_SYSTEM_SETUP
-+       select FIT
-        default n
-        help
-          Enable prpl boot related feature
-@@ -21,6 +22,21 @@ config PRPL_BOOT_MMC_DEVICE
- 	help
- 	  Define the number of the interface. For example 0 for the first device.
+diff --git a/common/Kconfig b/common/Kconfig
+--- a/common/Kconfig
++++ b/common/Kconfig
+@@ -766,3 +766,5 @@ config SPL_IMAGE_SIGN_INFO
+ 	  Enable image_sign_info helper functions in SPL.
  
-+config PRPL_BOOT_USE_EXT4LOAD
-+	bool "bootprpl: load FIT from ext4 partition"
-+	default n
-+	depends on PRPL_BOOT && MMC
-+	help
-+	  If enabled, the 'bootprpl' command will load the FIT image using:
-+	      ext4load mmc 0#<kernel_gpt> <loadaddr> /kernel.itb
+ endif
 +
-+	  from the selected bank (kernel-active / kernel-inactive).
-+	  If disabled, bootprpl assumes the FIT image is already present
-+	  in RAW storage
-+	  and will directly execute:
++source "common/prpl/Kconfig"
+diff --git a/common/prpl/Makefile b/common/prpl/Makefile
+new file mode 100644
+--- /dev/null
++++ b/common/prpl/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
 +
-+	      bootm ${loadaddr}#kernel-dtb-config
-+
- source "cmd/prpl/Kconfig"
- source "lib/prpl/Kconfig"
- endmenu
-Index: u-boot-2022.01/common/prpl/prpl_boot.c
-===================================================================
---- u-boot-2022.01.orig/common/prpl/prpl_boot.c
-+++ u-boot-2022.01/common/prpl/prpl_boot.c
-@@ -1,26 +1,43 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-  * Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
-- *
++obj-$(CONFIG_PRPL_BOOT) += prpl_boot_mmc.o
++obj-$(CONFIG_PRPL_BOOT) += prpl_boot.o
+diff --git a/common/prpl/prpl_boot.c b/common/prpl/prpl_boot.c
+new file mode 100644
+--- /dev/null
++++ b/common/prpl/prpl_boot.c
+@@ -0,0 +1,345 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
 + * Copyright (C) 2026 Mohamed-Nour TOUMI <mohamed.toumi_ext@softathome.com>
-  */
++ */
 +
 +#include <common.h>
- #include <env.h>
++#include <env.h>
 +#include <malloc.h>
 +#include <linux/libfdt.h>
- #include <fdt_support.h>
--#include <linux/io.h>
--#include <stdlib.h>
- #include <asm/global_data.h>
++#include <fdt_support.h>
++#include <asm/global_data.h>
 +#include <image.h>
 +#include <bootm.h>
 +#include <prpl/prpl_boot_mmc.h>
 +#include <fs.h>
 +#include <blk.h>
 +#include <part.h>
- 
- DECLARE_GLOBAL_DATA_PTR;
- 
--#define BOOTARGS_EXTRA_LEN 40
++
++DECLARE_GLOBAL_DATA_PTR;
++
 +
 +#ifndef DEFAULT_BOOTFILE
 +#define DEFAULT_BOOTFILE "/kernel.itb"
@@ -145,53 +88,57 @@ Index: u-boot-2022.01/common/prpl/prpl_boot.c
 +#endif
 +
 +#define BOOTARGS_EXTRA_LEN 64
- 
- /**
-  * set_root_bootargs() - Set bank information in the bootargs
-  *
-- * @is_active_bank:	Set 1 when the active bank is booted
++
++/**
++ * set_root_bootargs() - Set bank information in the bootargs
++ *
 + * @bank:	Set to 0 for the active bank and 1 for inactive bank
-  *
-  * @return 0 on success, a negative number otherwise
-  */
--static int set_root_bootargs(int is_active_bank)
++ *
++ * @return 0 on success, a negative number otherwise
++ */
 +static int set_root_bootargs(int bank)
- {
- 	int ret = 0;
- 	char *bootargs = NULL;
-@@ -28,13 +45,18 @@ static int set_root_bootargs(int is_acti
- 	char *root = NULL;
- 	int len;
- 
++{
++	int ret = 0;
++	char *bootargs = NULL;
++	char *new_bootargs = NULL;
++	char *root = NULL;
++	int len;
++
 +	if (0 != bank && 1 != bank) {
 +		ret = -EINVAL;
 +		goto out;
 +	}
 +
- 	bootargs = env_get("bootargs");
- 	len = bootargs ? strlen(bootargs) : 0;
- 
- 	new_bootargs = malloc(len + BOOTARGS_EXTRA_LEN);
- 	if (!new_bootargs) {
- 		printf("%s: ERROR: Failed to allocate memory for bootargs!\n", __func__);
--		ret = -1;
++	bootargs = env_get("bootargs");
++	len = bootargs ? strlen(bootargs) : 0;
++
++	new_bootargs = malloc(len + BOOTARGS_EXTRA_LEN);
++	if (!new_bootargs) {
++		printf("%s: ERROR: Failed to allocate memory for bootargs!\n", __func__);
 +		ret = -ENOMEM;
- 		goto out;
- 	}
- 
-@@ -46,7 +68,7 @@ static int set_root_bootargs(int is_acti
- 	}
- 
- 	/* Append root information to the bootargs */
--	root = is_active_bank ? "root=PARTLABEL=rootfs-active" : "root=PARTLABEL=rootfs-inactive";
++		goto out;
++	}
++
++	memset(new_bootargs, 0, len + BOOTARGS_EXTRA_LEN);
++	if (bootargs) {
++		memcpy(new_bootargs, bootargs, len);
++		/* Replace the NULL terminating character by a space to concatenate more options */
++		new_bootargs[len] = ' ';
++	}
++
++	/* Append root information to the bootargs */
 +	root = bank ? "root=PARTLABEL=rootfs-inactive" : "root=PARTLABEL=rootfs-active";
- 	strcpy(new_bootargs + len + 1, root);
- 
- 	/* Set updated bootargs in Linux device tree */
-@@ -58,6 +80,192 @@ static int set_root_bootargs(int is_acti
- }
- 
- /**
++	strcpy(new_bootargs + len + 1, root);
++
++	/* Set updated bootargs in Linux device tree */
++	debug("%s: Setting bootargs to %s\n", __func__, new_bootargs);
++	env_set("bootargs", new_bootargs);
++ out:
++	free(new_bootargs);
++	return ret;
++}
++
++/**
 + * get_booted_bank() - Retrieve booted bank from U-Boot DT
 + * @fdt: Pointer to U-Boot device tree blob
 + *
@@ -378,41 +325,44 @@ Index: u-boot-2022.01/common/prpl/prpl_boot.c
 +
 +
 +/**
-  * ft_system_setup() - Overwrite ft_system_setup()
-  *
-  * ft_system_setup() is used to pass the booted bank information in the Linux
-@@ -90,31 +298,48 @@ int ft_system_setup(void *blob, struct b
- 		goto out;
- 	}
- 
--	/* Update the bootargs in Linux device tree */
--	if (!strncmp(booted_bank, "active", strlen("active"))) {
--		if (set_root_bootargs(1)) {
--			printf("%s: ERROR: Failed to set the bootargs\n", __func__);
--			ret = -1;
--			goto out;
--		}
--	}
--	else if (!strncmp(booted_bank, "inactive", strlen("inactive"))) {
--		if (set_root_bootargs(0)) {
--			printf("%s: ERROR: Failed to set the bootargs\n", __func__);
--			ret = -1;
--			goto out;
--		}
--	}
--	else {
--		printf("%s: ERROR: Wrong booted bank information: %s)\n",
--		       __func__, booted_bank);
--		ret = -1;
--		goto out;
--	}
--
- 	/* Set u-boot,booted-bank in Linux device tree */
- 	debug("%s: Setting u-boot,booted-bank to %s\n", __func__, booted_bank);
- 	fdt_find_and_setprop(blob, "/chosen", "u-boot,booted-bank", booted_bank, len, 1);
-  out:
- 	return ret;
- }
++ * ft_system_setup() - Overwrite ft_system_setup()
++ *
++ * ft_system_setup() is used to pass the booted bank information in the Linux
++ * device tree and set the bootargs accordingly.
++ *
++ * @blob:	Linux device tree pointer
++ * @bd:		Board information passed to the Linux kernel
++ *
++ * @return 0 on success, a negative number otherwise
++ */
++int ft_system_setup(void *blob, struct bd_info *bd)
++{
++	const void *fdt = gd->fdt_blob;
++	int nodeoffset, len;
++	const char *booted_bank;
++	int ret = 0;
++
++	/* Check the booted bank as set in U-Boot device tree */
++        nodeoffset = fdt_path_offset(fdt, "/chosen");
++        if (nodeoffset < 0) {
++		printf("%s: ERROR: Missing chosen node in U-Boot's device tree\n", __func__);
++                ret = nodeoffset;
++                goto out;
++        }
++	booted_bank = (const char *)fdt_getprop(fdt, nodeoffset, "u-boot,booted-bank", &len);
++	if (!booted_bank) {
++		printf("%s: ERROR: Failed to retrieve the booted bank in U-Boot's device tree\n",
++		       __func__);
++		ret = -1;
++		goto out;
++	}
++
++	/* Set u-boot,booted-bank in Linux device tree */
++	debug("%s: Setting u-boot,booted-bank to %s\n", __func__, booted_bank);
++	fdt_find_and_setprop(blob, "/chosen", "u-boot,booted-bank", booted_bank, len, 1);
++ out:
++	return ret;
++}
 +
 +/**
 + * @brief Runs the board-specific boot command when CONFIG_CMDLINE is disabled.
@@ -452,10 +402,87 @@ Index: u-boot-2022.01/common/prpl/prpl_boot.c
 +
 +	return ret;
 +}
-Index: u-boot-2022.01/include/prpl/prpl_boot.h
-===================================================================
+diff --git a/common/prpl/prpl_boot_mmc.c b/common/prpl/prpl_boot_mmc.c
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/include/prpl/prpl_boot.h
++++ b/common/prpl/prpl_boot_mmc.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2022 Philippe Reynes <philippe.reynes@softathome.com>
++ */
++#include <prpl/prpl_boot_mmc.h>
++#include <part.h>
++
++int board_read_firmware(const char *volume, char *buf)
++{
++	char *ifname = CONFIG_PRPL_BOOT_MMC_IFNAME;
++	int dev = CONFIG_PRPL_BOOT_MMC_DEVICE;
++	struct blk_desc *blk_dev_desc;
++	struct disk_partition part;
++	ulong numread;
++	int err, ret = -1;
++
++	/*
++	 * look for block device
++	 */
++	blk_dev_desc = blk_get_dev(ifname, dev);
++	if (!blk_dev_desc) {
++		printf("Cannot find block device for %s:%d\n", ifname, dev);
++		goto out;
++	}
++
++	/*
++	 * read gpt table
++	 */
++	err = part_get_info_by_name(blk_dev_desc, volume, &part);
++	if (err < 0) {
++		printf("Cannot find partition %s (err = %d)\n", volume, err);
++		goto out;
++	}
++
++	/*
++	 * read partition on mmc
++	 */
++	numread = blk_dread(blk_dev_desc, part.start, part.size, (void *)buf);
++
++	/* everything goes fine :) */
++	ret = 0;
++
++ out:
++	return ret;
++}
++
++long long get_data_size(const char *data_vol)
++{
++	char *ifname = CONFIG_PRPL_BOOT_MMC_IFNAME;
++	int dev = CONFIG_PRPL_BOOT_MMC_DEVICE;
++	struct blk_desc *blk_dev_desc;
++	struct disk_partition part;
++	int err;
++	long long partition_size = 0;
++
++	if (!data_vol)
++		goto out;
++
++	blk_dev_desc = blk_get_dev(ifname, dev);
++	if (!blk_dev_desc) {
++		printf("Cannot find block device for %s:%d\n", ifname, dev);
++		goto out;
++	}
++	err = part_get_info_by_name(blk_dev_desc, data_vol, &part);
++	if (err < 0) {
++		printf("Cannot find partition %s (err = %d)\n", data_vol, err);
++		goto out;
++	}
++	partition_size = part.size * part.blksz;
++ out:
++	return partition_size;
++}
+diff --git a/include/prpl/prpl_boot.h b/include/prpl/prpl_boot.h
+new file mode 100644
+--- /dev/null
++++ b/include/prpl/prpl_boot.h
 @@ -0,0 +1,28 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*

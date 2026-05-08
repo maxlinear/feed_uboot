@@ -1,7 +1,9 @@
-Index: u-boot-2022.01/env/Kconfig
-===================================================================
---- u-boot-2022.01.orig/env/Kconfig
-+++ u-boot-2022.01/env/Kconfig
+# HG changeset patch
+# Parent  6e28f5daf5cd18352ede7a789cb276df289b5bd0
+
+diff --git a/env/Kconfig b/env/Kconfig
+--- a/env/Kconfig
++++ b/env/Kconfig
 @@ -698,6 +698,7 @@ config ENV_APPEND
  
  config ENV_WRITEABLE_LIST
@@ -10,10 +12,9 @@ Index: u-boot-2022.01/env/Kconfig
  	help
  	  If defined, only environment variables which explicitly set the 'w'
  	  writeable flag can be written and modified at runtime. No variables
-Index: u-boot-2022.01/env/env.c
-===================================================================
---- u-boot-2022.01.orig/env/env.c
-+++ u-boot-2022.01/env/env.c
+diff --git a/env/env.c b/env/env.c
+--- a/env/env.c
++++ b/env/env.c
 @@ -172,6 +172,14 @@ int env_load(void)
  	int best_prio = -1;
  	int prio;
@@ -29,10 +30,9 @@ Index: u-boot-2022.01/env/env.c
  	for (prio = 0; (drv = env_driver_lookup(ENVOP_LOAD, prio)); prio++) {
  		int ret;
  
-Index: u-boot-2022.01/lib/hashtable.c
-===================================================================
---- u-boot-2022.01.orig/lib/hashtable.c
-+++ u-boot-2022.01/lib/hashtable.c
+diff --git a/lib/hashtable.c b/lib/hashtable.c
+--- a/lib/hashtable.c
++++ b/lib/hashtable.c
 @@ -949,7 +949,7 @@ int himport_r(struct hsearch_data *htab,
  		e.data = value;
  

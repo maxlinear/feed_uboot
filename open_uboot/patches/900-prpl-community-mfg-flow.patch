@@ -1,32 +1,11 @@
-Index: u-boot-2022.01/cmd/Kconfig
-===================================================================
---- u-boot-2022.01.orig/cmd/Kconfig
-+++ u-boot-2022.01/cmd/Kconfig
-@@ -2490,3 +2490,5 @@ config MMC_SPEED_MODE_SET
- 	  include/mmc.h. A speed mode can be set only if it has already
- 	  been enabled in the device tree.
- endmenu
-+
-+source "cmd/prpl/Kconfig"
-Index: u-boot-2022.01/cmd/Makefile
-===================================================================
---- u-boot-2022.01.orig/cmd/Makefile
-+++ u-boot-2022.01/cmd/Makefile
-@@ -189,6 +189,9 @@ obj-$(CONFIG_CMD_ETHSW) += ethsw.o
- obj-$(CONFIG_CMD_AXI) += axi.o
- obj-$(CONFIG_CMD_PVBLOCK) += pvblock.o
- 
-+# prpl commands
-+obj-y += prpl/
-+
- # Power
- obj-$(CONFIG_CMD_PMIC) += pmic.o
- obj-$(CONFIG_CMD_REGULATOR) += regulator.o
-Index: u-boot-2022.01/cmd/prpl/Kconfig
-===================================================================
+# HG changeset patch
+# Parent  3af254627ff5e457e0c70ef7da5cc1342898359d
+
+diff --git a/cmd/prpl/Kconfig b/cmd/prpl/Kconfig
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/cmd/prpl/Kconfig
-@@ -0,0 +1,11 @@
++++ b/cmd/prpl/Kconfig
+@@ -0,0 +1,18 @@
 +menu "Command line interface"
 +
 +config CMD_MFG
@@ -37,21 +16,30 @@ Index: u-boot-2022.01/cmd/prpl/Kconfig
 +	help
 +	  Enable MFG support command
 +
++config CMD_BOOTPRPL
++	bool "Enable bootprpl command"
++	default y
++	depends on PRPL_BOOT
++	help
++	  Enable bootprpl support command
++
 +endmenu
-Index: u-boot-2022.01/cmd/prpl/Makefile
-===================================================================
+diff --git a/cmd/prpl/Makefile b/cmd/prpl/Makefile
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/cmd/prpl/Makefile
-@@ -0,0 +1,5 @@
++++ b/cmd/prpl/Makefile
+@@ -0,0 +1,6 @@
 +# SPDX-License-Identifier: GPL-2.0+
 +#
 +# Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
 +
 +obj-$(CONFIG_CMD_MFG) += mfg.o
-Index: u-boot-2022.01/cmd/prpl/mfg.c
-===================================================================
++obj-$(CONFIG_CMD_BOOTPRPL) += bootprpl.o
+\ No newline at end of file
+diff --git a/cmd/prpl/mfg.c b/cmd/prpl/mfg.c
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/cmd/prpl/mfg.c
++++ b/cmd/prpl/mfg.c
 @@ -0,0 +1,175 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -228,35 +216,17 @@ Index: u-boot-2022.01/cmd/prpl/mfg.c
 +    "Read and print MFG data from a named partition mfgdata",
 +    "[-l] [-s name] - list all field's name or query a specific field"
 +);
-Index: u-boot-2022.01/common/Kconfig
-===================================================================
---- u-boot-2022.01.orig/common/Kconfig
-+++ u-boot-2022.01/common/Kconfig
-@@ -766,3 +766,5 @@ config SPL_IMAGE_SIGN_INFO
- 	  Enable image_sign_info helper functions in SPL.
- 
- endif
-+
-+source "common/prpl/Kconfig"
-Index: u-boot-2022.01/common/Makefile
-===================================================================
---- u-boot-2022.01.orig/common/Makefile
-+++ u-boot-2022.01/common/Makefile
-@@ -126,3 +126,5 @@ obj-$(CONFIG_$(SPL_TPL_)STACKPROTECTOR)
- obj-$(CONFIG_SCP03) += scp03.o
- 
- obj-$(CONFIG_QFW) += qfw.o
-+
-+obj-y += prpl/
-Index: u-boot-2022.01/common/prpl/Kconfig
-===================================================================
+diff --git a/common/prpl/Kconfig b/common/prpl/Kconfig
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/common/prpl/Kconfig
-@@ -0,0 +1,25 @@
++++ b/common/prpl/Kconfig
+@@ -0,0 +1,42 @@
 +menu "prpl"
 +
 +config PRPL_BOOT
 +       bool "prpl boot"
++       select OF_SYSTEM_SETUP
++       select FIT
 +       default n
 +       help
 +         Enable prpl boot related feature
@@ -275,100 +245,28 @@ Index: u-boot-2022.01/common/prpl/Kconfig
 +	help
 +	  Define the number of the interface. For example 0 for the first device.
 +
++config PRPL_BOOT_USE_EXT4LOAD
++	bool "bootprpl: load FIT from ext4 partition"
++	default n
++	depends on PRPL_BOOT && MMC
++	help
++	  If enabled, the 'bootprpl' command will load the FIT image using:
++	      ext4load mmc 0#<kernel_gpt> <loadaddr> /kernel.itb
++
++	  from the selected bank (kernel-active / kernel-inactive).
++	  If disabled, bootprpl assumes the FIT image is already present
++	  in RAW storage
++	  and will directly execute:
++
++	      bootm ${loadaddr}#kernel-dtb-config
++
 +source "cmd/prpl/Kconfig"
 +source "lib/prpl/Kconfig"
 +endmenu
-Index: u-boot-2022.01/common/prpl/Makefile
-===================================================================
+diff --git a/include/prpl/mfg.h b/include/prpl/mfg.h
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/common/prpl/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
-+
-+obj-$(CONFIG_PRPL_BOOT) += prpl_boot_mmc.o
-Index: u-boot-2022.01/common/prpl/prpl_boot_mmc.c
-===================================================================
---- /dev/null
-+++ u-boot-2022.01/common/prpl/prpl_boot_mmc.c
-@@ -0,0 +1,72 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (C) 2022 Philippe Reynes <philippe.reynes@softathome.com>
-+ */
-+#include <prpl/prpl_boot_mmc.h>
-+#include <part.h>
-+
-+int board_read_firmware(const char *volume, char *buf)
-+{
-+	char *ifname = CONFIG_PRPL_BOOT_MMC_IFNAME;
-+	int dev = CONFIG_PRPL_BOOT_MMC_DEVICE;
-+	struct blk_desc *blk_dev_desc;
-+	struct disk_partition part;
-+	ulong numread;
-+	int err, ret = -1;
-+
-+	/*
-+	 * look for block device
-+	 */
-+	blk_dev_desc = blk_get_dev(ifname, dev);
-+	if (!blk_dev_desc) {
-+		printf("Cannot find block device for %s:%d\n", ifname, dev);
-+		goto out;
-+	}
-+
-+	/*
-+	 * read gpt table
-+	 */
-+	err = part_get_info_by_name(blk_dev_desc, volume, &part);
-+	if (err < 0) {
-+		printf("Cannot find partition %s (err = %d)\n", volume, err);
-+		goto out;
-+	}
-+
-+	/*
-+	 * read partition on mmc
-+	 */
-+	numread = blk_dread(blk_dev_desc, part.start, part.size, (void *)buf);
-+
-+	/* everything goes fine :) */
-+	ret = 0;
-+
-+ out:
-+	return ret;
-+}
-+
-+long long get_data_size(const char *data_vol)
-+{
-+	char *ifname = CONFIG_PRPL_BOOT_MMC_IFNAME;
-+	int dev = CONFIG_PRPL_BOOT_MMC_DEVICE;
-+	struct blk_desc *blk_dev_desc;
-+	struct disk_partition part;
-+	int err;
-+	long long partition_size = 0;
-+
-+	if (!data_vol)
-+		goto out;
-+
-+	blk_dev_desc = blk_get_dev(ifname, dev);
-+	if (!blk_dev_desc) {
-+		printf("Cannot find block device for %s:%d\n", ifname, dev);
-+		goto out;
-+	}
-+	err = part_get_info_by_name(blk_dev_desc, data_vol, &part);
-+	if (err < 0) {
-+		printf("Cannot find partition %s (err = %d)\n", data_vol, err);
-+		goto out;
-+	}
-+	partition_size = part.size * part.blksz;
-+ out:
-+	return partition_size;
-+}
-Index: u-boot-2022.01/include/prpl/mfg.h
-===================================================================
---- /dev/null
-+++ u-boot-2022.01/include/prpl/mfg.h
++++ b/include/prpl/mfg.h
 @@ -0,0 +1,77 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -447,10 +345,10 @@ Index: u-boot-2022.01/include/prpl/mfg.h
 +int prpl_mfg_sig_check_passed(void);
 +
 +#endif /* __PRPL_MFG_H__ */
-Index: u-boot-2022.01/include/prpl/prpl_boot_mmc.h
-===================================================================
+diff --git a/include/prpl/prpl_boot_mmc.h b/include/prpl/prpl_boot_mmc.h
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/include/prpl/prpl_boot_mmc.h
++++ b/include/prpl/prpl_boot_mmc.h
 @@ -0,0 +1,11 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -463,33 +361,10 @@ Index: u-boot-2022.01/include/prpl/prpl_boot_mmc.h
 +
 +long long get_data_size(const char *data_vol);
 +#endif
-Index: u-boot-2022.01/lib/Kconfig
-===================================================================
---- u-boot-2022.01.orig/lib/Kconfig
-+++ u-boot-2022.01/lib/Kconfig
-@@ -870,3 +870,5 @@ config PHANDLE_CHECK_SEQ
- 	  When there are multiple device tree nodes with same name,
-           enable this config option to distinguish them using
- 	  phandles in fdtdec_get_alias_seq() function.
-+
-+source lib/prpl/Kconfig
-Index: u-boot-2022.01/lib/Makefile
-===================================================================
---- u-boot-2022.01.orig/lib/Makefile
-+++ u-boot-2022.01/lib/Makefile
-@@ -143,6 +143,8 @@ obj-y += date.o
- obj-y += rtc-lib.o
- obj-$(CONFIG_LIB_ELF) += elf.o
- 
-+obj-y += prpl/
-+
- #
- # Build a fast OID lookup registry from include/linux/oid_registry.h
- #
-Index: u-boot-2022.01/lib/prpl/Kconfig
-===================================================================
+diff --git a/lib/prpl/Kconfig b/lib/prpl/Kconfig
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/lib/prpl/Kconfig
++++ b/lib/prpl/Kconfig
 @@ -0,0 +1,28 @@
 +menu "Library routines"
 +
@@ -519,21 +394,21 @@ Index: u-boot-2022.01/lib/prpl/Kconfig
 +	  Define the name of the partition or volume that contains MFG
 +
 +endmenu
-Index: u-boot-2022.01/lib/prpl/Makefile
-===================================================================
+diff --git a/lib/prpl/Makefile b/lib/prpl/Makefile
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/lib/prpl/Makefile
++++ b/lib/prpl/Makefile
 @@ -0,0 +1,5 @@
 +# SPDX-License-Identifier: GPL-2.0+
 +#
 +# Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
 +
 +obj-$(CONFIG_PRPL_MFG) += mfg.o
-Index: u-boot-2022.01/lib/prpl/mfg.c
-===================================================================
+diff --git a/lib/prpl/mfg.c b/lib/prpl/mfg.c
+new file mode 100644
 --- /dev/null
-+++ u-boot-2022.01/lib/prpl/mfg.c
-@@ -0,0 +1,387 @@
++++ b/lib/prpl/mfg.c
+@@ -0,0 +1,384 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2025 Paul HENRYS <paul.henrys_ext@softathome.com>
@@ -627,14 +502,12 @@ Index: u-boot-2022.01/lib/prpl/mfg.c
 +		if (ret) {
 +			log_err("ERROR: Failed to verify global header signature of mfg data\n");
 +			free(mfg_data);
-+			mfg_data = NULL;
 +			env_set("pre_load_sig_info_path", NULL);
 +			goto out;
 +		}
 +		if (fdt_magic(mfg_data + image_load_offset) != FDT_MAGIC) {
 +			log_err("ERROR: Failed to retrieve the mfg data from flash\n");
 +			free(mfg_data);
-+			mfg_data = NULL;
 +			goto out;
 +		}
 +		memmove(mfg_data, mfg_data + image_load_offset, fdt_totalsize(mfg_data + image_load_offset));
@@ -642,7 +515,6 @@ Index: u-boot-2022.01/lib/prpl/mfg.c
 +		if (fdt_magic(mfg_data) != FDT_MAGIC) {
 +			log_err("ERROR: Failed to retrieve the mfg data from flash\n");
 +			free(mfg_data);
-+			mfg_data = NULL;
 +			goto out;
 +		}
 +	}
@@ -904,7 +776,7 @@ Index: u-boot-2022.01/lib/prpl/mfg.c
 +	if (!mfg_entry)
 +		return -1;
 +
-+	return mfg_entry->secure || mfg_entry->is_signed;
++	return (mfg_entry->secure || mfg_entry->is_signed);
 +}
 +
 +/**

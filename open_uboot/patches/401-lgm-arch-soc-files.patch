@@ -1,10 +1,10 @@
 # HG changeset patch
-# Parent  a67bae0860bb49a647af74c4c85d29c6f601f361
+# Parent  1fdb9a319a028ad74353221fcb3c3647a1763b9e
 
-diff -r a67bae0860bb arch/x86/cpu/intel_common/microcode.c
---- a/arch/x86/cpu/intel_common/microcode.c	Wed Mar 25 15:59:07 2026 +0800
-+++ b/arch/x86/cpu/intel_common/microcode.c	Wed Mar 25 15:59:09 2026 +0800
-@@ -120,6 +120,30 @@
+diff --git a/arch/x86/cpu/intel_common/microcode.c b/arch/x86/cpu/intel_common/microcode.c
+--- a/arch/x86/cpu/intel_common/microcode.c
++++ b/arch/x86/cpu/intel_common/microcode.c
+@@ -120,6 +120,30 @@ static void microcode_read_cpu(struct mi
  	      cpu->update_revision);
  }
  
@@ -35,7 +35,7 @@ diff -r a67bae0860bb arch/x86/cpu/intel_common/microcode.c
  /* Get a microcode update from the device tree and apply it */
  int microcode_update_intel(void)
  {
-@@ -132,6 +156,15 @@
+@@ -132,6 +156,15 @@ int microcode_update_intel(void)
  	int ret;
  	int rev;
  
@@ -51,7 +51,7 @@ diff -r a67bae0860bb arch/x86/cpu/intel_common/microcode.c
  	microcode_read_cpu(&cpu);
  	node = 0;
  	count = 0;
-@@ -186,3 +219,31 @@
+@@ -186,3 +219,31 @@ int microcode_update_intel(void)
  		}
  	} while (1);
  }
@@ -83,9 +83,10 @@ diff -r a67bae0860bb arch/x86/cpu/intel_common/microcode.c
 +	);
 +	rbe_debug_print("microcode patch done.\n");
 +}
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/Kconfig
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/Kconfig	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/Kconfig b/arch/x86/cpu/lightning_mountain/Kconfig
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/Kconfig
 @@ -0,0 +1,463 @@
 +# SoC specific configurations
 +
@@ -550,9 +551,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/Kconfig
 +	  using a delimiter ';'
 +
 +endmenu
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/Makefile
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/Makefile	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/Makefile b/arch/x86/cpu/lightning_mountain/Makefile
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/Makefile
 @@ -0,0 +1,22 @@
 +#
 +# Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -576,9 +578,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/Makefile
 +else
 +obj-$(CONFIG_SPL_BUILD) += firewall.o
 +endif
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/car.S
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/car.S	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/car.S b/arch/x86/cpu/lightning_mountain/car.S
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/car.S
 @@ -0,0 +1,136 @@
 +/*
 + * (C) Copyright 2010-2011
@@ -716,9 +719,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/car.S
 +	fninit;							# Initialize FPU without checking for pending unmasked floating-point exceptions.
 +
 +	jmp	car_init_ret
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/cpu.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/cpu.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/cpu.c b/arch/x86/cpu/lightning_mountain/cpu.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/cpu.c
 @@ -0,0 +1,200 @@
 +/*
 + * Copyright (C) 2019, Intel Technology Asia
@@ -920,9 +924,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/cpu.c
 +	return default_print_cpuinfo();
 +}
 +
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/epu.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/epu.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/epu.c b/arch/x86/cpu/lightning_mountain/epu.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/epu.c
 @@ -0,0 +1,2273 @@
 +
 +#include <common.h>
@@ -3197,9 +3202,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/epu.c
 +	set_adp_hysteresis_timer(0x100);
 +}
 +#endif /* CONFIG_SPL_BUILD */
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/epu.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/epu.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/epu.h b/arch/x86/cpu/lightning_mountain/epu.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/epu.h
 @@ -0,0 +1,2640 @@
 +/* ------------------------------------------------------------------------------ */
 +/*                               INTEL CONFIDENTIAL */
@@ -5841,9 +5847,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/epu.h
 +void epu_init(void);
 +void epu_table_version_setenv(void);
 +#endif /* __HAL_EPU_H */
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/firewall.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/firewall.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/firewall.c b/arch/x86/cpu/lightning_mountain/firewall.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/firewall.c
 @@ -0,0 +1,343 @@
 +/* Copyright (c) 2019, Intel Corporation.
 + * Lightning Mountain Firewall function
@@ -6188,9 +6195,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/firewall.c
 +
 +	rbe_debug_print("firewall init done\n");
 +}
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/firewall_closed.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/firewall_closed.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/firewall_closed.c b/arch/x86/cpu/lightning_mountain/firewall_closed.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/firewall_closed.c
 @@ -0,0 +1,173 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -6365,9 +6373,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/firewall_closed.c
 +
 +	return;
 +}
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/ia_vmm.S
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/ia_vmm.S	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/ia_vmm.S b/arch/x86/cpu/lightning_mountain/ia_vmm.S
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/ia_vmm.S
 @@ -0,0 +1,94 @@
 +/*
 + * Copyright (C) 2019, Intel Technology Asia
@@ -6463,9 +6472,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/ia_vmm.S
 +        pop   %edi
 +        ret
 +
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/microcode.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/microcode.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/microcode.c b/arch/x86/cpu/lightning_mountain/microcode.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/microcode.c
 @@ -0,0 +1,151 @@
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -6618,9 +6628,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/microcode.c
 +	return 0;
 +}
 +#endif /* MICROCODE_PATCH_INTEL_CHD */
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/mtrr.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/mtrr.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/mtrr.c b/arch/x86/cpu/lightning_mountain/mtrr.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/mtrr.c
 @@ -0,0 +1,161 @@
 +/*
 + * SPDX-License-Identifier:	GPL-2.0+
@@ -6783,9 +6794,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/mtrr.c
 +
 +	mtrr_close(&state, true);
 +}
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/pon_shell.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/pon_shell.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/pon_shell.c b/arch/x86/cpu/lightning_mountain/pon_shell.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/pon_shell.c
 @@ -0,0 +1,11 @@
 +#include "pon_shell.h"
 +
@@ -6798,9 +6810,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/pon_shell.c
 +#endif
 +	return 0;
 +}
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/pon_shell.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/pon_shell.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/pon_shell.h b/arch/x86/cpu/lightning_mountain/pon_shell.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/pon_shell.h
 @@ -0,0 +1,19 @@
 +/*
 + * Copyright (c) 2015 Google, Inc
@@ -6821,9 +6834,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/pon_shell.h
 +int pon_shell_init(void);
 +
 +#endif
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/reset.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/reset.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/reset.c b/arch/x86/cpu/lightning_mountain/reset.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/reset.c
 @@ -0,0 +1,18 @@
 +/*
 + * Copyright (C) 2019 Intel Technology Asia Pte Ltd
@@ -6843,9 +6857,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/reset.c
 +	/* trigger GBL_SW reset */
 +	writel((1 << RST_REQ_TNOC_GLB_SW_POS), RCU_RST_REQ_TNOC);
 +}
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/resetvec_ap.S
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/resetvec_ap.S	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/resetvec_ap.S b/arch/x86/cpu/lightning_mountain/resetvec_ap.S
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/resetvec_ap.S
 @@ -0,0 +1,69 @@
 +/*
 + *  U-Boot - x86 AP Startup Code
@@ -6916,9 +6931,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/resetvec_ap.S
 +	.long 0x0 
 +
 +_end:
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/sdram.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/sdram.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/sdram.c b/arch/x86/cpu/lightning_mountain/sdram.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/sdram.c
 @@ -0,0 +1,91 @@
 +#include <common.h>
 +#include <asm/arch/api.h>
@@ -7011,9 +7027,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/sdram.c
 +
 +	return E820_ENTRIES;
 +}
-diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/u-boot.lds
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/cpu/lightning_mountain/u-boot.lds	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/cpu/lightning_mountain/u-boot.lds b/arch/x86/cpu/lightning_mountain/u-boot.lds
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/cpu/lightning_mountain/u-boot.lds
 @@ -0,0 +1,108 @@
 +/*
 + * Copyright (C) 2016 Intel Technology Asia Pte Ltd
@@ -7123,9 +7140,10 @@ diff -r a67bae0860bb arch/x86/cpu/lightning_mountain/u-boot.lds
 +	/DISCARD/ : { *(.gnu*) }
 +	/DISCARD/ : { *(.note.gnu.property) }
 +}
-diff -r a67bae0860bb arch/x86/dts/lightning-mountain-haps.dts
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/dts/lightning-mountain-haps.dts	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/dts/lightning-mountain-haps.dts b/arch/x86/dts/lightning-mountain-haps.dts
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/dts/lightning-mountain-haps.dts
 @@ -0,0 +1,47 @@
 +/*
 + * Copyright 2022 Maxlinear Corporation.
@@ -7174,9 +7192,10 @@ diff -r a67bae0860bb arch/x86/dts/lightning-mountain-haps.dts
 +		       <&gpio2 14 PIN_INPUT GPIO_MODE_FUNC2>, <&gpio2 15 PIN_INPUT GPIO_MODE_FUNC2>,
 +		       <&gpio2 16 PIN_INPUT GPIO_MODE_FUNC2>, <&gpio2 17 PIN_INPUT GPIO_MODE_FUNC2>;
 +};
-diff -r a67bae0860bb arch/x86/dts/lightning-mountain.dts
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/dts/lightning-mountain.dts	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/dts/lightning-mountain.dts b/arch/x86/dts/lightning-mountain.dts
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/dts/lightning-mountain.dts
 @@ -0,0 +1,156 @@
 +/*
 + * Copyright 2022 Maxlinear Corporation.
@@ -7334,9 +7353,10 @@ diff -r a67bae0860bb arch/x86/dts/lightning-mountain.dts
 +		       <&gpio2 14 PIN_INPUT GPIO_MODE_FUNC2>, <&gpio2 15 PIN_INPUT GPIO_MODE_FUNC2>,
 +		       <&gpio2 16 PIN_INPUT GPIO_MODE_FUNC2>, <&gpio2 17 PIN_INPUT GPIO_MODE_FUNC2>;
 +};
-diff -r a67bae0860bb arch/x86/dts/lightning-mountain.dtsi
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/dts/lightning-mountain.dtsi	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/dts/lightning-mountain.dtsi b/arch/x86/dts/lightning-mountain.dtsi
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/dts/lightning-mountain.dtsi
 @@ -0,0 +1,246 @@
 +/*
 + * Copyright 2022 Maxlinear Corporation.
@@ -7584,9 +7604,10 @@ diff -r a67bae0860bb arch/x86/dts/lightning-mountain.dtsi
 +		status = "disabled";
 +	};
 +};
-diff -r a67bae0860bb arch/x86/dts/microcode/m01070656_96002601.dtsi
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/dts/microcode/m01070656_96002601.dtsi	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/dts/microcode/m01070656_96002601.dtsi b/arch/x86/dts/microcode/m01070656_96002601.dtsi
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/dts/microcode/m01070656_96002601.dtsi
 @@ -0,0 +1,2132 @@
 +/*
 + * ---
@@ -9720,10 +9741,11 @@ diff -r a67bae0860bb arch/x86/dts/microcode/m01070656_96002601.dtsi
 +	 0x54da2bbd 	0xb397aa9b 	0x81e660f6 	0xed487024 	
 +	 0x22150296 	0x18876acd 	0x572ec576 	0xb65dfc85 	
 +	>;
-diff -r a67bae0860bb arch/x86/dts/octopus.dts
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/dts/octopus.dts	Wed Mar 25 15:59:09 2026 +0800
-@@ -0,0 +1,255 @@
+diff --git a/arch/x86/dts/octopus.dts b/arch/x86/dts/octopus.dts
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/dts/octopus.dts
+@@ -0,0 +1,279 @@
 +/*
 + * Copyright 2022 Maxlinear Corporation.
 + *
@@ -9762,6 +9784,30 @@ diff -r a67bae0860bb arch/x86/dts/octopus.dts
 +	lan-mode-gpio {
 +		compatible = "lan-mode-detect";
 +		pcie-lan-switch = <&gpio0 15 PIN_INPUT GPIO_MODE_FUNC0>;
++	};
++
++	mfg {
++		sig {
++			header-size = <0x1000>;
++			padding-name = "pss";
++			algo-name = "sha256,rsa4096";
++			signature-size = <0x200>;
++			mandatory = "yes";
++			public-key = [30 82 02 0a 02 82 02 01 00 bd 64 9b 64 e8 57 d5 f0 6c 2c c1 b3 ad 27 cc 82 50 13 9f d9 12 0e b8 2c ea 6b 63 b3 f6 cc ed 5a 6f f7 8b d5 66 7c 91 2f c2 69 39 73 ac cb ec e9 79 86 c4 8e fb 98 e0 22 38 d7 4a f3 cb c9 43 e2 5c 94 1f a2 b0 87 69 02 ca b2 6b d7 d2 95 f1 cb d4 63 39 9b 65 40 70 eb b6 c1 7a 20 dd 34 7e 83 71 46 a5 9d 36 75 c6 6d e6 25 dc 89 8d a8 6b 1e cf 6e 66 87 fc 47 30 8f ba ac f8 14 a1 6a da 18 1e d3 04 d3 67 60 b5 86 ed 53 5d 96 66 d7 af 8a 8e 87 e5 17 b7 cb 42 63 46 8e 13 f9 b3 e2 da 1b 90 a7 a1 03 75 33 5d 91 39 e8 26 eb 5b a7 cf 58 b3 cc 6d 6a 34 d0 1d fb a4 bc ee e8 e6 80 88 95 c0 6d 1d 6d fe 56 cd 20 35 27 e2 12 4d 21 cb 93 03 30 f7 77 e3 d6 da e3 b5 37 b9 b3 1a a5 27 28 bb 96 20 bc e3 d3 06 a6 c7 6a da 7c da 60 b1 bd 1f 0c 95 54 34 c9 9b 09 b2 e8 11 56 18 7c 1a b5 d6 40 02 a1 d3 8e 10 26 15 cf 21 32 69 b3 49 4f 70 71 ae 58 f4 2e 3a 15 30 84 be 25 55 e4 71 12 03 47 00 fd c7 69 3f c2 9c 5e cb a2 cb ad 4f 7d ff 44 5a 56 64 fd c8 82 33 5a db 27 1e c9 9a 6d e6 64 c4 6d 68 4b a7 69 72 cb fb 42 27 63 3f 82 86 a3 66 7e b5 f6 b4 df ec b8 fa ca d2 78 81 4a dd 0a 6d 0f 29 1e 47 57 aa 22 f6 c8 10 87 75 73 a1 90 50 e4 f5 cc ad c8 1f a4 55 32 d6 d5 66 f5 86 20 6b c5 a2 38 c4 eb 2b 9b bb b5 e0 e3 7a 39 01 7f da 79 2e 8c 30 37 6c 0b aa 08 75 28 07 0a 25 11 b8 fb f0 88 56 58 bd 22 b8 27 42 6f 4b f9 41 d3 ab af 96 72 3e 76 d3 5f 05 ed bd 43 22 34 17 6d 00 a9 db 29 ef f9 a1 67 8b 43 80 88 cf 19 92 ce 15 0c 9a 01 e0 02 85 cb 76 61 d3 e6 c5 d6 be 55 f5 29 04 30 22 1e 5b ae f8 85 e1 f8 c6 da 6e 2f 3e 4f d0 60 af c3 ce 81 58 1b 8f b9 f0 93 02 03 01 00 01];
++		};
++	};
++
++	image {
++		pre-load {
++			sig {
++				header-size = <0x1000>;
++				padding-name = "pss";
++				algo-name = "sha256,rsa4096";
++				signature-size = <0x200>;
++				mandatory = "yes";
++				public-key = [30 82 02 0a 02 82 02 01 00 af 22 6f fc f1 a1 91 ea d3 ee da 58 b7 2d cc 04 b1 86 4c 69 42 1b f2 ea a9 b9 a1 46 55 1b 0d 79 f9 9a b1 5e b3 bd 40 8e 23 d1 b6 28 b2 15 d0 17 d0 6b 17 e4 c4 df cf f6 07 fe 92 59 71 23 b4 32 04 78 55 3c 98 87 38 12 df 0a 24 55 36 05 5f 83 75 cc b5 e5 44 02 b1 ab ef 3f d4 64 1c 5b 5f 66 e8 97 0d 41 fa e0 48 ff e1 ef da 64 6a aa f0 0a bb 0e 17 6e e9 78 74 d3 1f fa 5a ed fd b9 66 14 43 9a 27 f5 cf d7 16 ce 59 c1 e8 8c c0 90 fc 76 af d2 50 41 7b 55 05 a7 90 f8 60 09 cd 44 19 1f 03 13 54 16 5f d1 d1 ca 47 bc 0f c5 5c 59 1a dc 82 1b 95 78 3e 27 c1 6d 69 7b 1b 5b f6 bc 05 90 c7 07 42 ff b9 35 71 7b 32 81 5f c6 d9 0c 3c bf ba 5f 09 d7 0c f8 a7 39 db 09 2a 9f 00 95 56 7d ca 16 cd 1f f0 58 d2 6e 13 8b 87 43 2a b2 98 02 42 59 ef 58 6e 01 d7 3a a6 bc e6 2f 37 c6 6a d1 8d ce ad 6d d1 60 0d 86 1a 40 24 74 8e d3 75 5a e3 e8 40 16 1f 63 f3 99 82 18 a8 5c 28 81 ab aa 8f ef ec 7e b9 c6 d4 15 fc ae d3 81 a4 7c 57 1a 0a 3a 57 64 71 2e 38 58 8d 0c 12 49 f2 d7 9f b2 3a 2f 7a e2 7a 4f 0f 6e 06 ef 28 86 e2 24 f9 bd 9b 13 78 14 c2 28 3b e8 04 69 e3 47 47 72 bd 99 44 a4 77 40 21 63 b5 ea 22 c3 5c f7 57 99 e7 f3 53 20 42 4a db 60 cd 95 62 97 6d b7 aa d3 1d ad f8 36 2b ac cf cc 15 39 b9 6e d8 c6 ec af ed ce 52 1e fe ca 02 2f 1c 35 09 cd 48 73 bc 33 93 29 1d 0e b0 24 5a 24 15 19 ec 9a 3b 00 0b d3 ba 40 f8 15 9e 60 49 e9 43 5f 26 93 ec 84 dc 0a 39 08 fa cb be 35 3c c0 a6 8c be b5 b4 01 ba e8 7c a0 e3 1c c4 44 c4 34 bf a2 fb 24 e7 ec d6 48 d0 b7 14 da 2a 7d e0 65 51 e0 bd c8 87 c5 56 fb b4 69 72 de 21 7b c7 be e4 0b 7a 72 a9 7d 0d 35 00 61 02 03 01 00 01];
++			};
++		};
 +	};
 +};
 +
@@ -9979,9 +10025,10 @@ diff -r a67bae0860bb arch/x86/dts/octopus.dts
 +&emmc {
 +	cd-gpios = <&gpio1 25 PIN_INPUT GPIO_MODE_FUNC2>;
 +};
-diff -r a67bae0860bb arch/x86/dts/osp-tb341.dts
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/dts/osp-tb341.dts	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/dts/osp-tb341.dts b/arch/x86/dts/osp-tb341.dts
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/dts/osp-tb341.dts
 @@ -0,0 +1,72 @@
 +/*
 + * Copyright 2022 Maxlinear Corporation.
@@ -10055,9 +10102,10 @@ diff -r a67bae0860bb arch/x86/dts/osp-tb341.dts
 +		       <&gpio2 78 PIN_INPUT GPIO_MODE_FUNC2>, <&gpio2 79 PIN_INPUT GPIO_MODE_FUNC2>,
 +		       <&gpio2 80 PIN_INPUT GPIO_MODE_FUNC2>, <&gpio2 81 PIN_INPUT GPIO_MODE_FUNC2>;
 +};
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/api.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/api.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/api.h b/arch/x86/include/asm/arch-lightning/api.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/api.h
 @@ -0,0 +1,28 @@
 +/*
 + * Copyright (C) 2017 Intel Technology Asia Pte Ltd
@@ -10087,9 +10135,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/api.h
 +
 +#endif /* __API_H */
 +
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/asc_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/asc_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/asc_reg.h b/arch/x86/include/asm/arch-lightning/asc_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/asc_reg.h
 @@ -0,0 +1,1554 @@
 +/* ----------------------------------------------------------------------------
 +         Copyright (C) 2016 - 2017 Intel Technology Asia Pte Ltd
@@ -11645,9 +11694,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/asc_reg.h
 +/*! @} */
 +
 +#endif /* __ASC_REG_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/cgu_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/cgu_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/cgu_reg.h b/arch/x86/include/asm/arch-lightning/cgu_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/cgu_reg.h
 @@ -0,0 +1,11138 @@
 +/* -----------------------------------------------------------------------
 +         Copyright (C) 2016 - 2017 Intel Technology Asia Pte Ltd
@@ -22787,9 +22837,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/cgu_reg.h
 +/*! @} */
 +
 +#endif /* __CGU_REG_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/chip_id.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/chip_id.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/chip_id.h b/arch/x86/include/asm/arch-lightning/chip_id.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/chip_id.h
 @@ -0,0 +1,30 @@
 +/*
 + * Copyright (C) 2020 Intel Technology Asia Pte Ltd
@@ -22821,9 +22872,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/chip_id.h
 +#define URX641_CPU_ID		0xA0
 +#define URX641_C0_CPU_ID	0xA1
 +#define URX640_C0_CPU_ID	0xA2
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/chip_top.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/chip_top.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/chip_top.h b/arch/x86/include/asm/arch-lightning/chip_top.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/chip_top.h
 @@ -0,0 +1,12 @@
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -22837,9 +22889,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/chip_top.h
 +#define XPCS5_CFG_REG	CHIP_TOP_BASE + 0x120
 +#define CHIP_TOP_XGMII_CLK_EN	1 << 16
 +#define BASEIA_WDT_RST_EN_B0	CHIP_TOP_BASE + 0x1E0
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ddr_controller.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/ddr_controller.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/ddr_controller.h b/arch/x86/include/asm/arch-lightning/ddr_controller.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/ddr_controller.h
 @@ -0,0 +1,407 @@
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -23248,9 +23301,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ddr_controller.h
 +#define	uPCTL2_RFSHCTL3		(uPCTL2_BASE + 0x60)
 +
 +#endif /* _DDR_CONTROLLER_H */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dma.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/dma.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/dma.h b/arch/x86/include/asm/arch-lightning/dma.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/dma.h
 @@ -0,0 +1,3194 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -26446,9 +26500,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dma.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dma_v31.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/dma_v31.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/dma_v31.h b/arch/x86/include/asm/arch-lightning/dma_v31.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/dma_v31.h
 @@ -0,0 +1,4733 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -31183,9 +31238,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dma_v31.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dwc_ahsata.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/dwc_ahsata.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/dwc_ahsata.h b/arch/x86/include/asm/arch-lightning/dwc_ahsata.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/dwc_ahsata.h
 @@ -0,0 +1,4063 @@
 +/* Copyright (c) 2019, Intel Corporation.
 +* Intel LGM Uboot SATA driver implementation.
@@ -35250,9 +35306,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dwc_ahsata.h
 +
 +#endif
 +
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dwc_ddr_upctl2.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/dwc_ddr_upctl2.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/dwc_ddr_upctl2.h b/arch/x86/include/asm/arch-lightning/dwc_ddr_upctl2.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/dwc_ddr_upctl2.h
 @@ -0,0 +1,6312 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -41566,9 +41623,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dwc_ddr_upctl2.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dwc_usb31.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/dwc_usb31.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/dwc_usb31.h b/arch/x86/include/asm/arch-lightning/dwc_usb31.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/dwc_usb31.h
 @@ -0,0 +1,7984 @@
 +//-----------------------------------------------------------------------------
 +// LSD Generator
@@ -49554,9 +49612,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/dwc_usb31.h
 +//! @}
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ebu_n_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/ebu_n_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/ebu_n_reg.h b/arch/x86/include/asm/arch-lightning/ebu_n_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/ebu_n_reg.h
 @@ -0,0 +1,1788 @@
 +/* -----------------------------------------------------------------------
 +         Copyright (C) 2016 - 2017 Intel Technology Asia Pte Ltd
@@ -51346,9 +51405,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ebu_n_reg.h
 +/*! @} */
 +
 +#endif /* __EBU_N_REG_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/epu_aon.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/epu_aon.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/epu_aon.h b/arch/x86/include/asm/arch-lightning/epu_aon.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/epu_aon.h
 @@ -0,0 +1,3957 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -55307,9 +55367,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/epu_aon.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/epu_gen.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/epu_gen.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/epu_gen.h b/arch/x86/include/asm/arch-lightning/epu_gen.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/epu_gen.h
 @@ -0,0 +1,111685 @@
 +/*
 + * Copyright (C) 2019 Intel Technology Asia Pte Ltd
@@ -166996,9 +167057,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/epu_gen.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ethsw_pdi.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/ethsw_pdi.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/ethsw_pdi.h b/arch/x86/include/asm/arch-lightning/ethsw_pdi.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/ethsw_pdi.h
 @@ -0,0 +1,33667 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -200667,9 +200729,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ethsw_pdi.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gpio_function_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/gpio_function_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/gpio_function_reg.h b/arch/x86/include/asm/arch-lightning/gpio_function_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/gpio_function_reg.h
 @@ -0,0 +1,14080 @@
 +/* -----------------------------------------------------------------------
 +         Copyright (C) 2016 - 2017 Intel Technology Asia Pte Ltd
@@ -214751,9 +214814,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gpio_function_reg.h
 +/*! @} */
 +
 +#endif /* __GPIO_FUNCTION_REG_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gpio_pad_ctrl_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/gpio_pad_ctrl_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/gpio_pad_ctrl_reg.h b/arch/x86/include/asm/arch-lightning/gpio_pad_ctrl_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/gpio_pad_ctrl_reg.h
 @@ -0,0 +1,8320 @@
 +/* -----------------------------------------------------------------------
 +         Copyright (C) 2016 - 2017 Intel Technology Asia Pte Ltd
@@ -223075,9 +223139,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gpio_pad_ctrl_reg.h
 +/*! @} */
 +
 +#endif /* __GPIO_PAD_CTRL_REG_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gptc.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/gptc.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/gptc.h b/arch/x86/include/asm/arch-lightning/gptc.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/gptc.h
 @@ -0,0 +1,1438 @@
 +/*----------------------------------------------------------------------------*/
 +/* LSD Generato*/
@@ -224517,9 +224582,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gptc.h
 +/*! @*/
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gswip_lmac.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/gswip_lmac.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/gswip_lmac.h b/arch/x86/include/asm/arch-lightning/gswip_lmac.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/gswip_lmac.h
 @@ -0,0 +1,1871 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -226392,9 +226458,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gswip_lmac.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gswip_ss.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/gswip_ss.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/gswip_ss.h b/arch/x86/include/asm/arch-lightning/gswip_ss.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/gswip_ss.h
 @@ -0,0 +1,9584 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -235980,9 +236047,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/gswip_ss.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hal_gswip.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/hal_gswip.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/hal_gswip.h b/arch/x86/include/asm/arch-lightning/hal_gswip.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/hal_gswip.h
 @@ -0,0 +1,4353 @@
 +
 +/* Description: 'Access Request' */
@@ -240337,9 +240405,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hal_gswip.h
 +#define PMAC_TBL_CTRL_ADDR_SHIFT	0
 +#define PMAC_TBL_CTRL_ADDR_SIZE		3
 +
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hal_pcie.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/hal_pcie.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/hal_pcie.h b/arch/x86/include/asm/arch-lightning/hal_pcie.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/hal_pcie.h
 @@ -0,0 +1,1231 @@
 +/* Copyright (c) 2019, Intel Corporation.
 +* Intel LGM Uboot SATA driver implementation.
@@ -241572,9 +241641,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hal_pcie.h
 +
 +#endif /* PCIE_H */
 +
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hal_ssc_helper.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/hal_ssc_helper.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/hal_ssc_helper.h b/arch/x86/include/asm/arch-lightning/hal_ssc_helper.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/hal_ssc_helper.h
 @@ -0,0 +1,128 @@
 +/*
 + * Copyright (C) 2017 Intel Technology Asia Pte Ltd
@@ -241704,9 +241774,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hal_ssc_helper.h
 +
 +
 +#endif /* __SSC_HELPER_H */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/haps_pcie_con.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/haps_pcie_con.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/haps_pcie_con.h b/arch/x86/include/asm/arch-lightning/haps_pcie_con.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/haps_pcie_con.h
 @@ -0,0 +1,11 @@
 +/* Copyright (c) 2019, Intel Corporation.
 +* Intel LGM Uboot SATA driver implementation.
@@ -241719,9 +241790,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/haps_pcie_con.h
 +void pcie_test(void);
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hsio_top.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/hsio_top.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/hsio_top.h b/arch/x86/include/asm/arch-lightning/hsio_top.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/hsio_top.h
 @@ -0,0 +1,3895 @@
 +/*Copyright (c) 2019, Intel Corporation.
 +* Intel LGM Uboot SATA driver implementation.
@@ -245618,9 +245690,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hsio_top.h
 +
 +#endif
 +
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hsnand.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/hsnand.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/hsnand.h b/arch/x86/include/asm/arch-lightning/hsnand.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/hsnand.h
 @@ -0,0 +1,624 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -246246,9 +246319,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/hsnand.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/irq.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/irq.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/irq.h b/arch/x86/include/asm/arch-lightning/irq.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/irq.h
 @@ -0,0 +1,18 @@
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -246268,9 +246342,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/irq.h
 +#define LIGHTNING_IRQ_LIMIT			255
 +
 +#endif /* __IRQ_H_ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/lgm_ddrnoc.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/lgm_ddrnoc.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/lgm_ddrnoc.h b/arch/x86/include/asm/arch-lightning/lgm_ddrnoc.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/lgm_ddrnoc.h
 @@ -0,0 +1,1926 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -248198,9 +248273,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/lgm_ddrnoc.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/lgm_topnoc.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/lgm_topnoc.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/lgm_topnoc.h b/arch/x86/include/asm/arch-lightning/lgm_topnoc.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/lgm_topnoc.h
 @@ -0,0 +1,7392 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -255594,9 +255670,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/lgm_topnoc.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/lgm_usb_tca_apb.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/lgm_usb_tca_apb.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/lgm_usb_tca_apb.h b/arch/x86/include/asm/arch-lightning/lgm_usb_tca_apb.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/lgm_usb_tca_apb.h
 @@ -0,0 +1,2046 @@
 +//-----------------------------------------------------------------------------
 +// LSD Generator
@@ -257644,9 +257721,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/lgm_usb_tca_apb.h
 +//! @}
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/mps.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/mps.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/mps.h b/arch/x86/include/asm/arch-lightning/mps.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/mps.h
 @@ -0,0 +1,94 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -257742,9 +257820,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/mps.h
 +#define	MPS_IR_GLOBAL_ATOM			175
 +
 +#endif  /* _MPS_REG_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/mps_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/mps_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/mps_reg.h b/arch/x86/include/asm/arch-lightning/mps_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/mps_reg.h
 @@ -0,0 +1,5043 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -262789,9 +262868,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/mps_reg.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/noc_fw_defs.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/noc/noc_fw_defs.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/noc/noc_fw_defs.h b/arch/x86/include/asm/arch-lightning/noc/noc_fw_defs.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/noc/noc_fw_defs.h
 @@ -0,0 +1,173 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -262966,9 +263046,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/noc_fw_defs.h
 +	{  136 , SAI_IA_PON_VAL, 	ETH_NOC_ID }, // 0x2A
 +};
 +#endif // __LGM_NOC_FW_DEFS_H
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/noc_fw_eff_sai.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/noc/noc_fw_eff_sai.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/noc/noc_fw_eff_sai.h b/arch/x86/include/asm/arch-lightning/noc/noc_fw_eff_sai.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/noc/noc_fw_eff_sai.h
 @@ -0,0 +1,491 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -263461,9 +263542,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/noc_fw_eff_sai.h
 +};
 +#endif
 +
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ddr_rules.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ddr_rules.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ddr_rules.h b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ddr_rules.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ddr_rules.h
 @@ -0,0 +1,80 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -263545,9 +263627,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ddr_rule
 +#endif /* CONFIG_USB_XHCI_MXL */
 +};
 +#endif // __LGM_RBE_NOC_FW_DDR_RULES_H
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_lbaxi_rules.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_lbaxi_rules.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_lbaxi_rules.h b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_lbaxi_rules.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_lbaxi_rules.h
 @@ -0,0 +1,359 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -263908,9 +263991,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_lbaxi_ru
 +#endif
 +};
 +#endif // __LGM_RBE_NOC_FW_LBAXI_RULES_H
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_peri_rules.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_peri_rules.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_peri_rules.h b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_peri_rules.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_peri_rules.h
 @@ -0,0 +1,98 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -264010,9 +264094,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_peri_rul
 +#endif
 +};
 +#endif // __LGM_RBE_NOC_FW_PERI_RULES_H
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ssb_rules.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ssb_rules.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ssb_rules.h b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ssb_rules.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ssb_rules.h
 @@ -0,0 +1,43 @@
 +/*
 + * Copyright (c) 2020, MaxLinear, Inc.
@@ -264057,9 +264142,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/noc/rbe_noc_fw_ssb_rule
 +	},
 +};
 +#endif // __LGM_RBE_NOC_FW_SSB_RULES_H
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/nrst.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/nrst.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/nrst.h b/arch/x86/include/asm/arch-lightning/nrst.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/nrst.h
 @@ -0,0 +1,84 @@
 +#ifndef _NRST_H
 +#define _NRST_H
@@ -264145,9 +264231,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/nrst.h
 +#define CONST_VCODEC_RST_SEL_VCODEC1_RST_SEL_ENABLED 0x1
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/pon_shell_app.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/pon_shell_app.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/pon_shell_app.h b/arch/x86/include/asm/arch-lightning/pon_shell_app.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/pon_shell_app.h
 @@ -0,0 +1,2050 @@
 +/*
 + * Copyright (C) 2017 Intel Technology Asia Pte Ltd
@@ -266199,9 +266286,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/pon_shell_app.h
 +//! @}
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/project.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/project.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/project.h b/arch/x86/include/asm/arch-lightning/project.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/project.h
 @@ -0,0 +1,102 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -266305,9 +266393,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/project.h
 +#endif /* CONFIG_VENDOR_MAXLINEAR */
 +
 +#endif /* __TOP_REG */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/qspi_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/qspi_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/qspi_reg.h b/arch/x86/include/asm/arch-lightning/qspi_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/qspi_reg.h
 @@ -0,0 +1,1616 @@
 +/* ----------------------------------------------------------------------------
 +         Copyright (C) 2016 - 2017 Intel Technology Asia Pte Ltd
@@ -267925,9 +268014,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/qspi_reg.h
 +/*! @} */
 +
 +#endif /* __QSPI_REG_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/rcu.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/rcu.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/rcu.h b/arch/x86/include/asm/arch-lightning/rcu.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/rcu.h
 @@ -0,0 +1,2462 @@
 +/*----------------------------------------------------------------------------- */
 +/* LSD Generator */
@@ -270391,9 +270481,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/rcu.h
 +/*! @} */
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/reg.h b/arch/x86/include/asm/arch-lightning/reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/reg.h
 @@ -0,0 +1,112 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -270507,9 +270598,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/reg.h
 +
 +/***********************************************************************/
 +#endif /* __LIGHTNING_REG_H */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/scramble_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/scramble_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/scramble_reg.h b/arch/x86/include/asm/arch-lightning/scramble_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/scramble_reg.h
 @@ -0,0 +1,19 @@
 +/*
 + * Copyright (C) 2023 Maxlinear Inc
@@ -270530,9 +270622,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/scramble_reg.h
 +#define SCR_KEY_MSB		0xef401004
 +
 +#endif /* _SCRAMBLE_REG_H */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/security_top_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/security_top_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/security_top_reg.h b/arch/x86/include/asm/arch-lightning/security_top_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/security_top_reg.h
 @@ -0,0 +1,1921 @@
 +/* ----------------------------------------------------------------------------
 +         Copyright (C) 2016 - 2017 Intel Technology Asia Pte Ltd
@@ -272455,9 +272548,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/security_top_reg.h
 +/*! @} */
 +
 +#endif /* __SECURITY_TOP_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ssc_reg.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/ssc_reg.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/ssc_reg.h b/arch/x86/include/asm/arch-lightning/ssc_reg.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/ssc_reg.h
 @@ -0,0 +1,1188 @@
 +/* ----------------------------------------------------------------------------
 +         Copyright (C) 2016 - 2017 Intel Technology Asia Pte Ltd
@@ -273647,9 +273741,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ssc_reg.h
 +/*! @} */
 +
 +#endif /* __SSC_REG_H__ */
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ssio.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/ssio.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/ssio.h b/arch/x86/include/asm/arch-lightning/ssio.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/ssio.h
 @@ -0,0 +1,2528 @@
 +//-----------------------------------------------------------------------------
 +// LSD Generator
@@ -276179,9 +276274,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ssio.h
 +//! @}
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ssio1.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/ssio1.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/ssio1.h b/arch/x86/include/asm/arch-lightning/ssio1.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/ssio1.h
 @@ -0,0 +1,2402 @@
 +//-----------------------------------------------------------------------------
 +// LSD Generator
@@ -278585,9 +278681,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/ssio1.h
 +//! @}
 +
 +#endif
-diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/tep.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/arch-lightning/tep.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/arch-lightning/tep.h b/arch/x86/include/asm/arch-lightning/tep.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/arch-lightning/tep.h
 @@ -0,0 +1,16 @@
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -278605,9 +278702,10 @@ diff -r a67bae0860bb arch/x86/include/asm/arch-lightning/tep.h
 +
 +#define TEP_KEY_VALID_BIT	0x1
 +#define SYS_HALT_MASK		0x00000010
-diff -r a67bae0860bb arch/x86/include/asm/lib_dma.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/lib_dma.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/lib_dma.h b/arch/x86/include/asm/lib_dma.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/lib_dma.h
 @@ -0,0 +1,591 @@
 +#ifndef LIB_DMA_H
 +#define LIB_DMA_H
@@ -279200,9 +279298,10 @@ diff -r a67bae0860bb arch/x86/include/asm/lib_dma.h
 +
 +#endif /* LIB_DMA_H */
 +
-diff -r a67bae0860bb arch/x86/include/asm/relocate.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/relocate.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/relocate.h b/arch/x86/include/asm/relocate.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/relocate.h
 @@ -0,0 +1,17 @@
 +/*
 + * (C) Copyright 2011
@@ -279221,9 +279320,10 @@ diff -r a67bae0860bb arch/x86/include/asm/relocate.h
 +int do_elf_reloc_fixups(void);
 +
 +#endif	/* !_RELOCATE_H_ */
-diff -r a67bae0860bb arch/x86/include/asm/secureboot.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/include/asm/secureboot.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/include/asm/secureboot.h b/arch/x86/include/asm/secureboot.h
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/include/asm/secureboot.h
 @@ -0,0 +1,119 @@
 +/*
 + * Copyright (C) 2019 Intel Technology Asia Pte Ltd
@@ -279344,9 +279444,10 @@ diff -r a67bae0860bb arch/x86/include/asm/secureboot.h
 +extern u32 otp_fsvn_value[SB_ROLLBACK_ID_ROOTFS + 1];
 +
 +#endif /* _ASM_SECUREBOOT_H */
-diff -r a67bae0860bb arch/x86/lib/spl_lgm_ebu_nand.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/lib/spl_lgm_ebu_nand.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/lib/spl_lgm_ebu_nand.c b/arch/x86/lib/spl_lgm_ebu_nand.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/lib/spl_lgm_ebu_nand.c
 @@ -0,0 +1,438 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -279786,9 +279887,10 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_ebu_nand.c
 +error:
 +	hang();
 +}
-diff -r a67bae0860bb arch/x86/lib/spl_lgm_emmc.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/lib/spl_lgm_emmc.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/lib/spl_lgm_emmc.c b/arch/x86/lib/spl_lgm_emmc.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/lib/spl_lgm_emmc.c
 @@ -0,0 +1,903 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -280693,10 +280795,11 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_emmc.c
 +	reset_cpu();
 +}
 +
-diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/lib/spl_lgm_image_loader.c	Wed Mar 25 15:59:09 2026 +0800
-@@ -0,0 +1,476 @@
+diff --git a/arch/x86/lib/spl_lgm_image_loader.c b/arch/x86/lib/spl_lgm_image_loader.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/lib/spl_lgm_image_loader.c
+@@ -0,0 +1,488 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -280727,11 +280830,12 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
 + * All boot control values are stored in NRST_REG_NRST_2 (0xE0040008):
 + *   - Bits [31:30]: boot_bank tracking (booted_active=bit30, booted_inactive=bit31)
 + *   - Bit [29]:     successful_boot_bank (0=ACTIVE, 1=INACTIVE) - indicates which bank successfully booted
++ *   - Bits [28:18]: Reserved
 + *   - Bit [17]:     force_inactive latched marker (set by SPL for current boot observation)
 + *   - Bit [16]:     force_inactive request flag
++ *   - Bit [15]:     booted_bank set by RBE (0=ACTIVE, 1=INACTIVE)
++ *   - Bits [14:8]:  Reserved
 + *   - Bits [7:0]:   bootcount
-+ *   - Bits [28:18]: Reserved
-+ *   - Bits [15:8]:  Reserved
 + */
 +/* force_inactive: Bit 16 */
 +#define FORCE_INACTIVE_MASK     (1u << 16)
@@ -280747,9 +280851,12 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
 +#define BOOTCOUNT_MASK          0x000000FFu
 +#define BOOTCOUNT_SHIFT         0
 +
-+/* boot_bank: Bits 30 and 31 */
++/* boot_bank: Bits 30 and 31 - overall system booted bank tracking */
 +#define BOOTED_WITH_ACTIVE_BANK_BIT     (1u << 30)  /* Bit 30 */
 +#define BOOTED_WITH_INACTIVE_BANK_BIT   (1u << 31)  /* Bit 31 */
++
++/* booted_bank: Bit 15 - set by RBE to indicate which bank RBE booted from (0=ACTIVE, 1=INACTIVE) */
++#define BOOTED_BANK_BIT                 (1u << 15)  /* Bit 15 */
 +
 +/* successful_boot_bank: Bit 29 - indicates which bank successfully booted (0=ACTIVE, 1=INACTIVE) */
 +#define SUCCESSFUL_BOOT_BANK_BIT        (1u << 29)  /* Bit 29 */
@@ -280921,22 +281028,30 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
 +		val = 1;
 +	return val;
 +}
++static void set_booted_bank_in_rbe(void)
++{
++	u32 reg_val = readl(NRST_REG_NRST_2);
++
++	/* Set bit 15 to indicate which bank RBE booted from for U-Boot to read */
++	if ((readl(EPU_AON_DDR_HASH_6) & 0xf) >= CONFIG_MAX_RBE_PER_PART)
++		reg_val |= BOOTED_BANK_BIT;
++	else
++		reg_val &= ~BOOTED_BANK_BIT;
++
++	writel(reg_val, NRST_REG_NRST_2);
++}
 +
 +static int get_booted_bank_from_rbe(void)
 +{
-+	/* Check NRST_REG_NRST_2 to determine which bank RBE booted from
-+	 * Bit 0: booted_with_active_bank
-+	 * Bit 1: booted_with_inactive_bank
++	/* Check NRST_REG_NRST_2 bit 15 to determine which bank RBE booted from.
++	 * Bit 15 = 0: ACTIVE bank
++	 * Bit 15 = 1: INACTIVE bank
 +	 */
 +	u32 boot_reg = readl(NRST_REG_NRST_2);
-+
-+	/* Check if inactive bank bit is set */
-+	if (boot_reg & BOOTED_WITH_INACTIVE_BANK_BIT) {
++	if (boot_reg & BOOTED_BANK_BIT)
 +		return 1;  /* INACTIVE */
-+	}
-+
-+	/* Default to active bank */
-+	return 0;  /* ACTIVE */
++	else
++		return 0;  /* ACTIVE */
 +}
 +
 +/*
@@ -281001,11 +281116,13 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
 + *    - If force-inactive set AND failover not set:
 + *      - Set BOOT_PART = INACTIVE
 + *    - Else:
-+ *      - Increment bootcount, persist to register
-+ *      - bootcount <= bootlimit          : BOOT_PART = ACTIVE
-+ *      - bootcount <= 2*bootlimit        : BOOT_PART = INACTIVE
-+ *        (only if CONFIG_PERM_FAILOVER or failover env set)
-+ *      - bootcount > 2*bootlimit         : End of World (DFU)
++ *      - If CONFIG_PERM_FAILOVER defined, OR failover env var is set:
++ *        - Increment bootcount, persist to register
++ *        - bootcount <= bootlimit        : BOOT_PART = ACTIVE
++ *        - bootcount <= 2*bootlimit      : BOOT_PART = INACTIVE
++ *        - bootcount > 2*bootlimit       : End of World (DFU)
++ *      - If neither CONFIG_PERM_FAILOVER nor failover is set:
++ *        - Boot ACTIVE unconditionally (do not increment bootcount)
 + *
 + * 2. Clear force-inactive flag before boot
 + *
@@ -281044,6 +281161,8 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
 +	/* Default to terminal unless proven to be a retry-attempt failure. */
 +	prpl_terminal_recovery = 1;
 +
++	set_booted_bank_in_rbe();  /* Set bit 15 for U-Boot to read which bank RBE booted from */
++
 +	/* init environment */
 +	env_init();
 +	/* load env from flash */
@@ -281080,8 +281199,8 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
 +	/* Read force-inactive flag from register */
 +	force_inactive = get_force_inactive();
 +
-+	/* Check if force-inactive is enabled and failover disabled */
-+	if (force_inactive && (failover == 0)) {
++	/* Check if force-inactive is enabled */
++	if (force_inactive) {
 +		debug("SPL: force-inactive is ENABLED\n");
 +
 +		/* Preserve forced context for DTB writers after bit16 is cleared.
@@ -281095,44 +281214,40 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
 +	} else {
 +		debug("SPL: force-inactive is DISABLED\n");
 +
-+		/* Get current bootcount and bootlimit */
-+		bootcount = get_bootcount();
-+		bootlimit = get_bootlimit();
++		if (CONFIG_IS_ENABLED(PERM_FAILOVER) || failover) {
++			/* Track bootcount and allow INACTIVE failover:
++			 *   CONFIG_PERM_FAILOVER: always enabled (normal + upgrade boot)
++			 *   failover env var: upgrade/failover scenario only
++			 * Bank selection based on bootcount thresholds:
++			 *   bootcount <= bootlimit        : try ACTIVE
++			 *   bootcount <= 2*bootlimit      : try INACTIVE
++			 *   bootcount >  2*bootlimit      : EOW
++			 */
++			bootcount = get_bootcount();
++			bootlimit = get_bootlimit();
 +
-+		debug("SPL: Current bootcount: %d, bootlimit: %d\n", bootcount, bootlimit);
++			debug("SPL: Current bootcount: %d, bootlimit: %d\n", bootcount, bootlimit);
 +
-+		/* Increment bootcount and always persist to register */
-+		bootcount++;
-+		set_bootcount(bootcount);
-+		debug("SPL: Bootcount incremented to: %d\n", bootcount);
++			bootcount++;
++			set_bootcount(bootcount);
++			debug("SPL: Bootcount incremented to: %d\n", bootcount);
 +
-+		/* Bank selection based on bootcount thresholds:
-+		 *   bootcount <= bootlimit        : try ACTIVE
-+		 *   bootcount <= 2*bootlimit      : try INACTIVE
-+		 *   bootcount >  2*bootlimit      : EOW
-+		 */
-+		if (bootcount <= bootlimit)
-+		{
++			if (bootcount <= bootlimit) {
++				boot_part = 0; /* ACTIVE */
++				debug("SPL: BOOT_PART set to ACTIVE (bootcount %d <= bootlimit %d)\n", bootcount, bootlimit);
++			} else if (bootcount <= 2 * bootlimit) {
++				boot_part = 1; /* INACTIVE */
++				debug("SPL: BOOT_PART set to INACTIVE (bootcount %d <= 2*bootlimit %d)\n", bootcount, 2 * bootlimit);
++			} else {
++				printf("SPL: Bootcount %d exceeded 2*bootlimit %d - End of World\n", bootcount, 2 * bootlimit);
++				goto reset;
++			}
++		} else {
++			/* No failover configured: always boot ACTIVE unconditionally.
++			 * Do not increment bootcount to prevent spurious EOW trigger.
++			 */
 +			boot_part = 0; /* ACTIVE */
-+			debug("SPL: BOOT_PART set to ACTIVE (bootcount %d <= bootlimit %d)\n", bootcount, bootlimit);
-+		}
-+#ifdef CONFIG_PERM_FAILOVER
-+		else if (bootcount <= 2 * bootlimit)
-+		{
-+			boot_part = 1; /* 6. INACTIVE */
-+			debug("SPL: BOOT_PART set to INACTIVE (bootcount %d <= 2*bootlimit %d)\n", bootcount, 2 * bootlimit);
-+		}
-+#else
-+		else if (failover && bootcount <= 2 * bootlimit)
-+		{
-+			boot_part = 1; /* INACTIVE */
-+			debug("SPL: BOOT_PART set to INACTIVE (failover set, bootcount %d <= 2*bootlimit %d)\n", bootcount, 2 * bootlimit);
-+		}
-+#endif
-+		else
-+		{
-+			printf("SPL: Bootcount %d exceeded 2*bootlimit %d - End of World\n", bootcount, 2 * bootlimit);
-+			goto reset;
++			debug("SPL: No failover configured, booting ACTIVE unconditionally\n");
 +		}
 +	}
 +
@@ -281173,9 +281288,10 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_image_loader.c
 +    return temporary_failover_boot_sequence();
 +#endif /* CONFIG_PRPL_BOOT_SEQUENCE */
 +}
-diff -r a67bae0860bb arch/x86/lib/spl_lgm_nand.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/lib/spl_lgm_nand.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/lib/spl_lgm_nand.c b/arch/x86/lib/spl_lgm_nand.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/lib/spl_lgm_nand.c
 @@ -0,0 +1,161 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -281338,9 +281454,10 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_nand.c
 +	return -1;
 +}
 +#endif /* CONFIG_MXL_SPL_FIT */
-diff -r a67bae0860bb arch/x86/lib/spl_lgm_nor.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/lib/spl_lgm_nor.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/lib/spl_lgm_nor.c b/arch/x86/lib/spl_lgm_nor.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/lib/spl_lgm_nor.c
 @@ -0,0 +1,184 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -281526,9 +281643,10 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_nor.c
 +	hang();
 +}
 +
-diff -r a67bae0860bb arch/x86/lib/spl_lgm_spi_nand.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/x86/lib/spl_lgm_spi_nand.c	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/arch/x86/lib/spl_lgm_spi_nand.c b/arch/x86/lib/spl_lgm_spi_nand.c
+new file mode 100644
+--- /dev/null
++++ b/arch/x86/lib/spl_lgm_spi_nand.c
 @@ -0,0 +1,327 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -281857,9 +281975,10 @@ diff -r a67bae0860bb arch/x86/lib/spl_lgm_spi_nand.c
 +error:
 +	hang();
 +}
-diff -r a67bae0860bb include/firewall.h
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/include/firewall.h	Wed Mar 25 15:59:09 2026 +0800
+diff --git a/include/firewall.h b/include/firewall.h
+new file mode 100644
+--- /dev/null
++++ b/include/firewall.h
 @@ -0,0 +1,22 @@
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd

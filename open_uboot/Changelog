@@ -1,5 +1,31 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.390
+	* UGW_SW-93567: Fixed the upgrade functions to properly handle images that include a pre-loaded signature header.
+
+Changes for U-boot version: 4.0.389
+	* UGW_SW-97458: U-Boot DTS compilation using build toolchain.
+	* SWDEVOPS-1246 Jenkins CI Support
+	* UGW_SW-93567 - Added support of MFG.
+	* UGW_SW-93567 - Set the MAC address based on the SMD.
+	* UGW_SW-93567 - Add MFG global signature information to U-Boot dts.
+	* UGW_SW-93567 - Add kernel preload signature information U-Boot DTB.
+	* UGW_SW-93567 - Add patch to pass the booted bank information to Linux.
+	* UGW_SW-93567 - Boot and authenticate the kernel from the right bank. MIME-Version: 1.0 Content-Type: text/plain; charset=UTF-8 Content-Transfer-Encoding: 8bit
+	* UGW_SW-93567 - Protect read-only variables from U-Boot environment.
+	* UGW_SW-93567 - Refactore bootprpl command and allow passing a configuration.
+	* UGW_SW-93567 - Make CMD_MFG depends on PRPL_MFG.
+
+Changes for U-boot version: 4.0.388
+	* UGW_SW-96910 - fix for secureboot configurations on cable builds
+
+Changes for U-boot version: 4.0.387
+	* UGW_SW-97367 - PRPL bootflow update to add RBE partition boot info to kernel device tree chosen node
+	* UGW_SW-97253 - Force inactive check enforced without failover check fix to match PRPL community flow
+
+Changes for U-boot version: 4.0.385
+	* UGW_SW-97210 - Fix issue with the boot-flow when failover is not set
+
 Changes for U-boot version: 4.0.384
 	* - Force Inactive in BootFLow
 

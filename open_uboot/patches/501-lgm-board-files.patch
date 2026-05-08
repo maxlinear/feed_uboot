@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  36ec47d15f49d6b56cd9c7ea0596222c4eb80adf
+# Parent  91f0ee07b35f3f53bd19c794469735a5b1772221
 
 diff --git a/board/maxlinear/Kconfig b/board/maxlinear/Kconfig
 new file mode 100644
@@ -70679,7 +70679,7 @@ diff --git a/board/maxlinear/lightning/lightning.c b/board/maxlinear/lightning/l
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/lightning.c
-@@ -0,0 +1,992 @@
+@@ -0,0 +1,1016 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright � 2022 MaxLinear, Inc.
@@ -70708,6 +70708,9 @@ new file mode 100644
 +#ifdef CONFIG_MXL_OF_DTB_UBOOT_EXT
 +#include <asm/sections.h>
 +#endif /* CONFIG_MXL_OF_DTB_UBOOT_EXT */
++#include <net.h>
++#include <stdlib.h>
++#include <prpl/mfg.h>
 +
 +#define MALLOC_BASE_PRE_UBOOT	0x00700000
 +#define UBOOT_SRAM_OFFS_LOC		CONFIG_SPL_TEXT_BASE + CONFIG_SPL_PAD_SIZE
@@ -71545,6 +71548,27 @@ new file mode 100644
 +	if (CONFIG_IS_ENABLED(LED))
 +		led_default_state();
 +
++	/* Set MAC address from SMD */
++	if (IS_ENABLED(CONFIG_PRPL_MFG)) {
++		const mfg_entry_t *mfg_entry;
++		char macaddr[32];
++
++		if (prpl_mfg_init())
++			printf("%s: prpl_mfg_init failed.\n", __func__);
++
++		mfg_entry = prpl_mfg_get_entry_by_name("BASE_MAC_ADDRESS");
++		if (!mfg_entry || !mfg_entry->data) {
++			printf("%s: can't find BASE_MAC_ADDRESS in MFG\n", __func__);
++		} else {
++			sprintf(macaddr, "%pM", mfg_entry->data);
++			if (!is_valid_ethaddr(macaddr)) {
++				printf("%s: invalid mac address (%s)\n", __func__, macaddr);
++			} else {
++				env_set("ethaddr", macaddr);
++				printf("Set ethaddr to %s\n", macaddr);
++			}
++		}
++	}
 +	return 0;
 +}
 +
@@ -71988,7 +72012,7 @@ diff --git a/board/maxlinear/lightning/pre_kern_fixups.c b/board/maxlinear/light
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/pre_kern_fixups.c
-@@ -0,0 +1,312 @@
+@@ -0,0 +1,395 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2025 Maxlinear Corporation
@@ -72000,8 +72024,16 @@ new file mode 100644
 +#include <fdt_support.h>
 +#include <asm/io.h>
 +#include <asm/arch/nrst.h>
++#include <asm/global_data.h>
++
++DECLARE_GLOBAL_DATA_PTR;
 +
 +#define BOOTARGS_EXTRA_LEN 30
++
++#ifdef CONFIG_PRPL_BOOT_SEQUENCE
++/* Bit 15: booted_bank set by RBE — mirrors get_booted_bank_from_rbe() in SPL */
++#define BOOTED_BANK_BIT_LOCAL (1u << 15)
++#endif /* CONFIG_PRPL_BOOT_SEQUENCE */
 +
 +/* Function to get environment variables */
 +static char *get_env_var(char *var_name)
@@ -72071,9 +72103,8 @@ new file mode 100644
 +}
 +
 +/* Function to read CMA size from device tree and update the bootargs */
-+int read_cma_size(void)
++int read_cma_size(const void *fdt)
 +{
-+	const void *fdt;
 +	int node_offset, len, bootargs_len;
 +	const char *prop;
 +	char *str_bootargs = NULL;
@@ -72082,16 +72113,12 @@ new file mode 100644
 +	char *str_rootfs_alignment = NULL;
 +	u32 rootfs_load_addr = 0;
 +	ulong cma_size, cma_alignment, cma_start, rootfs_alignment;
-+	ulong loadaddr = 0;
 +
-+	/* Get the FDT load address using the common API */
-+	loadaddr = get_fdt_loadaddr();
-+	if (!loadaddr) {
-+		printf("[%s] Error: Failed to get FDT load address\n", __func__);
++	if (!fdt) {
++		printf("[%s] Error: Invalid FDT address\n", __func__);
 +		return -1;
 +	}
 +
-+	fdt = (void *)loadaddr;
 +	node_offset = fdt_path_offset(fdt, "/reserved-memory/linux,cma");
 +	if (node_offset < 0) {
 +		printf("[%s] Error: Cannot find /reserved-memory/linux,cma node, error code: %d\n",
@@ -72180,6 +72207,82 @@ new file mode 100644
 +}
 +
 +#ifdef CONFIG_PRPL_BOOT_SEQUENCE
++/* Function to update kernel DTB with which RBE bank was used to boot.
++ * Reads NRST_REG_NRST_2 bit 15 set by RBE:
++ *   Bit 15 set   -> backup  (INACTIVE)
++ *   Bit 15 clear -> primary (ACTIVE)
++ * Sets /chosen/u-boot,booted-rbe-bank in the kernel DTB.
++ */
++int update_kernel_dtb_rbe_bank(void)
++{
++	void *fdt;
++	int node_offset, ret;
++	ulong loadaddr = 0;
++	u32 boot_reg;
++	const char *rbe_bank_str;
++
++	/* Get the FDT load address using the common API */
++	loadaddr = get_fdt_loadaddr();
++	if (!loadaddr) {
++		printf("[%s] Error: Failed to get FDT load address\n", __func__);
++		return -1;
++	}
++
++	/* Point to the kernel DTB */
++	fdt = (void *)loadaddr;
++
++	/* Validate FDT header */
++	ret = fdt_check_header(fdt);
++	if (ret < 0) {
++		printf("[%s] Error: Invalid FDT header at 0x%lx, error: %s\n",
++			__func__, loadaddr, fdt_strerror(ret));
++		return -1;
++	}
++
++	/* Increase DTB size to allow for modifications */
++	ret = fdt_increase_size(fdt, 512);
++	if (ret < 0) {
++		printf("[%s] Error: Could not increase FDT size: %s\n",
++			__func__, fdt_strerror(ret));
++		return -1;
++	}
++
++	/* Read NRST_REG_NRST_2 to determine which RBE bank was used.
++	 * Bit 15 (BOOTED_BANK_BIT): set = backup (INACTIVE), clear = primary (ACTIVE).
++	 * This matches the logic in get_booted_bank_from_rbe() in SPL.
++	 */
++	boot_reg = readl(NRST_REG_NRST_2);
++	if (boot_reg & BOOTED_BANK_BIT_LOCAL)
++		rbe_bank_str = "backup";
++	else
++		rbe_bank_str = "primary";
++
++	debug("[%s] RBE bank: %s (NRST_REG_NRST_2=0x%08x)\n",
++		__func__, rbe_bank_str, boot_reg);
++
++	/* Find or create the /chosen node */
++	node_offset = fdt_find_or_add_subnode(fdt, 0, "chosen");
++	if (node_offset < 0) {
++		printf("[%s] Error: Could not find or create /chosen node: %s\n",
++			__func__, fdt_strerror(node_offset));
++		return -1;
++	}
++
++	/* Set the u-boot,booted-rbe-bank property in the /chosen node */
++	ret = fdt_setprop_string(fdt, node_offset, "u-boot,booted-rbe-bank",
++				 rbe_bank_str);
++	if (ret < 0) {
++		printf("[%s] Error: Could not set u-boot,booted-rbe-bank property: %s\n",
++			__func__, fdt_strerror(ret));
++		return -1;
++	}
++
++	debug("[%s] Kernel DTB updated: /chosen/u-boot,booted-rbe-bank = \"%s\"\n",
++		__func__, rbe_bank_str);
++
++	return 0;
++}
++
 +/* Function to update kernel DTB with boot bank information */
 +int update_kernel_dtb_boot_bank(void)
 +{
@@ -72289,17 +72392,21 @@ new file mode 100644
 +#ifdef CONFIG_PRPL_BOOT_SEQUENCE
 +	int ret;
 +
-+	/* Update kernel DTB with boot bank information */
-+	ret = update_kernel_dtb_boot_bank();
-+	if (ret < 0) {
-+		printf("[%s] Warning: Failed to update kernel DTB with boot bank info\n",
++	/* Update kernel DTB with RBE bank information */
++	ret = update_kernel_dtb_rbe_bank();
++	if (ret < 0)
++		printf("[%s] Warning: Failed to update kernel DTB with RBE bank info\n",
 +			__func__);
-+		/* Don't return error, continue with CMA update */
-+	}
++
 +#endif /* CONFIG_PRPL_BOOT_SEQUENCE */
 +
++	return 0;
++}
++
++int ft_board_setup(void *blob, struct bd_info *bd)
++{
 +	/* Read CMA size from device tree and update the bootargs */
-+	return read_cma_size();
++	return read_cma_size(blob);
 +}
 diff --git a/board/maxlinear/lightning/recovery-spl-start.S b/board/maxlinear/lightning/recovery-spl-start.S
 new file mode 100644
@@ -74318,7 +74425,7 @@ diff --git a/include/configs/maxlinear/common.h b/include/configs/maxlinear/comm
 new file mode 100644
 --- /dev/null
 +++ b/include/configs/maxlinear/common.h
-@@ -0,0 +1,467 @@
+@@ -0,0 +1,472 @@
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
 + *
@@ -74458,6 +74565,11 @@ new file mode 100644
 +/* compression support */
 +/* #define CONFIG_LZMA */
 +#define CONFIG_ENV_OVERWRITE
++
++/* Environment flags list for octopus boards with P34X PHY */
++#if defined(CONFIG_ENV_WRITEABLE_LIST)
++#define CONFIG_ENV_FLAGS_LIST_STATIC "failover:sw,wantype:sw,udt_status:sw"
++#endif
 +
 +/* allow longer tftp pathnames, default 128 in tftp.c */
 +#define CONFIG_TFTP_FILE_NAME_MAX_LEN      256

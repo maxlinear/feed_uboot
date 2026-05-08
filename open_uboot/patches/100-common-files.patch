@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  9f21f0021559cb3c5f0d312131ceed2bdca6ce35
+# Parent  19f8323ce73fc6f84f75a98ff129ccb79f67976b
 
 diff --git a/Makefile b/Makefile
 --- a/Makefile
@@ -1200,10 +1200,26 @@ diff --git a/cmd/Kconfig b/cmd/Kconfig
  endmenu
  
  menu "Firmware commands"
+@@ -2429,3 +2490,5 @@ config MMC_SPEED_MODE_SET
+ 	  include/mmc.h. A speed mode can be set only if it has already
+ 	  been enabled in the device tree.
+ endmenu
++
++source "cmd/prpl/Kconfig"
 diff --git a/cmd/Makefile b/cmd/Makefile
 --- a/cmd/Makefile
 +++ b/cmd/Makefile
-@@ -205,7 +205,7 @@ obj-$(CONFIG_ARM) += arm/
+@@ -189,6 +189,9 @@ obj-$(CONFIG_CMD_ETHSW) += ethsw.o
+ obj-$(CONFIG_CMD_AXI) += axi.o
+ obj-$(CONFIG_CMD_PVBLOCK) += pvblock.o
+ 
++# prpl commands
++obj-y += prpl/
++
+ # Power
+ obj-$(CONFIG_CMD_PMIC) += pmic.o
+ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
+@@ -205,7 +208,7 @@ obj-$(CONFIG_ARM) += arm/
  obj-$(CONFIG_RISCV) += riscv/
  obj-$(CONFIG_SANDBOX) += sandbox/
  obj-$(CONFIG_X86) += x86/
@@ -1419,6 +1435,12 @@ diff --git a/common/Makefile b/common/Makefile
  ifdef CONFIG_CMD_EEPROM_LAYOUT
  obj-y += eeprom/eeprom_field.o eeprom/eeprom_layout.o
  endif
+@@ -116,3 +126,5 @@ obj-$(CONFIG_$(SPL_TPL_)STACKPROTECTOR) 
+ obj-$(CONFIG_SCP03) += scp03.o
+ 
+ obj-$(CONFIG_QFW) += qfw.o
++
++obj-y += prpl/
 diff --git a/common/board_f.c b/common/board_f.c
 --- a/common/board_f.c
 +++ b/common/board_f.c
@@ -2611,7 +2633,7 @@ diff --git a/lib/Makefile b/lib/Makefile
  endif
  obj-$(CONFIG_ADDR_MAP) += addr_map.o
  obj-y += qsort.o
-@@ -128,9 +134,9 @@ obj-$(CONFIG_$(SPL_TPL_)STRTO) += strto.
+@@ -128,15 +134,17 @@ obj-$(CONFIG_$(SPL_TPL_)STRTO) += strto.
  else
  # Main U-Boot always uses the full printf support
  obj-y += vsprintf.o strto.o
@@ -2622,6 +2644,14 @@ diff --git a/lib/Makefile b/lib/Makefile
  
  obj-y += abuf.o
  obj-y += date.o
+ obj-y += rtc-lib.o
+ obj-$(CONFIG_LIB_ELF) += elf.o
+ 
++obj-y += prpl/
++
+ #
+ # Build a fast OID lookup registry from include/linux/oid_registry.h
+ #
 diff --git a/net/net.c b/net/net.c
 --- a/net/net.c
 +++ b/net/net.c

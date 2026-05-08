@@ -1,0 +1,46 @@
+diff --git a/board/maxlinear/lightning/pre_kern_fixups.c b/board/maxlinear/lightning/pre_kern_fixups.c
+index 7fb749e06..f2dec2a31 100644
+--- a/board/maxlinear/lightning/pre_kern_fixups.c
++++ b/board/maxlinear/lightning/pre_kern_fixups.c
+@@ -7,6 +7,7 @@
+ #include <string.h>
+ #include <command.h>
+ #include <fdt_support.h>
++#include <image.h>
+ #include <asm/io.h>
+ #include <asm/arch/nrst.h>
+ #include <asm/global_data.h>
+@@ -63,25 +64,15 @@ static ulong get_fdt_loadaddr(void)
+ 
+ #ifdef CONFIG_MXL_SPL_FIT
+ 	/* For FIT images, need to get the actual FDT load address from the FIT */
+-	const void *fdt;
+-	int node_offset, len;
+-	const char *prop;
+-
+-	fdt = (void *)dtb_loadaddr;
+-	node_offset = fdt_path_offset(fdt, "/images/fdt");
+-	if (node_offset < 0) {
+-		printf("[%s] Error: Cannot find /images/fdt, error code: %d\n",
+-			__func__, node_offset);
+-		return 0;
+-	}
+-
+-	prop = get_fdt_property(fdt, node_offset, "load", &len);
+-	if (!prop)
+-		return 0;
+-
+-	loadaddr = fdt32_to_cpu(*(const uint32_t *)prop);
++	extern bootm_headers_t images;   /* global from boot/bootm.c */
++	if (images.ft_addr) {
++		loadaddr = (ulong)images.ft_addr;  /* set by boot_get_fdt() */
++		debug("[%s] Using FIT FDT load address from images.ft_addr: 0x%08lx\n",
++			__func__, loadaddr);
++	} else
++		printf("[%s] Error: images.ft_addr is not set\n", __func__);
+ #else
+-	loadaddr = dtb_loadaddr;
++	loadaddr = dtb_loadaddr;	/* fallback: legacy separate-DTB boot path */
+ #endif
+ 
+ 	return loadaddr;
