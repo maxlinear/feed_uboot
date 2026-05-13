@@ -1,5 +1,22 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.392
+	* UGW_SW-97621: Addressing review comments
+
+Changes for U-boot version: 4.0.391
+	* UGW_SW-96731: Fix CVE-2022-30790: IP defrag hole descriptor overwrite
+	* UGW_SW-96731: Fix CVE-2022-30552: reject invalid IP fragment sizes
+	* UGW_SW-96731: Fix CVE-2022-33103: validate SquashFS metadata size
+	* UGW_SW-96731: Fix BDSA-2019-2537: bound NFS reply payload
+	* UGW_SW-96731: Fix CVE-2022-30767: bound NFS readlink parsing
+	* UGW_SW-96731: Fix CVE-2024-42040: bound BOOTP vendor parsing
+	* UGW_SW-96731: Fix CVE-2024-57259: harden SquashFS dir entry bounds checks
+	* UGW_SW-96731: Fix CVE-2024-57256: guard SquashFS ldir size overflows
+	* UGW_SW-96731: Fix CVE-2024-57255: guard SquashFS inode size overflows
+	* UGW_SW-96731: Fix CVE-2024-57254: guard SquashFS symlink size overflow
+	* UGW_SW-96731: Fix CVE-2024-57258: guard multiple SquashFS integer overflows
+	* UGW_SW-96731: Fix CVE-2024-57257: enforce required FIT config signatures on direct image boot
+
 Changes for U-boot version: 4.0.390
 	* UGW_SW-93567: Fixed the upgrade functions to properly handle images that include a pre-loaded signature header.
 

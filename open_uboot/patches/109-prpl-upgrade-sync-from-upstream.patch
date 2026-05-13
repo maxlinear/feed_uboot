@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  4f4ebd636a88ee5ee463057de182850de0c16cf7
+# Parent  43b59119c72dbd94a4208fef0220f82d6bfe5fd1
 
 diff --git a/arch/sandbox/dts/sandbox.dtsi b/arch/sandbox/dts/sandbox.dtsi
 --- a/arch/sandbox/dts/sandbox.dtsi
@@ -955,12 +955,11 @@ diff --git a/lib/Kconfig b/lib/Kconfig
  config SMBIOS_PARSER
  	bool "SMBIOS parser"
  	help
-@@ -835,3 +870,5 @@ config PHANDLE_CHECK_SEQ
+@@ -835,3 +870,4 @@ config PHANDLE_CHECK_SEQ
  	  When there are multiple device tree nodes with same name,
            enable this config option to distinguish them using
  	  phandles in fdtdec_get_alias_seq() function.
 +
-+source lib/prpl/Kconfig
 diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
 --- a/lib/crypto/Kconfig
 +++ b/lib/crypto/Kconfig

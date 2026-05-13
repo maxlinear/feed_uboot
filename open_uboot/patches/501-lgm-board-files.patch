@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  91f0ee07b35f3f53bd19c794469735a5b1772221
+# Parent  0e797a8c774eac5ee9afe8b2184f19bba7e91d0f
 
 diff --git a/board/maxlinear/Kconfig b/board/maxlinear/Kconfig
 new file mode 100644
@@ -70679,7 +70679,7 @@ diff --git a/board/maxlinear/lightning/lightning.c b/board/maxlinear/lightning/l
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/lightning.c
-@@ -0,0 +1,1016 @@
+@@ -0,0 +1,1018 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright � 2022 MaxLinear, Inc.
@@ -71548,10 +71548,9 @@ new file mode 100644
 +	if (CONFIG_IS_ENABLED(LED))
 +		led_default_state();
 +
-+	/* Set MAC address from SMD */
 +	if (IS_ENABLED(CONFIG_PRPL_MFG)) {
++		/* Set MAC address from SMD */
 +		const mfg_entry_t *mfg_entry;
-+		char macaddr[32];
 +
 +		if (prpl_mfg_init())
 +			printf("%s: prpl_mfg_init failed.\n", __func__);
@@ -71560,15 +71559,18 @@ new file mode 100644
 +		if (!mfg_entry || !mfg_entry->data) {
 +			printf("%s: can't find BASE_MAC_ADDRESS in MFG\n", __func__);
 +		} else {
-+			sprintf(macaddr, "%pM", mfg_entry->data);
-+			if (!is_valid_ethaddr(macaddr)) {
-+				printf("%s: invalid mac address (%s)\n", __func__, macaddr);
++			if (!is_valid_ethaddr(mfg_entry->data)) {
++				printf("%s: invalid mac address\n", __func__);
 +			} else {
++				char macaddr[18];
++
++				snprintf(macaddr, sizeof(macaddr), "%pM", mfg_entry->data);
 +				env_set("ethaddr", macaddr);
 +				printf("Set ethaddr to %s\n", macaddr);
 +			}
 +		}
 +	}
++
 +	return 0;
 +}
 +

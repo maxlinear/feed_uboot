@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  3af254627ff5e457e0c70ef7da5cc1342898359d
+# Parent  2da0d6191fce74a69bf78a164aab63fe3bba9c3f
 
 diff --git a/cmd/prpl/Kconfig b/cmd/prpl/Kconfig
 new file mode 100644
@@ -33,149 +33,104 @@ new file mode 100644
 +#
 +# Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
 +
-+obj-$(CONFIG_CMD_MFG) += mfg.o
++obj-$(CONFIG_CMD_MFG) += readmfg.o
 +obj-$(CONFIG_CMD_BOOTPRPL) += bootprpl.o
-\ No newline at end of file
-diff --git a/cmd/prpl/mfg.c b/cmd/prpl/mfg.c
+diff --git a/cmd/prpl/readmfg.c b/cmd/prpl/readmfg.c
 new file mode 100644
 --- /dev/null
-+++ b/cmd/prpl/mfg.c
-@@ -0,0 +1,175 @@
++++ b/cmd/prpl/readmfg.c
+@@ -0,0 +1,136 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2025 Yan Wang <yan.wang@softathome.com>
 + */
 +
-+#include <common.h>
 +#include <command.h>
-+#include <dm.h>
-+#include <errno.h>
-+#include <image.h>
-+#include <fdt_support.h>
-+#include <linux/libfdt.h>
-+#include <part.h>
-+#include <blk.h>
-+#include <u-boot/sha256.h>
-+#include <malloc.h>
 +#include <getopt.h>
-+#include <prpl/prpl_boot_mmc.h>
++#include <prpl/mfg.h>
++#include <stdio.h>
 +
++/**
++ * print_by_name() - Print a specific MFG field by name
++ * @name: Name of the MFG field to print
++ *
++ * Searches for a manufacturing data field by name and prints its value.
++ * Prints an error message if the specified field is not found.
++ * If the field is of type string, the value is printed as a string.
++ * Otherwise, it is printed as hexadecimal bytes.
++ * Decrypting encrypted fields are currently not supported in U-Boot.
++ *
++ * Return: 0 on success, -1 on error
++ */
++static int print_by_name(const char *name)
++{
++	const mfg_entry_t *entry;
 +
-+#define MFG_DATA_NODE "/MFG_DATA"
-+#define MFG_GLOBAL_SIG_PATH "/mfg/sig"
++	entry = prpl_mfg_get_entry_by_name(name);
 +
-+static void print_mfg_property(const void *fdt, int node, const char *name) {
-+	const void *prop;
-+	int len;
-+
-+	prop = fdt_getprop(fdt, node, "value", &len);
-+	if (!prop) {
-+		printf("No 'value' in node %s\n", name);
-+		return;
++	if (NULL == entry) {
++		printf("Entry '%s' not found\n", name);
++		return -1;
 +	}
 +
-+	const char *type = fdt_getprop(fdt, node, "type", NULL);
-+	if (type && strcmp(type, "string") == 0) {
-+		printf("%s: %s\n", name, (const char *)prop);
++	if (entry->flags & FLAG_STRING) {
++		printf("%s: %s\n", entry->name, (const char *)entry->data);
 +	} else {
-+		printf("%s: ", name);
-+		for (int i = 0; i < len; i++)
-+			printf("%02x ", ((const u8 *)prop)[i]);
++		printf("%s: ", entry->name);
++		for (int i = 0; i < entry->length; i++)
++			printf("%02x ", ((const u8 *)entry->data)[i]);
 +		printf("\n");
 +	}
++
++	return 0;
 +}
 +
-+static void print_by_name(const void *fdt, const char *name) {
-+	int mfg_data = fdt_path_offset(fdt, MFG_DATA_NODE);
-+	if (mfg_data < 0) {
-+		printf("No MFG DATA found\n");
-+		return;
-+	}
-+
-+	int subnode = fdt_subnode_offset(fdt, mfg_data, name);
-+	if (subnode < 0) {
-+		printf("Entry '%s' not found\n", name);
-+		return;
-+	}
-+
-+	print_mfg_property(fdt, subnode, name);
-+}
-+
-+static void list_all_field_name(const void *fdt) {
-+	int mfg_data = fdt_path_offset(fdt, MFG_DATA_NODE);
-+	if (mfg_data < 0) {
-+		printf("No MFG DATA found\n");
-+		return;
-+	}
-+
-+	int offset;
-+	printf("All available MFG fields:\n");
-+	fdt_for_each_subnode(offset, fdt, mfg_data) {
-+		const char *name = fdt_get_name(fdt, offset, NULL);
-+		if (!name)
-+			continue;
-+		printf("%s \n", name);
-+	}
-+}
-+
-+static void *prpl_mfg_find_dtb(const char *mfg_part_name)
++/**
++ * list_all_field_name() - List all MFG field names
++ *
++ * Iterates through the MFG linked list and prints all entries' name.
++ * This provides a list of all available manufacturing data fields.
++ *
++ * Return: 0 on success
++ */
++static int list_all_field_name(void)
 +{
-+	int ret = 0;
-+	void *mfg_data = NULL;
-+	long long mfg_size = 0;
++	const mfg_entry_t *entry;
 +
-+	mfg_size = get_data_size(mfg_part_name);
-+	if (!mfg_size) {
-+		printf("%s: can't get size of mfg volume\n", __func__);
-+		goto out;
++	printf("All available MFG fields:\n");
++	list_for_each_entry(entry, &mfg_list, node) {
++		printf("%s \n", entry->name);
 +	}
-+	mfg_data = malloc(mfg_size);
-+	if (!mfg_data) {
-+		printf("%s: malloc failed\n", __func__);
-+		goto out;
-+	}
-+	if (board_read_firmware(mfg_part_name, mfg_data) < 0) {
-+		log_err("ERROR: unable to read mfg data from flash\n");
-+		goto out;
-+	}
-+	if (IS_ENABLED(CONFIG_PRPL_MFG_GLOBAL_SIG_CHECK)) {
-+		env_set("pre_load_sig_info_path", MFG_GLOBAL_SIG_PATH);
-+		ret = image_pre_load((ulong)mfg_data);
-+		env_set("pre_load_sig_info_path", NULL);
-+		if (ret) {
-+			log_err("ERROR: Failed to verify global header signature of mfg data\n");
-+			free(mfg_data);
-+			mfg_data = NULL;
-+			env_set("pre_load_sig_info_path", NULL);
-+			goto out;
-+		}
-+		if (fdt_magic(mfg_data + image_load_offset) != FDT_MAGIC) {
-+			log_err("ERROR: Failed to retrieve the MFG data from flash\n");
-+			free(mfg_data);
-+			mfg_data = NULL;
-+			goto out;
-+		}
-+		memmove(mfg_data, mfg_data + image_load_offset, fdt_totalsize(mfg_data + image_load_offset));
-+	} else {
-+		if (fdt_magic(mfg_data) != FDT_MAGIC) {
-+			log_err("ERROR: Failed to retrieve the MFG data from flash\n");
-+			free(mfg_data);
-+			mfg_data = NULL;
-+			goto out;
-+		}
-+	}
-+	mfg_data = realloc(mfg_data, fdt_totalsize(mfg_data));
-+ out:
-+	return mfg_data;
++
++	return 0;
 +}
 +
-+static int do_readmfg(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[]) {
++/**
++ * do_readmfg() - U-Boot command handler for reading MFG data
++ * @cmdtp: Command table entry (unused)
++ * @flag: Command flags (unused)
++ * @argc: Number of arguments
++ * @argv: Array of argument strings
++ *
++ * Implements the 'readmfg' U-Boot command for reading and displaying
++ * manufacturing data stored in a device tree blob partition.
++ *
++ * Supported options:
++ * -l: List all available MFG field names
++ * -s <name>: Query and print a specific MFG field by name
++ *
++ * The partition name is configured via CONFIG_PRPL_MFG_PART_NAME.
++ *
++ * Return: CMD_RET_SUCCESS on success, CMD_RET_USAGE on invalid arguments,
++ *         or CMD_RET_FAILURE on errors
++ */
++static int do_readmfg(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
++{
 +	struct getopt_state gs;
 +	int opt;
 +	int list_all = 0;
 +	const char *field_name = NULL;
-+
-+	const char *partition = CONFIG_PRPL_MFG_PART_NAME;
++	int ret = 0;
 +
 +	if (argc < 2) {
 +		return CMD_RET_USAGE;
@@ -196,19 +151,24 @@ new file mode 100644
 +		}
 +	}
 +
-+	void *dtb = prpl_mfg_find_dtb(partition);
-+	if (!dtb) {
++	/* Check that all arguments were comsumed */
++	if (gs.index < argc) {
++		printf("Unexpected argument: %s\n", argv[gs.index]);
++		return CMD_RET_USAGE;
++	}
++
++	if (prpl_mfg_init()) {
 +		printf("%s: Failed to read the MFG DTB\n", __func__);
 +		return CMD_RET_FAILURE;
 +	}
 +
 +	if (list_all) {
-+		list_all_field_name(dtb);
++		ret = list_all_field_name();
 +	} else {
-+		print_by_name(dtb, field_name);
++		ret = print_by_name(field_name);
 +	}
 +
-+	return CMD_RET_SUCCESS;
++	return ret ? CMD_RET_FAILURE : CMD_RET_SUCCESS;
 +}
 +
 +U_BOOT_CMD(
@@ -267,7 +227,7 @@ diff --git a/include/prpl/mfg.h b/include/prpl/mfg.h
 new file mode 100644
 --- /dev/null
 +++ b/include/prpl/mfg.h
-@@ -0,0 +1,77 @@
+@@ -0,0 +1,106 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2025 Paul HENRYS <paul.henrys_ext@softathome.com>
@@ -275,14 +235,40 @@ new file mode 100644
 +#ifndef __PRPL_MFG_H__
 +#define __PRPL_MFG_H__
 +
++#include <linux/bitops.h>
++#include <linux/list.h>
++#include <linux/types.h>
++
++/** @brief MFG entry contains string data */
 +#define FLAG_STRING		BIT(0)
++/** @brief MFG entry contains array data */
 +#define FLAG_ARRAY		BIT(1)
++/** @brief MFG entry is read-write */
 +#define FLAG_MFG_RW		BIT(2)
++/** @brief MFG entry contains MAC address */
 +#define FLAG_MAC		BIT(3)
 +
++/**
++ * struct mfg_entry_s - Manufacturing data entry
++ * @name: Name of the MFG field
++ * @secure: Flag indicating if the entry is secure
++ * @is_encrypted: Flag indicating if the entry is encrypted
++ * @is_signed: Flag indicating if the entry is signed
++ * @sig_index: Index of the signature used for this entry
++ * @cipherkey_name: Name of the cipher key used for encryption
++ * @length: Length of the data in bytes
++ * @data: Pointer to the raw (possibly encrypted) data
++ * @decrypted_data_length: Length of the decrypted data in bytes
++ * @decrypted_data: Pointer to the decrypted data
++ * @flags: Combination of FLAG_* bits describing the entry type
++ * @node: List head for linking entries in a doubly-linked list
++ *
++ * This structure represents a single manufacturing data field stored in
++ * the device tree blob. It contains metadata about encryption, signing,
++ * and data format, along with pointers to both encrypted and decrypted data.
++ */
 +typedef struct mfg_entry_s {
 +	char *name;
-+	s32 index;
 +	u8 secure;
 +	u8 is_encrypted;
 +	u8 is_signed;
@@ -295,6 +281,9 @@ new file mode 100644
 +	u32 flags;
 +	struct list_head node;
 +} mfg_entry_t;
++
++/** @brief List head containing all entries parsed in the MFG */
++extern struct list_head mfg_list;
 +
 +/**
 + * prpl_mfg_init() - Initialize the mfg list with the mfg DTB stored on the board
@@ -349,7 +338,7 @@ diff --git a/include/prpl/prpl_boot_mmc.h b/include/prpl/prpl_boot_mmc.h
 new file mode 100644
 --- /dev/null
 +++ b/include/prpl/prpl_boot_mmc.h
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,32 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2022 Philippe Reynes <philippe.reynes@softathome.com>
@@ -357,8 +346,29 @@ new file mode 100644
 +#ifndef __PRPL_BOOT_MMC_H
 +#define __PRPL_BOOT_MMC_H
 +
++/**
++ * board_read_firmware() - Read firmware from a GPT partition
++ * @volume: Name of the GPT partition to read from
++ * @buf: Buffer to store the read data
++ *
++ * Reads the entire content of a GPT partition identified by name into
++ * the provided buffer. Uses the block device interface configured via
++ * CONFIG_PRPL_BOOT_MMC_IFNAME and CONFIG_PRPL_BOOT_MMC_DEVICE.
++ *
++ * Return: 0 on success, negative error code on failure
++ */
 +int board_read_firmware(const char *volume, char *buf);
 +
++/**
++ * get_data_size() - Get the size of a data partition
++ * @data_vol: Name of the GPT partition
++ *
++ * Retrieves the size in bytes of a GPT partition identified by name.
++ * Uses the block device interface configured via CONFIG_PRPL_BOOT_MMC_IFNAME
++ * and CONFIG_PRPL_BOOT_MMC_DEVICE.
++ *
++ * Return: Partition size in bytes, or 0 on error
++ */
 +long long get_data_size(const char *data_vol);
 +#endif
 diff --git a/lib/prpl/Kconfig b/lib/prpl/Kconfig
@@ -408,14 +418,13 @@ diff --git a/lib/prpl/mfg.c b/lib/prpl/mfg.c
 new file mode 100644
 --- /dev/null
 +++ b/lib/prpl/mfg.c
-@@ -0,0 +1,384 @@
+@@ -0,0 +1,402 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2025 Paul HENRYS <paul.henrys_ext@softathome.com>
 + */
 +
 +//#define DEBUG
-+#include <common.h>
 +#include <fdtdec.h>
 +#include <ubi_uboot.h>
 +#include <image.h>
@@ -448,9 +457,9 @@ new file mode 100644
 +static int sig_checked = 0;		/* Set to 1 if the signature was checked successfully */
 +
 +/**
-+ * get_entry_by_name() - Find an entry in the mfg list using its index.
++ * get_entry_by_name() - Find an entry in the mfg list using its name.
 + *
-+ * @index:	Index of the mfg field
++ * @name:	Name of the mfg field
 + *
 + * @return a pointer to the mfg_entry on success or NULL otherwise.
 + */
@@ -458,30 +467,54 @@ new file mode 100644
 +{
 +	mfg_entry_t *mfg_iter, *mfg_entry = NULL;
 +
++	if (!name)
++		goto out;
++
 +	list_for_each_entry(mfg_iter, &mfg_list, node) {
 +		if (mfg_iter->name && !strcmp(name, mfg_iter->name)) {
-+			debug("%s: mfg entry with name %s found - index=%d (%p)\n", __func__,
-+			      mfg_iter->name, mfg_iter->index, mfg_iter);
++			debug("%s: mfg entry with name %s found (%p)\n", __func__,
++			      mfg_iter->name, mfg_iter);
 +			mfg_entry = mfg_iter;
 +			if (mfg_entry->secure || mfg_entry->is_encrypted) {
-+				printf("%s: Encrypted data from %s with index %d\n",
-+				       __func__, mfg_iter->name ? mfg_iter->name : "NULL",
-+				       mfg_iter->index);
++				debug("Data are encrypted\n");
 +			}
 +			break;
 +		}
 +	}
++ out:
 +	return mfg_entry;
 +}
 +
-+static void *prpl_mfg_find_dtb(void)
++/**
++ * prpl_mfg_find_dtb() - Load and validate MFG device tree blob
++ * @mfg_part_name: Name of the partition containing the MFG data
++ *
++ * Loads the manufacturing data from the specified partition, optionally
++ * verifies its global signature if CONFIG_PRPL_MFG_GLOBAL_SIG_CHECK is enabled,
++ * and validates the device tree magic number. The function allocates memory
++ * for the DTB and returns a pointer to it.
++ *
++ * When signature verification is enabled:
++ * 1. Reads the partition data
++ * 2. Verifies the global signature using image_pre_load()
++ * 3. Strips the signature header by moving data to remove image_load_offset
++ * 4. Validates the FDT magic number
++ * 5. Reallocates to exact DTB size
++ *
++ * Return: Pointer to the loaded and validated DTB, or NULL on error
++ */
++static void *prpl_mfg_find_dtb(const char *mfg_part_name)
 +{
 +	int ret = 0;
 +	void *mfg_data = NULL;
-+	char *mfg_vol_name = CONFIG_PRPL_MFG_PART_NAME;
 +	long long mfg_size = 0;
 +
-+	mfg_size = get_data_size(mfg_vol_name);
++	if (!mfg_part_name) {
++		printf("%s: empty mfg_part_name\n", __func__);
++		goto out;
++	}
++
++	mfg_size = get_data_size(mfg_part_name);
 +	if (!mfg_size) {
 +		printf("%s: can't get size of mfg volume\n", __func__);
 +		goto out;
@@ -491,8 +524,9 @@ new file mode 100644
 +		printf("%s: malloc failed\n", __func__);
 +		goto out;
 +	}
-+	if (board_read_firmware(mfg_vol_name, mfg_data) < 0) {
++	if (board_read_firmware(mfg_part_name, mfg_data) < 0) {
 +		log_err("ERROR: unable to read data from flash\n");
++		free(mfg_data);
 +		goto out;
 +	}
 +	if (IS_ENABLED(CONFIG_PRPL_MFG_GLOBAL_SIG_CHECK)) {
@@ -538,9 +572,9 @@ new file mode 100644
 +	const void *node_name;
 +	int node_len, len;
 +
-+	mfg_fdt = prpl_mfg_find_dtb();
++	mfg_fdt = prpl_mfg_find_dtb(CONFIG_PRPL_MFG_PART_NAME);
 +	if (!mfg_fdt) {
-+		printf("%s: Failed to read the mfg DTB\n", __func__);
++		printf("%s: Failed to read the MFG DTB\n", __func__);
 +		ret = -1;
 +		goto out;
 +	}
@@ -591,12 +625,6 @@ new file mode 100644
 +			free(mfg_entry->decrypted_data);
 +			/* Zero all the structure except the list information */
 +			memset(mfg_entry, 0, offsetof(mfg_entry_t, node));
-+		}
-+
-+		node_prop = fdt_getprop(mfg_fdt, node_offset, MFG_FDT_PROP_ID, NULL);
-+		if (node_prop) {
-+			mfg_entry->index = be32_to_cpu(*((s32 *)node_prop));
-+			debug("%s: \tID: %d\n", __func__, mfg_entry->index);
 +		}
 +
 +		node_prop = fdt_getprop(mfg_fdt, node_offset, MFG_FDT_PROP_SECURE, NULL);
@@ -682,7 +710,7 @@ new file mode 100644
 +
 +		node_prop = fdt_getprop(mfg_fdt, node_offset, MFG_FDT_PROP_VALUE, &len);
 +		if (!node_prop || len < 0) {
-+			printf("%s: Could not retrieve value property from node %s", __func__,
++			printf("%s: Could not retrieve value property from node %s\n", __func__,
 +			       (const char *)node_name);
 +			continue;
 +		}

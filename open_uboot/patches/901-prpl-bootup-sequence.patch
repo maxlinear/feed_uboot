@@ -1,21 +1,37 @@
 # HG changeset patch
-# Parent  3a1b3e8fd953e19b59619a1ad36fb60e172ec20c
+# Parent  22ec9005b17a7cba4091a626899ad5becfd6a344
 
 diff --git a/cmd/prpl/bootprpl.c b/cmd/prpl/bootprpl.c
 new file mode 100644
 --- /dev/null
 +++ b/cmd/prpl/bootprpl.c
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,42 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2026 Mohamed-Nour TOUMI <mohamed.toumi_ext@softathome.com>
 + *
 + */
-+#include <common.h>
 +#include <command.h>
 +
 +#include <prpl/prpl_boot.h>
 +
++/**
++ * do_bootprpl_cmd() - U-Boot command wrapper for prpl boot
++ * @cmdtp: Command table entry (unused)
++ * @flag: Command flags (unused)
++ * @argc: Number of arguments
++ * @argv: Array of argument strings
++ *
++ * Implements the 'bootprpl' U-Boot command. This is a thin wrapper around
++ * do_bootprpl() that validates argument count before invoking the core
++ * boot logic.
++ *
++ * Usage: bootprpl [conf_uname]
++ *   - conf_uname: Optional FIT configuration name
++ *
++ * Return: CMD_RET_USAGE if too many arguments, otherwise returns the result
++ *         from do_bootprpl()
++ */
 +static int do_bootprpl_cmd(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 +{
 +	(void)cmdtp;
@@ -56,14 +72,13 @@ diff --git a/common/prpl/prpl_boot.c b/common/prpl/prpl_boot.c
 new file mode 100644
 --- /dev/null
 +++ b/common/prpl/prpl_boot.c
-@@ -0,0 +1,345 @@
+@@ -0,0 +1,344 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2026 Paul HENRYS <paul.henrys_ext@softathome.com>
 + * Copyright (C) 2026 Mohamed-Nour TOUMI <mohamed.toumi_ext@softathome.com>
 + */
 +
-+#include <common.h>
 +#include <env.h>
 +#include <malloc.h>
 +#include <linux/libfdt.h>
@@ -406,7 +421,7 @@ diff --git a/common/prpl/prpl_boot_mmc.c b/common/prpl/prpl_boot_mmc.c
 new file mode 100644
 --- /dev/null
 +++ b/common/prpl/prpl_boot_mmc.c
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,101 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2022 Philippe Reynes <philippe.reynes@softathome.com>
@@ -414,6 +429,22 @@ new file mode 100644
 +#include <prpl/prpl_boot_mmc.h>
 +#include <part.h>
 +
++/**
++ * board_read_firmware() - Read firmware from a GPT partition
++ * @volume: Name of the GPT partition to read from
++ * @buf: Buffer to store the read data
++ *
++ * Reads the entire content of a GPT partition identified by name into
++ * the provided buffer. Uses the block device interface configured via
++ * CONFIG_PRPL_BOOT_MMC_IFNAME and CONFIG_PRPL_BOOT_MMC_DEVICE.
++ *
++ * The function performs the following steps:
++ * 1. Retrieves the block device descriptor
++ * 2. Looks up the partition by name in the GPT table
++ * 3. Reads all blocks from the partition into the buffer
++ *
++ * Return: 0 on success, negative error code on failure
++ */
 +int board_read_firmware(const char *volume, char *buf)
 +{
 +	char *ifname = CONFIG_PRPL_BOOT_MMC_IFNAME;
@@ -453,6 +484,19 @@ new file mode 100644
 +	return ret;
 +}
 +
++/**
++ * get_data_size() - Get the size of a data partition
++ * @data_vol: Name of the GPT partition
++ *
++ * Retrieves the size in bytes of a GPT partition identified by name.
++ * Uses the block device interface configured via CONFIG_PRPL_BOOT_MMC_IFNAME
++ * and CONFIG_PRPL_BOOT_MMC_DEVICE.
++ *
++ * The size is calculated as: partition_size = number_of_blocks * block_size
++ *
++ * Return: Partition size in bytes, or 0 on error (NULL pointer, device not
++ *         found, or partition not found)
++ */
 +long long get_data_size(const char *data_vol)
 +{
 +	char *ifname = CONFIG_PRPL_BOOT_MMC_IFNAME;

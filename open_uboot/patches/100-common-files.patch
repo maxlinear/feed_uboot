@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  19f8323ce73fc6f84f75a98ff129ccb79f67976b
+# Parent  ad724f44be060ca9a086cebc5ea2c41f7e246256
 
 diff --git a/Makefile b/Makefile
 --- a/Makefile
@@ -1200,12 +1200,11 @@ diff --git a/cmd/Kconfig b/cmd/Kconfig
  endmenu
  
  menu "Firmware commands"
-@@ -2429,3 +2490,5 @@ config MMC_SPEED_MODE_SET
+@@ -2429,3 +2490,4 @@ config MMC_SPEED_MODE_SET
  	  include/mmc.h. A speed mode can be set only if it has already
  	  been enabled in the device tree.
  endmenu
 +
-+source "cmd/prpl/Kconfig"
 diff --git a/cmd/Makefile b/cmd/Makefile
 --- a/cmd/Makefile
 +++ b/cmd/Makefile
@@ -2655,7 +2654,60 @@ diff --git a/lib/Makefile b/lib/Makefile
 diff --git a/net/net.c b/net/net.c
 --- a/net/net.c
 +++ b/net/net.c
-@@ -1210,7 +1210,7 @@ void net_process_received_packet(uchar *
+@@ -907,6 +907,13 @@ static struct ip_udp_hdr *__net_defragme
+ 	int offset8, start, len, done = 0;
+ 	u16 ip_off = ntohs(ip->ip_off);
+ 
++	/*
++	 * Calling code already rejected <, but we don't have to deal
++	 * with an IP fragment with no payload.
++	 */
++	if (ntohs(ip->ip_len) <= IP_HDR_SIZE)
++		return NULL;
++
+ 	/* payload starts after IP header, this fragment is in there */
+ 	payload = (struct hole *)(pkt_buff + IP_HDR_SIZE);
+ 	offset8 =  (ip_off & IP_OFFS);
+@@ -914,6 +921,10 @@ static struct ip_udp_hdr *__net_defragme
+ 	start = offset8 * 8;
+ 	len = ntohs(ip->ip_len) - IP_HDR_SIZE;
+ 
++	/* All but last fragment must have a multiple-of-8 payload. */
++	if ((len & 7) && (ip_off & IP_FLAGS_MFRAG))
++		return NULL;
++
+ 	if (start + len > IP_MAXUDP) /* fragment extends too far */
+ 		return NULL;
+ 
+@@ -957,10 +968,14 @@ static struct ip_udp_hdr *__net_defragme
+ 	}
+ 
+ 	/*
+-	 * There is some overlap: fix the hole list. This code doesn't
+-	 * deal with a fragment that overlaps with two different holes
+-	 * (thus being a superset of a previously-received fragment).
++	 * There is some overlap: fix the hole list. This code deals
++	 * with a fragment that overlaps with two different holes
++	 * (thus being a superset of a previously-received fragment)
++	 * by only using the part of the fragment that fits in the
++	 * first hole.
+ 	 */
++	if (h->last_byte < start + len)
++		len = h->last_byte - start;
+ 
+ 	if ((h >= thisfrag) && (h->last_byte <= start + len)) {
+ 		/* complete overlap with hole: remove hole */
+@@ -1012,8 +1027,8 @@ static struct ip_udp_hdr *__net_defragme
+ 	if (!done)
+ 		return NULL;
+ 
+-	localip->ip_len = htons(total_len);
+ 	*lenp = total_len + IP_HDR_SIZE;
++	localip->ip_len = htons(*lenp);
+ 	return localip;
+ }
+ 
+@@ -1210,7 +1225,7 @@ void net_process_received_packet(uchar *
  			return;
  		/* Check the Checksum of the header */
  		if (!ip_checksum_ok((uchar *)ip, IP_HDR_SIZE)) {
@@ -2664,7 +2716,7 @@ diff --git a/net/net.c b/net/net.c
  			return;
  		}
  		/* If it is not for us, ignore it */
-@@ -1293,7 +1293,7 @@ void net_process_received_packet(uchar *
+@@ -1293,7 +1308,7 @@ void net_process_received_packet(uchar *
  				       ((xsum >> 16) & 0x0000ffff);
  			}
  			if ((xsum != 0x00000000) && (xsum != 0x0000ffff)) {

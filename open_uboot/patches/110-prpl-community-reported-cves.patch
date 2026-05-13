@@ -1,0 +1,304 @@
+# HG changeset patch
+# Parent  641d13d485393e8eae54863ee08ca364d9aac4a3
+
+diff --git a/boot/image-fit.c b/boot/image-fit.c
+--- a/boot/image-fit.c
++++ b/boot/image-fit.c
+@@ -1958,6 +1958,30 @@ int fit_get_node_from_config(bootm_heade
+ 	return noffset;
+ }
+ 
++static bool fit_required_conf_sigs_present(const void *sig_blob)
++{
++	int sig_node;
++	int noffset;
++
++	if (!sig_blob)
++		return false;
++
++	sig_node = fdt_subnode_offset(sig_blob, 0, FIT_SIG_NODENAME);
++	if (sig_node < 0)
++		return false;
++
++	fdt_for_each_subnode(noffset, sig_blob, sig_node) {
++		const char *required;
++
++		required = fdt_getprop(sig_blob, noffset, FIT_KEY_REQUIRED,
++				       NULL);
++		if (required && !strcmp(required, "conf"))
++			return true;
++	}
++
++	return false;
++}
++
+ /**
+  * fit_get_image_type_property() - get property name for IH_TYPE_...
+  *
+@@ -2030,6 +2054,14 @@ int fit_image_load(bootm_headers_t *imag
+ 	}
+ 	bootstage_mark(bootstage_id + BOOTSTAGE_SUB_FORMAT_OK);
+ 	if (fit_uname) {
++		if (FIT_IMAGE_ENABLE_VERIFY && images->verify &&
++		    !fit_uname_config && !images->fit_uname_cfg &&
++		    fit_required_conf_sigs_present(gd_fdt_blob())) {
++			puts("Signed FIT requires configuration selection; use '#<conf>'\n");
++			bootstage_error(bootstage_id + BOOTSTAGE_SUB_HASH);
++			return -EPERM;
++		}
++
+ 		/* get FIT component image node offset */
+ 		bootstage_mark(bootstage_id + BOOTSTAGE_SUB_UNIT_NAME);
+ 		noffset = fit_image_get_node(fit, fit_uname);
+diff --git a/fs/squashfs/sqfs.c b/fs/squashfs/sqfs.c
+--- a/fs/squashfs/sqfs.c
++++ b/fs/squashfs/sqfs.c
+@@ -166,6 +166,11 @@ static int sqfs_frag_lookup(u32 inode_fr
+ 		goto out;
+ 	}
+ 
++	if (SQFS_METADATA_SIZE(header) > SQFS_METADATA_BLOCK_SIZE) {
++		ret = -EINVAL;
++		goto out;
++	}
++
+ 	entries = malloc(SQFS_METADATA_BLOCK_SIZE);
+ 	if (!entries) {
+ 		ret = -ENOMEM;
+@@ -201,13 +206,24 @@ out:
+  * actually reading the entry. So we need a first copy to retrieve this size so
+  * we can finally copy the whole struct.
+  */
+-static int sqfs_read_entry(struct squashfs_directory_entry **dest, void *src)
++static int sqfs_read_entry(struct squashfs_directory_entry **dest, void *src,
++			   size_t remaining_size)
+ {
+ 	struct squashfs_directory_entry *tmp;
++	u32 entry_size;
+ 	u16 sz;
+ 
++	if (!dest || !src)
++		return -EINVAL;
++
++	if (remaining_size < SQFS_ENTRY_BASE_LENGTH)
++		return -EINVAL;
++
+ 	tmp = src;
+ 	sz = get_unaligned_le16(src + sizeof(*tmp) - sizeof(u16));
++	entry_size = SQFS_ENTRY_BASE_LENGTH + (u32)sz + 1;
++	if (entry_size > remaining_size)
++		return -EINVAL;
+ 	/*
+ 	 * 'src' points to the begin of a directory entry, and 'sz' gets its
+ 	 * 'name_size' member's value. name_size is actually the string
+@@ -725,6 +741,12 @@ static int sqfs_read_inode_table(unsigne
+ 		goto free_itb;
+ 	}
+ 
++	/* Check for integer overflow in metadata block count multiplication */
++	if (metablks_count > (UINT_MAX / SQFS_METADATA_BLOCK_SIZE)) {
++		ret = -EINVAL;
++		goto free_itb;
++	}
++
+ 	*inode_table = malloc(metablks_count * SQFS_METADATA_BLOCK_SIZE);
+ 	if (!*inode_table) {
+ 		ret = -ENOMEM;
+@@ -806,6 +828,11 @@ static int sqfs_read_directory_table(uns
+ 	if (metablks_count < 1)
+ 		goto out;
+ 
++	/* Check for integer overflow in metadata block count multiplications */
++	if (metablks_count > (UINT_MAX / SQFS_METADATA_BLOCK_SIZE) ||
++	    metablks_count > (UINT_MAX / sizeof(u32)))
++		goto out;
++
+ 	*dir_table = malloc(metablks_count * SQFS_METADATA_BLOCK_SIZE);
+ 	if (!*dir_table)
+ 		goto out;
+@@ -996,15 +1023,16 @@ int sqfs_readdir(struct fs_dir_stream *f
+ 			memcpy(dirs->dir_header, dirs->table,
+ 			       SQFS_DIR_HEADER_SIZE);
+ 			dirs->entry_count = dirs->dir_header->count + 1;
+-			ret = sqfs_read_entry(&dirs->entry, dirs->table +
+-					      SQFS_DIR_HEADER_SIZE);
++			ret = sqfs_read_entry(&dirs->entry,
++				      dirs->table + SQFS_DIR_HEADER_SIZE,
++				      dirs->size - SQFS_DIR_HEADER_SIZE);
+ 			if (ret)
+ 				return -SQFS_STOP_READDIR;
+ 
+ 			dirs->table += SQFS_DIR_HEADER_SIZE;
+ 		}
+ 	} else {
+-		ret = sqfs_read_entry(&dirs->entry, dirs->table);
++		ret = sqfs_read_entry(&dirs->entry, dirs->table, dirs->size);
+ 		if (ret)
+ 			return -SQFS_STOP_READDIR;
+ 	}
+@@ -1260,6 +1288,10 @@ static int sqfs_get_regfile_info(struct 
+ 		datablk_count = DIV_ROUND_UP(finfo->size, le32_to_cpu(blksz));
+ 	}
+ 
++	/* Check for integer overflow in datablk_count multiplication */
++	if (datablk_count > (UINT_MAX / sizeof(u32)))
++		return -EINVAL;
++
+ 	finfo->blk_sizes = malloc(datablk_count * sizeof(u32));
+ 	if (!finfo->blk_sizes)
+ 		return -ENOMEM;
+@@ -1298,6 +1330,10 @@ static int sqfs_get_lregfile_info(struct
+ 		datablk_count = DIV_ROUND_UP(finfo->size, le32_to_cpu(blksz));
+ 	}
+ 
++	/* Check for integer overflow in datablk_count multiplication */
++	if (datablk_count > (UINT_MAX / sizeof(u32)))
++		return -EINVAL;
++
+ 	finfo->blk_sizes = malloc(datablk_count * sizeof(u32));
+ 	if (!finfo->blk_sizes)
+ 		return -ENOMEM;
+diff --git a/fs/squashfs/sqfs_inode.c b/fs/squashfs/sqfs_inode.c
+--- a/fs/squashfs/sqfs_inode.c
++++ b/fs/squashfs/sqfs_inode.c
+@@ -35,6 +35,9 @@ int sqfs_inode_size(struct squashfs_base
+ 		else
+ 			blk_list_size = DIV_ROUND_UP(file_size, blk_size);
+ 
++		if (blk_list_size > (UINT_MAX - sizeof(*reg)) / sizeof(u32))
++			return -EINVAL;
++
+ 		return sizeof(*reg) + blk_list_size * sizeof(u32);
+ 	}
+ 
+@@ -52,11 +55,18 @@ int sqfs_inode_size(struct squashfs_base
+ 		di = ldir->index;
+ 		while (l < i_count) {
+ 			sz = get_unaligned_le32(&di->size) + 1;
++			if (sz > UINT_MAX - sizeof(*di) ||
++			    index_list_size > UINT_MAX - sz)
++				return -EINVAL;
+ 			index_list_size += sz;
+ 			di = (void *)di + sizeof(*di) + sz;
+ 			l++;
+ 		}
+ 
++		if (i_count > (UINT_MAX - sizeof(*ldir) - index_list_size) /
++		    SQFS_DIR_INDEX_BASE_LENGTH)
++			return -EINVAL;
++
+ 		return sizeof(*ldir) + index_list_size +
+ 			i_count * SQFS_DIR_INDEX_BASE_LENGTH;
+ 	}
+@@ -68,10 +78,16 @@ int sqfs_inode_size(struct squashfs_base
+ 		u64 file_size = get_unaligned_le64(&lreg->file_size);
+ 		unsigned int blk_list_size;
+ 
++		if (file_size > UINT_MAX)
++			return -EINVAL;
++
+ 		if (fragment == 0xFFFFFFFF)
+-			blk_list_size = DIV_ROUND_UP(file_size, blk_size);
++			blk_list_size = DIV_ROUND_UP((u32)file_size, blk_size);
+ 		else
+-			blk_list_size = file_size / blk_size;
++			blk_list_size = (u32)file_size / blk_size;
++
++		if (blk_list_size > (UINT_MAX - sizeof(*lreg)) / sizeof(u32))
++			return -EINVAL;
+ 
+ 		return sizeof(*lreg) + blk_list_size * sizeof(u32);
+ 	}
+@@ -80,9 +96,12 @@ int sqfs_inode_size(struct squashfs_base
+ 	case SQFS_LSYMLINK_TYPE: {
+ 		struct squashfs_symlink_inode *symlink =
+ 			(struct squashfs_symlink_inode *)inode;
++		u32 symlink_size = get_unaligned_le32(&symlink->symlink_size);
+ 
+-		return sizeof(*symlink) +
+-			get_unaligned_le32(&symlink->symlink_size);
++		if (symlink_size > (UINT_MAX - sizeof(*symlink)))
++			return -EINVAL;
++
++		return sizeof(*symlink) + symlink_size;
+ 	}
+ 
+ 	case SQFS_BLKDEV_TYPE:
+diff --git a/net/bootp.c b/net/bootp.c
+--- a/net/bootp.c
++++ b/net/bootp.c
+@@ -374,6 +374,11 @@ static void bootp_handler(uchar *pkt, un
+ 	if (check_reply_packet(pkt, dest, src, len))
+ 		return;
+ 
++	if (len < offsetof(struct bootp_hdr, bp_vend) + 4) {
++		printf("Error: got an invalid BOOTP packet (len=%u)\n", len);
++		return;
++	}
++
+ 	/*
+ 	 *	Got a good BOOTP reply.	 Copy the data into our variables.
+ 	 */
+@@ -385,7 +390,8 @@ static void bootp_handler(uchar *pkt, un
+ 
+ 	/* Retrieve extended information (we must parse the vendor area) */
+ 	if (net_read_u32((u32 *)&bp->bp_vend[0]) == htonl(BOOTP_VENDOR_MAGIC))
+-		bootp_process_vendor((uchar *)&bp->bp_vend[4], len);
++		bootp_process_vendor((uchar *)&bp->bp_vend[4],
++				   len - offsetof(struct bootp_hdr, bp_vend) - 4);
+ 
+ 	net_set_timeout_handler(0, (thand_f *)0);
+ 	bootstage_mark_name(BOOTSTAGE_ID_BOOTP_STOP, "bootp_stop");
+diff --git a/net/nfs.c b/net/nfs.c
+--- a/net/nfs.c
++++ b/net/nfs.c
+@@ -619,6 +619,7 @@ static int nfs_readlink_reply(uchar *pkt
+ 	struct rpc_t rpc_pkt;
+ 	int rlen;
+ 	int nfsv3_data_offset = 0;
++	uchar *symlink_path;
+ 
+ 	debug("%s\n", __func__);
+ 
+@@ -642,23 +643,26 @@ static int nfs_readlink_reply(uchar *pkt
+ 
+ 	/* new path length */
+ 	rlen = ntohl(rpc_pkt.u.reply.data[1 + nfsv3_data_offset]);
++	symlink_path = (uchar *)&(rpc_pkt.u.reply.data[2 + nfsv3_data_offset]);
+ 
+-	if (((uchar *)&(rpc_pkt.u.reply.data[0]) - (uchar *)(&rpc_pkt) + rlen) > len)
++	if ((symlink_path - (uchar *)&rpc_pkt + rlen) > len)
+ 		return -NFS_RPC_DROP;
+ 
+-	if (*((char *)&(rpc_pkt.u.reply.data[2 + nfsv3_data_offset])) != '/') {
++	if (*symlink_path != '/') {
+ 		int pathlen;
+ 
+ 		strcat(nfs_path, "/");
+ 		pathlen = strlen(nfs_path);
++		if (pathlen + rlen >= sizeof(nfs_path_buff))
++			return -NFS_RPC_DROP;
+ 		memcpy(nfs_path + pathlen,
+-		       (uchar *)&(rpc_pkt.u.reply.data[2 + nfsv3_data_offset]),
++		       symlink_path,
+ 		       rlen);
+ 		nfs_path[pathlen + rlen] = 0;
+ 	} else {
+-		memcpy(nfs_path,
+-		       (uchar *)&(rpc_pkt.u.reply.data[2 + nfsv3_data_offset]),
+-		       rlen);
++		if (rlen >= sizeof(nfs_path_buff))
++			return -NFS_RPC_DROP;
++		memcpy(nfs_path, symlink_path, rlen);
+ 		nfs_path[rlen] = 0;
+ 	}
+ 	return 0;
+@@ -713,7 +717,7 @@ static int nfs_read_reply(uchar *pkt, un
+ 			&(rpc_pkt.u.reply.data[4 + nfsv3_data_offset]);
+ 	}
+ 
+-	if (((uchar *)&(rpc_pkt.u.reply.data[0]) - (uchar *)(&rpc_pkt) + rlen) > len)
++	if ((data_ptr - (uchar *)&rpc_pkt + rlen) > len)
+ 			return -9999;
+ 
+ 	if (store_block(data_ptr, nfs_offset, rlen))
