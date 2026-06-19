@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  2da0d6191fce74a69bf78a164aab63fe3bba9c3f
+# Parent  9cab1f988a4978233236d437c21a4167ea56dee0
 
 diff --git a/cmd/prpl/Kconfig b/cmd/prpl/Kconfig
 new file mode 100644
@@ -418,7 +418,7 @@ diff --git a/lib/prpl/mfg.c b/lib/prpl/mfg.c
 new file mode 100644
 --- /dev/null
 +++ b/lib/prpl/mfg.c
-@@ -0,0 +1,402 @@
+@@ -0,0 +1,415 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2025 Paul HENRYS <paul.henrys_ext@softathome.com>
@@ -527,28 +527,41 @@ new file mode 100644
 +	if (board_read_firmware(mfg_part_name, mfg_data) < 0) {
 +		log_err("ERROR: unable to read data from flash\n");
 +		free(mfg_data);
++		mfg_data = NULL;
 +		goto out;
 +	}
 +	if (IS_ENABLED(CONFIG_PRPL_MFG_GLOBAL_SIG_CHECK)) {
++		struct sig_header_s *sig_hdr = mfg_data;
++
 +		env_set("pre_load_sig_info_path", MFG_GLOBAL_SIG_PATH);
 +		ret = image_pre_load((ulong)mfg_data);
 +		env_set("pre_load_sig_info_path", NULL);
 +		if (ret) {
 +			log_err("ERROR: Failed to verify global header signature of mfg data\n");
 +			free(mfg_data);
++			mfg_data = NULL;
 +			env_set("pre_load_sig_info_path", NULL);
 +			goto out;
 +		}
-+		if (fdt_magic(mfg_data + image_load_offset) != FDT_MAGIC) {
++
++		if (fdt32_to_cpu(sig_hdr->image_size) < sizeof(struct fdt_header)) {
++			log_err("ERROR: MFG sizes inconsistency between signature header and FDT header\n");
++			free(mfg_data);
++			mfg_data = NULL;
++			goto out;
++		}
++		if (fdt_check_header(mfg_data + image_load_offset)) {
 +			log_err("ERROR: Failed to retrieve the mfg data from flash\n");
 +			free(mfg_data);
++			mfg_data = NULL;
 +			goto out;
 +		}
 +		memmove(mfg_data, mfg_data + image_load_offset, fdt_totalsize(mfg_data + image_load_offset));
 +	} else {
-+		if (fdt_magic(mfg_data) != FDT_MAGIC) {
++		if (fdt_check_header(mfg_data)) {
 +			log_err("ERROR: Failed to retrieve the mfg data from flash\n");
 +			free(mfg_data);
++			mfg_data = NULL;
 +			goto out;
 +		}
 +	}

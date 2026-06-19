@@ -1,5 +1,20 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.397
+	* UGW_SW-98134: Fixes the board hang issue when processing invalid SMD data.
+
+Changes for U-boot version: 4.0.396
+	* UGW_SW-97932: Add Kconfig symbol PRPL_ENV_WHITELIST
+
+Changes for U-boot version: 4.0.395
+	* UGW_SW-98064: fix PERM_FAILOVER check.
+
+Changes for U-boot version: 4.0.394
+	* UGW_SW-97872: set mfg_data to NULL after free to prevent dangling pointer
+
+Changes for U-boot version: 4.0.393
+	* UGW_SW-97602: Fix for FDT load address retrieval failure for FIT images.
+
 Changes for U-boot version: 4.0.392
 	* UGW_SW-97621: Addressing review comments
 

@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  1fdb9a319a028ad74353221fcb3c3647a1763b9e
+# Parent  069b02a02f7aabfbcad8b1e44c53c849b576315e
 
 diff --git a/arch/x86/cpu/intel_common/microcode.c b/arch/x86/cpu/intel_common/microcode.c
 --- a/arch/x86/cpu/intel_common/microcode.c
@@ -281214,7 +281214,7 @@ new file mode 100644
 +	} else {
 +		debug("SPL: force-inactive is DISABLED\n");
 +
-+		if (CONFIG_IS_ENABLED(PERM_FAILOVER) || failover) {
++		if (IS_ENABLED(CONFIG_PERM_FAILOVER) || failover) {
 +			/* Track bootcount and allow INACTIVE failover:
 +			 *   CONFIG_PERM_FAILOVER: always enabled (normal + upgrade boot)
 +			 *   failover env var: upgrade/failover scenario only

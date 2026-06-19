@@ -1,11 +1,11 @@
 # HG changeset patch
-# Parent  0e797a8c774eac5ee9afe8b2184f19bba7e91d0f
+# Parent  5f3364b3619cef771594700558e23fc89ddee097
 
 diff --git a/board/maxlinear/Kconfig b/board/maxlinear/Kconfig
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/Kconfig
-@@ -0,0 +1,477 @@
+@@ -0,0 +1,485 @@
 +# SPDX-License-Identifier: GPL-2.0+
 +#
 +# Copyright (C) 2015, Bin Meng <bmeng.cn@gmail.com>
@@ -196,6 +196,14 @@ new file mode 100644
 +config FLASHARGS
 +	string "flashargs"
 +	default "setenv bootargs rootfsname=/dev/mtdblock2 rootfstype=squashfs"
++
++config PRPL_ENV_WHITELIST
++	string "Static env writable whitelist"
++	depends on ENV_WRITEABLE_LIST
++	default ""
++	help
++	  Comma-separated list of environment variables and access flags
++	  used for CONFIG_ENV_FLAGS_LIST_STATIC.
 +
 +config ADDMISC
 +	string "addmisc"
@@ -1076,7 +1084,7 @@ new file mode 100644
 +
 +u-boot.itb: u-boot.lzimg
 +	cp $(BOARDDIR)/u-boot.its $(srctree)/u-boot.its
-+	$(srctree)/tools/mkimage -f $(srctree)/u-boot.its $@
++	PATH=$(srctree)/scripts/dtc:$$PATH $(srctree)/tools/mkimage -f $(srctree)/u-boot.its $@
 +
 +### create u-boot lzma image ###
 +u-boot.lzimg: System.map $(if $(filter $(CONFIG_SB_ENV_PROTECTION),$(strip y)),$(SB_ENV_BLOCK),)
@@ -72014,7 +72022,7 @@ diff --git a/board/maxlinear/lightning/pre_kern_fixups.c b/board/maxlinear/light
 new file mode 100644
 --- /dev/null
 +++ b/board/maxlinear/lightning/pre_kern_fixups.c
-@@ -0,0 +1,395 @@
+@@ -0,0 +1,386 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2025 Maxlinear Corporation
@@ -72024,6 +72032,7 @@ new file mode 100644
 +#include <string.h>
 +#include <command.h>
 +#include <fdt_support.h>
++#include <image.h>
 +#include <asm/io.h>
 +#include <asm/arch/nrst.h>
 +#include <asm/global_data.h>
@@ -72080,25 +72089,15 @@ new file mode 100644
 +
 +#ifdef CONFIG_MXL_SPL_FIT
 +	/* For FIT images, need to get the actual FDT load address from the FIT */
-+	const void *fdt;
-+	int node_offset, len;
-+	const char *prop;
-+
-+	fdt = (void *)dtb_loadaddr;
-+	node_offset = fdt_path_offset(fdt, "/images/fdt");
-+	if (node_offset < 0) {
-+		printf("[%s] Error: Cannot find /images/fdt, error code: %d\n",
-+			__func__, node_offset);
-+		return 0;
-+	}
-+
-+	prop = get_fdt_property(fdt, node_offset, "load", &len);
-+	if (!prop)
-+		return 0;
-+
-+	loadaddr = fdt32_to_cpu(*(const uint32_t *)prop);
++	extern bootm_headers_t images;   /* global from boot/bootm.c */
++	if (images.ft_addr) {
++		loadaddr = (ulong)images.ft_addr;  /* set by boot_get_fdt() */
++		debug("[%s] Using FIT FDT load address from images.ft_addr: 0x%08lx\n",
++			__func__, loadaddr);
++	} else
++		printf("[%s] Error: images.ft_addr is not set\n", __func__);
 +#else
-+	loadaddr = dtb_loadaddr;
++	loadaddr = dtb_loadaddr;	/* fallback: legacy separate-DTB boot path */
 +#endif
 +
 +	return loadaddr;
@@ -74570,7 +74569,7 @@ new file mode 100644
 +
 +/* Environment flags list for octopus boards with P34X PHY */
 +#if defined(CONFIG_ENV_WRITEABLE_LIST)
-+#define CONFIG_ENV_FLAGS_LIST_STATIC "failover:sw,wantype:sw,udt_status:sw"
++#define CONFIG_ENV_FLAGS_LIST_STATIC CONFIG_PRPL_ENV_WHITELIST
 +#endif
 +
 +/* allow longer tftp pathnames, default 128 in tftp.c */
