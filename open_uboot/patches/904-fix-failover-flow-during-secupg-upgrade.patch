@@ -1,0 +1,151 @@
+diff --git a/arch/x86/lib/spl_lgm_image_loader.c b/arch/x86/lib/spl_lgm_image_loader.c
+index b27ff5c95..7c4fbf9c7 100644
+--- a/arch/x86/lib/spl_lgm_image_loader.c
++++ b/arch/x86/lib/spl_lgm_image_loader.c
+@@ -355,6 +355,8 @@ int temporary_failover_boot_sequence(void)
+ 	int booted_bank = 0;
+ 	int failover;
+ 	u32 boot_reg = 0;
++	unsigned long image_failure = 0;
++	ulong udt_status = 0;
+ 
+ 	/* Default to terminal unless proven to be a retry-attempt failure. */
+ 	prpl_terminal_recovery = 1;
+@@ -388,6 +390,21 @@ int temporary_failover_boot_sequence(void)
+ 	debug("RBE Boot Bank: %s (NRST_REG_NRST_2=0x%08x)\n",
+ 		  (booted_bank == 0) ? "ACTIVE" : "INACTIVE", boot_reg);
+ 
++	/* If RBE was loaded from INACTIVE bank, the ACTIVE RBE failed.
++	 * Signal failure immediately and fall back to INACTIVE for TEP/U-Boot,
++	 * consistent with the old alt_bank_boot_sequence() behaviour.
++	 * This ensures recovery works correctly during downgrade
++	 * (e.g. 9.2.10 -> 9.1.100) where this SPL (9.2.10) is the backup
++	 * and the new 9.1.100 RBE in ACTIVE failed to load.
++	 */
++	if (booted_bank == 1) {
++		printf("SPL: RBE booted from INACTIVE - ACTIVE RBE failed, signalling failure\n");
++		SET_IMAGE_FAILURE(image_failure, RBE_FAILURE);
++		writel(image_failure, BOOT_FAILURE_ADDR);
++		boot_part = 1;  /* INACTIVE - match TEP/U-Boot to the RBE bank */
++		goto boot_firmware;
++	}
++
+ 	/* Start WDT (Watchdog Timer) as per flowchart
+ 	 * Note: Watchdog should already be initialized early in boot,
+ 	 * this ensures it's running during the boot sequence
+@@ -436,6 +453,12 @@ int temporary_failover_boot_sequence(void)
+ 			} else if (bootcount <= 2 * bootlimit) {
+ 				boot_part = 1; /* INACTIVE */
+ 				debug("SPL: BOOT_PART set to INACTIVE (bootcount %d <= 2*bootlimit %d)\n", bootcount, 2 * bootlimit);
++				udt_status = env_get_ulong("udt_status", 10, 0);
++				if (udt_status == 11) {
++					SET_IMAGE_FAILURE(image_failure, POST_RBE_FAILURE);
++					writel(image_failure, BOOT_FAILURE_ADDR);
++					printf("SPL: image_failure set to POST_RBE_FAILURE (0x%lx)\n", image_failure);
++				}
+ 			} else {
+ 				printf("SPL: Bootcount %d exceeded 2*bootlimit %d - End of World\n", bootcount, 2 * bootlimit);
+ 				goto reset;
+@@ -460,6 +483,7 @@ int temporary_failover_boot_sequence(void)
+ 	 */
+ 	prpl_terminal_recovery = 0;
+ 
++boot_firmware:
+ 	/* Load firmware and boot - does not return on success */
+ 	ret = load_and_boot_firmware(boot_part);
+ 
+diff --git a/board/maxlinear/lightning/lightning.c b/board/maxlinear/lightning/lightning.c
+index a02ea7639..cf9bf5e4a 100644
+--- a/board/maxlinear/lightning/lightning.c
++++ b/board/maxlinear/lightning/lightning.c
+@@ -483,13 +483,16 @@ static void pre_calculate_rootfs_variables(void)
+ 	if active_bank is not found , boot_p will be used to decide.
+ 	 if boot_p is also not found, rootfs_size will be set to default size
+ 	*/
++#ifdef CONFIG_PRPL_BOOT_SEQUENCE
++	active_bank = env_get("boot_part");
++#else
+ 	active_bank = env_get("active_bank");
++#endif
+ 	if (active_bank != NULL) {
+-		if (active_bank[0] == 'A') {
++		if (active_bank[0] == 'A' || strcmp(active_bank, "active") == 0) {
+ 			rootfs_size = env_get_ulong("rootfs_a_filesize", 16, 0);
+ 			debug("rootfs_a_filesize is used %08x\n", rootfs_size);
+-		}
+-		else if (active_bank[0] == 'B') {
++		} else if (active_bank[0] == 'B' || strcmp(active_bank, "inactive") == 0) {
+ 			rootfs_size = env_get_ulong("rootfs_b_filesize", 16, 0);
+ 			debug("rootfs_b_filesize is used %08x\n", rootfs_size);
+ 		}
+@@ -708,7 +711,9 @@ static int chk_udt(void)
+ 	u32 chk_udt_stat = env_get_ulong("udt_status", 10, 0);
+ 	u32 chk_boot_cnt = env_get_ulong("boot_count", 10, 0);
+ 	u32 chk_bootlimit = env_get_ulong("bootlimit", 10, CONFIG_MAX_BOOT_COUNTER);
++	u32 chk_max_boot_cnt = env_get_ulong("max_boot_count", 16, 0);
+ 	u32 chk_recovery_img = env_get_ulong("recovery_image", 16, 0);
++	u32 boot_reg = readl(BOOT_FAILURE_ADDR);
+ 
+ 	/* upgrade request by linux */
+ 	if ((UDT_UPGRADE_IN_PROGRESS == chk_udt_stat) ||
+@@ -737,7 +742,6 @@ static int chk_udt(void)
+ 			env_changed = 1;
+ 		}
+ 	}
+-
+ 	debug("udt_stat: %u | boot_count: %u | bootlimit: %u\n",
+ 		  chk_udt_stat, chk_boot_cnt, chk_bootlimit);
+ 
+@@ -755,6 +759,17 @@ static void update_spl_boot_status(void)
+ 	env_set_ulong("image_failure", readl(BOOT_FAILURE_ADDR));
+ #else
+ 	u32 boot_reg;
++	unsigned long failure_status;
++
++	/* Preserve image_failure signaling from SPL via BOOT_FAILURE_ADDR.
++	 * SPL writes RBE_FAILURE or POST_RBE_FAILURE here when falling back
++	 * to the INACTIVE bank (e.g. downgrade rollback scenario). The
++	 * BOOTCOMMAND checks this env var to trigger recover_boot.
++	 * Only set when non-zero to avoid overwriting a valid 0 in normal boot.
++	 */
++	failure_status = readl(BOOT_FAILURE_ADDR);
++	if (failure_status)
++		env_set_ulong("image_failure", failure_status);
+ 
+ 	/* Read boot control register from NRST_REG_NRST_2 */
+ 	boot_reg = readl(NRST_REG_NRST_2);
+diff --git a/boot/image-pre-load.c b/boot/image-pre-load.c
+index 2965091c2..13875686a 100644
+--- a/boot/image-pre-load.c
++++ b/boot/image-pre-load.c
+@@ -170,6 +170,18 @@ static int image_pre_load_sig_check_magic(struct image_sig_info *info, ulong add
+ 
+ 	if (magic != IMAGE_PRE_LOAD_SIG_MAGIC) {
+ 		if (info->mandatory) {
++			/* Allow legacy images (uImage IH_MAGIC=0x27051956 or
++			* FIT FDT_MAGIC=0xd00dfeed) to boot without a pre-load
++			* signature even when mandatory is set. This lets a
++			* single u-boot binary support both new signed images
++			* and legacy unsigned images.*/
++			if (magic == IH_MAGIC || magic == 0xd00dfeed) {
++				log_warning("WARNING: pre-load sig mandatory but "
++							"legacy image detected (magic=0x%08x)"
++							", skipping pre-load check\n", magic);
++				ret = 1;
++				goto out;
++			}
+ 			log_err("ERROR: signature is mandatory\n");
+ 			ret = -EINVAL;
+ 			goto out;
+diff --git a/include/configs/maxlinear/common.h b/include/configs/maxlinear/common.h
+index 1eacf7319..6c1fb0921 100644
+--- a/include/configs/maxlinear/common.h
++++ b/include/configs/maxlinear/common.h
+@@ -343,6 +343,7 @@
+ 	"rootfs_b_filesize="__stringify(CONFIG_ROOTFS_B_SIZE)"\0"	\
+ 	"update_bootcount="UPDATE_BOOTCOUNT"\0"		\
+ 	"bootlimit="__stringify(CONFIG_MAX_BOOT_COUNTER)"\0"	\
++	"max_boot_count="__stringify(CONFIG_MAX_BOOT_COUNTER)"\0"	\
+ 	BOOT_COUNTER					\
+ 	RECOVERY_IMG					\
+ 	"recover_primary="CONFIG_RECOVER_PRIMARY_IMG"\0"	\
