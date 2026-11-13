@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  069b02a02f7aabfbcad8b1e44c53c849b576315e
+# Parent  2d168225eef0b71381fe7410f3a4fe6823850608
 
 diff --git a/arch/x86/cpu/intel_common/microcode.c b/arch/x86/cpu/intel_common/microcode.c
 --- a/arch/x86/cpu/intel_common/microcode.c
@@ -280799,7 +280799,7 @@ diff --git a/arch/x86/lib/spl_lgm_image_loader.c b/arch/x86/lib/spl_lgm_image_lo
 new file mode 100644
 --- /dev/null
 +++ b/arch/x86/lib/spl_lgm_image_loader.c
-@@ -0,0 +1,488 @@
+@@ -0,0 +1,542 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2016, 2017 Intel Technology Asia Pte Ltd
@@ -280963,8 +280963,23 @@ new file mode 100644
 + * PRPL retry status for caller handling:
 + *   0 = non-terminal retry failure (do reset only)
 + *   1 = terminal recovery condition (EOW/invalid state)
++ *
++ * When CONFIG_EOW_OVERWRITE is disabled, always keep this at 0 so the
++ * SPL caller uses soft reset instead of erase+reset on boot failures.
 + */
++#ifdef CONFIG_EOW_OVERWRITE
 +static int prpl_terminal_recovery = 1;
++#define SET_PRPL_TERMINAL_RECOVERY(val) \
++	do { \
++		prpl_terminal_recovery = (val); \
++	} while (0)
++#else
++static int prpl_terminal_recovery = 0;
++#define SET_PRPL_TERMINAL_RECOVERY(val) \
++	do { \
++		prpl_terminal_recovery = 0; \
++	} while (0)
++#endif
 +
 +int lgm_boot_sequence_terminal_recovery(void)
 +{
@@ -281157,9 +281172,14 @@ new file mode 100644
 +	int booted_bank = 0;
 +	int failover;
 +	u32 boot_reg = 0;
++	unsigned long image_failure = 0;
++	ulong udt_status = 0;
 +
-+	/* Default to terminal unless proven to be a retry-attempt failure. */
-+	prpl_terminal_recovery = 1;
++	/* Default recovery mode depends on CONFIG_EOW_OVERWRITE.
++	 * With overwrite enabled, terminal paths erase both banks.
++	 * Otherwise every boot failure stays on the soft-reset path.
++	 */
++	SET_PRPL_TERMINAL_RECOVERY(1);
 +
 +	set_booted_bank_in_rbe();  /* Set bit 15 for U-Boot to read which bank RBE booted from */
 +
@@ -281189,6 +281209,21 @@ new file mode 100644
 +
 +	debug("RBE Boot Bank: %s (NRST_REG_NRST_2=0x%08x)\n",
 +		  (booted_bank == 0) ? "ACTIVE" : "INACTIVE", boot_reg);
++
++	/* If RBE was loaded from INACTIVE bank, the ACTIVE RBE failed.
++	 * Signal failure immediately and fall back to INACTIVE for TEP/U-Boot,
++	 * consistent with the old alt_bank_boot_sequence() behaviour.
++	 * This ensures recovery works correctly during downgrade
++	 * (e.g. 9.2.10 -> 9.1.100) where this SPL (9.2.10) is the backup
++	 * and the new 9.1.100 RBE in ACTIVE failed to load.
++	 */
++	if (booted_bank == 1) {
++		printf("SPL: RBE booted from INACTIVE - ACTIVE RBE failed, signalling failure\n");
++		SET_IMAGE_FAILURE(image_failure, RBE_FAILURE);
++		writel(image_failure, BOOT_FAILURE_ADDR);
++		boot_part = 1;  /* INACTIVE - match TEP/U-Boot to the RBE bank */
++		goto boot_firmware;
++	}
 +
 +	/* Start WDT (Watchdog Timer) as per flowchart
 +	 * Note: Watchdog should already be initialized early in boot,
@@ -281238,8 +281273,25 @@ new file mode 100644
 +			} else if (bootcount <= 2 * bootlimit) {
 +				boot_part = 1; /* INACTIVE */
 +				debug("SPL: BOOT_PART set to INACTIVE (bootcount %d <= 2*bootlimit %d)\n", bootcount, 2 * bootlimit);
++				udt_status = env_get_ulong("udt_status", 10, 0);
++				if (udt_status == 11) {
++					SET_IMAGE_FAILURE(image_failure, POST_RBE_FAILURE);
++					writel(image_failure, BOOT_FAILURE_ADDR);
++					printf("SPL: image_failure set to POST_RBE_FAILURE (0x%lx)\n", image_failure);
++				}
 +			} else {
 +				printf("SPL: Bootcount %d exceeded 2*bootlimit %d - End of World\n", bootcount, 2 * bootlimit);
++#ifndef CONFIG_EOW_OVERWRITE
++				/* Without EOW overwrite, reset bootcount to 0 and soft-reset
++				 * so the next boot gets a fresh retry cycle instead of being
++				 * permanently stuck in the EOW condition.
++				 * SET_PRPL_TERMINAL_RECOVERY is already pinned to 0 in this
++				 * build, so the SPL caller will take the soft_reset path
++				 * (no erase). Original erase+DFU flow is preserved when
++				 * CONFIG_EOW_OVERWRITE is enabled.
++				 */
++				set_bootcount(0);
++#endif
 +				goto reset;
 +			}
 +		} else {
@@ -281258,10 +281310,12 @@ new file mode 100644
 +	 * caller (board_init_f_cont) will use soft_reset() instead of the destructive
 +	 * reset+erase path. This allows the bootcount to persist and be re-evaluated
 +	 * on the next boot, enabling proper retry progression (requirement #2).
-+	 * Terminal conditions (EOW, invalid state) remain set to 1 and will erase.
++	 * Terminal conditions (EOW, invalid state) only remain terminal when
++	 * CONFIG_EOW_OVERWRITE is enabled.
 +	 */
-+	prpl_terminal_recovery = 0;
++	SET_PRPL_TERMINAL_RECOVERY(0);
 +
++boot_firmware:
 +	/* Load firmware and boot - does not return on success */
 +	ret = load_and_boot_firmware(boot_part);
 +

@@ -1,5 +1,5 @@
 # HG changeset patch
-# Parent  43b59119c72dbd94a4208fef0220f82d6bfe5fd1
+# Parent  72b9ae6f75bc8864fea098a9e4dbdef2b1c9b408
 
 diff --git a/arch/sandbox/dts/sandbox.dtsi b/arch/sandbox/dts/sandbox.dtsi
 --- a/arch/sandbox/dts/sandbox.dtsi
@@ -179,7 +179,7 @@ diff --git a/boot/image-pre-load.c b/boot/image-pre-load.c
 new file mode 100644
 --- /dev/null
 +++ b/boot/image-pre-load.c
-@@ -0,0 +1,378 @@
+@@ -0,0 +1,390 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (C) 2021 Philippe Reynes <philippe.reynes@softathome.com>
@@ -352,6 +352,18 @@ new file mode 100644
 +
 +	if (magic != IMAGE_PRE_LOAD_SIG_MAGIC) {
 +		if (info->mandatory) {
++			/* Allow legacy images (uImage IH_MAGIC=0x27051956 or
++			* FIT FDT_MAGIC=0xd00dfeed) to boot without a pre-load
++			* signature even when mandatory is set. This lets a
++			* single u-boot binary support both new signed images
++			* and legacy unsigned images.*/
++			if (magic == IH_MAGIC || magic == 0xd00dfeed) {
++				log_warning("WARNING: pre-load sig mandatory but "
++							"legacy image detected (magic=0x%08x)"
++							", skipping pre-load check\n", magic);
++				ret = 1;
++				goto out;
++			}
 +			log_err("ERROR: signature is mandatory\n");
 +			ret = -EINVAL;
 +			goto out;

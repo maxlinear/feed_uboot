@@ -1,5 +1,11 @@
 Changelog Intel U-boot based on version release 2022.01
 
+Changes for U-boot version: 4.0.399
+	* Skip bank erase on boot failure when CONFIG_EOW_OVERWRITE is disabled
+
+Changes for U-boot version: 4.0.398
+	* Added a support for backward compatibility and failover bootflow during image upgrade/downgrade.
+
 Changes for U-boot version: 4.0.397
 	* UGW_SW-98134: Fixes the board hang issue when processing invalid SMD data.
 
